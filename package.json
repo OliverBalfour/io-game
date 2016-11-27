@@ -1,0 +1,10 @@
+{
+  "name": "Strategy-Game",
+  "version": "0.0.1",
+  "description": "Hexagonal grid based troop moving strategy online game",
+  "dependencies": {
+    "express": "^4.10.2",
+    "socket.io": "^1.6.0",
+    "uuid": "^3.0.0"
+  }
+}

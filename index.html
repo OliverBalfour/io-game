@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Test</title>
+		<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+		<link href="style.css" rel="stylesheet">
+		<meta charset='UTF-8' />
+	</head>
+	<body>
+		<div id='start-screen' class='screen'>
+			<input type='text' id='name' placeholder='Anonymous' />
+			<button id='play-button' onclick='joinWaitingRoom()'>PLAY</button>
+		</div>
+		<div id='waiting-room' class='screen hidden'>
+			<h2 id='wr-count-cont'>
+				<span id='wr-count'>0</span> of <span id='wr-player-limit'>0</span>
+			</h2>
+			<span id='wr-timer-cont'>
+				Automatically starting in <span id='wr-timer'></span>
+			</span>
+			<button id='force-start' onclick='toggleForceStart()'>
+				Force start (<span id='wr-fsc'>0</span>/<span id='wr-pc'>0</span>)
+			</button>
+			<button id='wr-cancel' onclick='leaveWaitingRoom()'>Cancel</button>
+		</div>
+		<div id='game-room' class='screen hidden'>
+			<canvas id='map'></canvas>
+			<div id='gr-players'></div>
+		</div>
+		
+		<script src='/socket.io/socket.io.js'></script>
+		<script src='client.js'></script>
+		<script src='hex.js'></script>
+	</body>
+</html>
