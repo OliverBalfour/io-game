@@ -30,8 +30,11 @@ socket.on('c', function(players){
 	dom.id('gr-players').innerText = playerNames.join(', ');
 	dom.changeScreen('waiting-room', 'game-room');
 	
-	var map = new Map(32, 32, 30, canvas);
+	canvas = document.getElementById('map');
+	map = new Map(32, 32, 30, canvas);
 });
+
+var canvas, map;
 
 //Namespace for abstracting the Document Object Model
 var dom = {};

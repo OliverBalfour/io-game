@@ -28,8 +28,7 @@ function Map(w, h, side, canvas){
 	this.y = 0;
 	
 	this.generate = function(){
-		//Populating that array with empty tile objects is the first part
-		//Once the game is actually a game this'll put in mountains, water, castles, etc.
+		//Populating that array with empty tile objects
 		this.data = [];
 		
 		for(var i = 0; i < w * h; i++){
@@ -158,11 +157,106 @@ function Map(w, h, side, canvas){
 		this.drawHex(d.x + this.x, d.y + this.y, i, this.ctx);
 	}
 	
+	//The currently selected tile's index
+	//-1 if no tile is selected
+	this.selectedTile = -1;
+	
 	//Triggered when the client clicks on a tile, given the tile index in this.data
 	this.selectHex = function(i){
-		this.data[i].owner = {color: 'red'};
-		this.data[i].troops = Math.floor(Math.random() * 50) + 100;
-		this.redrawHex(i);
+		
+		//Get the hex position
+		var d = this.getTileData(i);
+		
+		//If the user is clicking on the currently selected tile, we deselect it
+		//Otherwise, we select the new tile and deselect the old one
+		if(i === this.selectedTile){
+			
+			//Redraw tile
+			this.drawHexFlower(0, 0, this.selectedTile, this.gridctx, this.drawHex);
+			this.drawHexFlower(this.x, this.y, this.selectedTile, this.ctx, this.drawHex);
+			
+			//Deselect
+			this.selectedTile = -1;
+			
+		}else{
+			
+			//To clear us of the currently selected tile, we redraw a flower of hexes around the selected tile
+			if(this.selectedTile !== -1){
+				this.drawHexFlower(0, 0, this.selectedTile, this.gridctx, this.drawHex);
+				this.drawHexFlower(this.x, this.y, this.selectedTile, this.ctx, this.drawHex);
+			}
+			
+			//Select
+			this.selectedTile = i;
+			
+			//When drawing selected tile hex flowers, we draw a hex flower and then highlight the middle tile even more
+			
+			//Draw the hex to the grid canvas
+			this.drawHexFlower(0, 0, i, this.gridctx, this.highlightHex);
+			this.highlightHex(d.x, d.y, i, this.gridctx);
+			
+			//Render the hex simultaneously
+			this.drawHexFlower(this.x, this.y, i, this.ctx, this.highlightHex);
+			this.highlightHex(d.x + this.x, d.y + this.y, i, this.ctx);
+		}
+	}
+	
+	//Draws over a hex, but highlighted
+	//Same params as this.drawHex, but with highlight color as well
+	this.highlightHex = function(x, y, i, ctx, color){
+		
+		//Tile color
+		ctx.fillStyle = color || 'rgba(0, 0, 0, 0.2)';
+		
+		//Hexagon path
+		
+		ctx.beginPath();
+		
+		ctx.moveTo(x + this.tileSideLength / 2, y);
+		ctx.lineTo(x + this.xMultiplier, y);
+		ctx.lineTo(x + this.tileSideLength * 2, y + this.tileHeight / 2);
+		ctx.lineTo(x + this.xMultiplier, y + this.tileHeight);
+		ctx.lineTo(x + this.tileSideLength / 2, y + this.tileHeight);
+		ctx.lineTo(x, y + this.tileHeight / 2);
+		ctx.lineTo(x + this.tileSideLength / 2, y);
+		
+		ctx.fill();
+		ctx.stroke();
+	}
+	
+	//Draws a hexagonal flower (a hex surrounded by six hexes) given the index of the center tile and a drawing function
+	//The drawing function has to be either this.drawHex or this.highlightHex
+	//Or any custom drawing function that takes the same parameters as this.drawHex
+	//The parameters required for the drawing function are also required (x, y, ctx)
+	//However, x and y are additive to the positions of each hexagon
+	this.drawHexFlower = function(x, y, i, ctx, drawingFunction){
+		
+		var that = this;
+		function extrapolateParamsAndDraw(j){
+			
+			var td = that.getTileData(j);
+			
+			//If the tile actually exists, draw it!
+			if(j < that.data.length && j >= 0){
+				drawingFunction.call(that, td.x + x, td.y + y, j, ctx);
+			}
+		}
+		
+		//Middle hex
+		extrapolateParamsAndDraw(i);
+		
+		//Outer hexes
+		extrapolateParamsAndDraw(i - 1);
+		extrapolateParamsAndDraw(i + 1);
+		extrapolateParamsAndDraw(i - this.mapWidth);
+		extrapolateParamsAndDraw(i + this.mapWidth);
+		if(i % 2 === 0){
+			extrapolateParamsAndDraw(i - this.mapWidth - 1);
+			extrapolateParamsAndDraw(i - this.mapWidth + 1);			
+		}else{
+			extrapolateParamsAndDraw(i + this.mapWidth - 1);
+			extrapolateParamsAndDraw(i + this.mapWidth + 1);
+		}
 	}
 	
 	//Given a point p with x and y coords relative to 0, 0 on the grid canvas, returns the index in this.data that the hex underneath is colliding with
@@ -310,5 +404,3 @@ function Map(w, h, side, canvas){
 	
 	this.draw();
 }
-
-var canvas = document.getElementById('map');
