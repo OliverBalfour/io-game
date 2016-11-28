@@ -4,7 +4,10 @@ function Map(w, h, side, canvas){
 	this.data = [];
 	
 	//Client data
+	//Mostly event handling
 	this.client = {
+		
+		//Object containing mouse data
 		mouse: {
 			//Mouse down
 			down: false,
@@ -20,7 +23,10 @@ function Map(w, h, side, canvas){
 			//Offset, for map dragging
 			offsetX: 0,
 			offsetY: 0
-		}
+		},
+		
+		//Array to be populated with booleans, where if this.client.keys[KEYCODE] is true, key with code KEYCODE is down, otherwise it is up (undefined also counts as up)
+		keys: []
 	};
 	
 	//Position of map
@@ -162,7 +168,11 @@ function Map(w, h, side, canvas){
 	this.selectedTile = -1;
 	
 	//Triggered when the client clicks on a tile, given the tile index in this.data
-	this.selectHex = function(i){
+	//Also optionally takes the previous tile as a secondary parameter, to ensure that they are a tile apart
+	this.selectHex = function(i, oldI){
+		
+		//If i isn't valid (if it doesn't exist) then abort
+		if(typeof i !== 'number') return false;
 		
 		//Get the hex position
 		var d = this.getTileData(i);
@@ -179,6 +189,19 @@ function Map(w, h, side, canvas){
 			this.selectedTile = -1;
 			
 		}else{
+			
+			//Validate the new tile to select
+			
+			if(i < 0 || i >= this.data.length) return false;
+			
+			if(oldI){
+				if(
+					oldI % this.mapWidth === this.mapWidth - 1 && i    % this.mapWidth === 0 ||
+					i    % this.mapWidth === this.mapWidth - 1 && oldI % this.mapWidth === 0
+				){
+					return false;
+				}
+			}
 			
 			//To clear us of the currently selected tile, we redraw a flower of hexes around the selected tile
 			if(this.selectedTile !== -1){
@@ -237,7 +260,7 @@ function Map(w, h, side, canvas){
 			var td = that.getTileData(j);
 			
 			//If the tile actually exists, draw it!
-			if(j < that.data.length && j >= 0){
+			if(typeof j === 'number'){
 				drawingFunction.call(that, td.x + x, td.y + y, j, ctx);
 			}
 		}
@@ -246,17 +269,91 @@ function Map(w, h, side, canvas){
 		extrapolateParamsAndDraw(i);
 		
 		//Outer hexes
-		extrapolateParamsAndDraw(i - 1);
-		extrapolateParamsAndDraw(i + 1);
-		extrapolateParamsAndDraw(i - this.mapWidth);
-		extrapolateParamsAndDraw(i + this.mapWidth);
-		if(i % 2 === 0){
-			extrapolateParamsAndDraw(i - this.mapWidth - 1);
-			extrapolateParamsAndDraw(i - this.mapWidth + 1);			
-		}else{
-			extrapolateParamsAndDraw(i + this.mapWidth - 1);
-			extrapolateParamsAndDraw(i + this.mapWidth + 1);
+		extrapolateParamsAndDraw(that.getTileNeighbour.call(that, i, 0));
+		extrapolateParamsAndDraw(that.getTileNeighbour.call(that, i, 1));
+		extrapolateParamsAndDraw(that.getTileNeighbour.call(that, i, 2));
+		extrapolateParamsAndDraw(that.getTileNeighbour.call(that, i, 3));
+		extrapolateParamsAndDraw(that.getTileNeighbour.call(that, i, 4));
+		extrapolateParamsAndDraw(that.getTileNeighbour.call(that, i, 5));
+	}
+	
+	//Neighbour not neighbor American scumbags
+	//But yes, I use color consistently instead of colour
+	//This is because I'm used to it
+	//Neighbor I dislike though
+	//Takes a tile id and returns the tile's neighbour's id at rotation rotation
+	//Rotation starts at 0 being directly above and then increments as it goes clockwise:
+	
+	//    0
+	// 5     1
+	//
+	// 4     2
+	//    3
+	
+	//If either tile doesn't exist it returns false
+	
+	this.getTileNeighbour = function(i, rotation){
+		
+		rotation %= 6;
+		
+		if(i < 0 || i >= this.data.length) return false;
+		
+		var j = 0,
+			even = i % 2 === 0;
+		
+		switch(rotation){
+			case 0:
+				j = i - this.mapWidth;
+				break;
+			
+			case 3:
+				j = i + this.mapWidth;
+				break;
+			
+			case 1:
+				if(even)
+					j = i - this.mapWidth + 1;
+				else
+					j = i + 1;
+				break;
+			
+			case 2:
+				if(even)
+					j = i + 1;
+				else
+					j = i + this.mapWidth + 1;
+				break;
+			
+			case 4:
+				if(even)
+					j = i - 1;
+				else
+					j = i + this.mapWidth - 1;
+				break;
+			
+			case 5:
+				if(even)
+					j = i - this.mapWidth - 1;
+				else
+					j = i - 1;
+				break;
 		}
+		
+		if(
+			//Making sure the tile isn't being wrapped to the other side of the map
+			!(
+				j % this.mapWidth === this.mapWidth - 1 && i % this.mapWidth === 0 ||
+				i % this.mapWidth === this.mapWidth - 1 && j % this.mapWidth === 0
+			) &&
+			
+			//Making sure j is actually a tile
+			j >= 0 && j < this.data.length
+		){
+			return j;
+		}
+		
+		//Not a tile
+		return false;
 	}
 	
 	//Given a point p with x and y coords relative to 0, 0 on the grid canvas, returns the index in this.data that the hex underneath is colliding with
@@ -357,16 +454,61 @@ function Map(w, h, side, canvas){
 		}
 	}
 	
-	//Ugly event handlers
+	//Key starts being pressed
+	this.keydown = function(key){
+		
+		//If a tile is selected, QWEASD hotkeys will be used
+		if(this.selectedTile !== -1){
+			
+			//QWEASD keys move the selected tile by one tile in the direction of the key from the midpoint between the keys on the keyboard
+			//eg. W is up, S is down, Q is upper left, D lower right
+			
+			switch(key){
+				case 81: //Q
+					this.selectHex(this.getTileNeighbour(this.selectedTile, 5), this.selectedTile);
+					break;
+				
+				case 87: //W
+					this.selectHex(this.getTileNeighbour(this.selectedTile, 0), this.selectedTile);
+					break;
+				
+				case 69: //E
+					this.selectHex(this.getTileNeighbour(this.selectedTile, 1), this.selectedTile);
+					break;
+				
+				case 65: //A
+					this.selectHex(this.getTileNeighbour(this.selectedTile, 4), this.selectedTile);
+					break;
+				
+				case 83: //S
+					this.selectHex(this.getTileNeighbour(this.selectedTile, 3), this.selectedTile);
+					break;
+				
+				case 68: //D
+					this.selectHex(this.getTileNeighbour(this.selectedTile, 2), this.selectedTile);
+					break;
+			}
+		}
+	}
 	
+	//Key stops being pressed
+	this.keyup = function(key){
+		
+	}
+	
+	//When the window is resized the canvas is too
+	//Also serves as an initialisation function
 	this.setupCanvas = function(){
 		this.canvas.width = innerWidth;
 		this.canvas.height = innerHeight;
 		
 		this.prepareAndDrawMap();
 	}
-	window.addEventListener('resize', this.setupCanvas.bind(this));
-
+	
+	/* Ugly event handlers */
+	
+	//Mouse
+	
 	this.canvas.addEventListener('mousedown', function(e){
 		this.client.mouse.down = true;
 		this.client.mouse.x = e.clientX;
@@ -374,14 +516,14 @@ function Map(w, h, side, canvas){
 		
 		this.mousedown();
 	}.bind(this));
-
+	
 	this.canvas.addEventListener('mousemove', function(e){
 		this.client.mouse.x = e.clientX;
 		this.client.mouse.y = e.clientY;
 		
 		this.mousemove();
 	}.bind(this));
-
+	
 	this.canvas.addEventListener('mouseup', function(e){
 		this.client.mouse.down = false;
 		this.client.mouse.x = e.clientX;
@@ -389,18 +531,37 @@ function Map(w, h, side, canvas){
 		
 		this.mouseup();
 	}.bind(this));
-
+	
 	document.addEventListener('mouseout', function(){
 		this.client.mouse.down = false;
 		
 		this.mouseup();
 	}.bind(this));
 	
+	//Keyboard
+	
+	document.addEventListener('keydown', function(e){
+		
+		this.client.keys[e.which || e.keyCode] = true;
+		
+		this.keydown(e.which || e.keyCode);
+		
+	}.bind(this));
+	
+	document.addEventListener('keyup', function(e){
+		
+		this.client.keys[e.which || e.keyCode] = false;
+		
+		this.keyup(e.which || e.keyCode);
+		
+	}.bind(this));
+	
+	//Misc
+	
+	window.addEventListener('resize', this.setupCanvas.bind(this));
+	
 	//Finally, initialisation
 	
 	this.generate();
-	
 	this.setupCanvas();
-	
-	this.draw();
 }
