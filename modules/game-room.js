@@ -9,6 +9,7 @@
 
 (function(){
 	var UUID = require('uuid');
+	var Map = require('./map');
 	
 	module.exports = function(io, id, players){
 		this.id = id || UUID();
@@ -47,5 +48,7 @@
 			
 			return removed;
 		}
+		
+		this.map = new Map();
 	}
 })();

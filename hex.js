@@ -1,3 +1,9 @@
+
+//Map class (client)
+
+//The map class contains all of the interface code, drawing code, prediction code
+//Does not have client side networking handling, but will expose an API for the main client file to interact with
+
 function Map(w, h, side, canvas){
 	
 	//The data for the map is all stored in one big array
