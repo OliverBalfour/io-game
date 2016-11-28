@@ -14,4 +14,18 @@ Upon clicking the play button, the client connects to the waiting room. Once 8 p
 
 Upon the game starting, all players in the waiting room are transferred from the waiting room to a new game room.
 
-Inside a game room is where the game itself is played. A large hexagonal grid is presented to the player, and depending on how the game works various parts of the map may be obscured.
+Inside a game room is where the game itself is played. A large flat topped hexagon grid is presented to the player, and depending on how the game works various parts of the map may be obscured.
+
+The player may click on a tile (hexagon) to select it, click on another to select that one instead, or click on the currently selected tile to deselect it.
+
+On each tile, a number of troops shall be present. A tile may be owned by a player, in which case there must be at least one troop present. Tiles start out as neutral, and a player may make a tile they own neutral. (So as to cover their tracks, I suppose)
+
+A tile may also have certain buildings on it. A castle will generate a troop a turn, as will a fort. When all of a player's castles are captured by other players, the player loses. When a castle is captured, it becomes a fort. A fort may be upgraded to a castle, and any tile may be upgraded to a fort. Forts offer 30% defence, and castles 40%. In other words, an attacker needs at least 30%/40% more troops to conquer a tile like so. (The defence is calculated by multiplying defending troops by 1.3 (130%) or 1.4 (140%))
+
+Also available are farms, which generate 100 troops worth of food per second. Farms may be upgraded for high prices (if possible having more lower leveled farms are cheaper, but you run the risk of not being able to properly defend them)
+
+When a farm is conquered, it goes down a level and is given to the conqueror. A level one farm will return to normal land.
+
+If your food stores go below zero, then as many troops as needed to restore the balance will die, randomly selected from each tile.
+
+Barracks generate a troop every two turns, and are considerably cheaper than forts and castles. However, there are limitations on the barracks:fort:castle ratio. (Probably 6:3:1)
