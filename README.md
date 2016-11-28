@@ -16,6 +16,8 @@ Upon the game starting, all players in the waiting room are transferred from the
 
 Inside a game room is where the game itself is played. A large flat topped hexagon grid is presented to the player, and depending on how the game works various parts of the map may be obscured.
 
+##Logistics
+
 The player may click on a tile (hexagon) to select it, click on another to select that one instead, or click on the currently selected tile to deselect it.
 
 On each tile, a number of troops shall be present. A tile may be owned by a player, in which case there must be at least one troop present. Tiles start out as neutral, and a player may make a tile they own neutral. (So as to cover their tracks, I suppose)
