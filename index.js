@@ -61,17 +61,6 @@
 		return false;
 	}
 	
-	var EVENT = {
-		SERVER_CONNECT: 0,
-		JOIN_WAITING_ROOM: 1,
-		WAITING_ROOM_UPDATE: 2,
-		FORCE_START_STATUS: 3,
-		GAME_START: 4,
-		LEAVE_WAITING_ROOM: 5,
-		MAP_INITIALISATION: 6,
-		MAP_UPDATE: 7
-	};
-	
 	io.on('connection', function(socket){
 		console.log('A user connected');
 		
@@ -134,6 +123,10 @@
 				
 				console.log(socket.player.name + ' got impatient and returned to the homepage');
 			}
+		});
+		
+		socket.on(EVENT.MOVE_TROOPS, function(d){
+			game.getGame(socket.player.gameID).map.moveTroops(socket.player, d);
 		});
 		
 		//When they disconnect

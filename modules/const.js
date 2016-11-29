@@ -13,7 +13,8 @@
 		GAME_START: 4,
 		LEAVE_WAITING_ROOM: 5,
 		MAP_INITIALISATION: 6,
-		MAP_UPDATE: 7
+		MAP_UPDATE: 7,
+		MOVE_TROOPS: 8
 	};
 	
 	module.exports.TYPES = {

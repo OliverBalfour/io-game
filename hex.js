@@ -2,7 +2,7 @@
 //Map class (client)
 
 //The map class contains all of the interface code, drawing code, prediction code
-//Does not have client side networking handling, but will expose an API for the main client file to interact with
+//Also has networking sorted
 
 //Tile type enumeration
 var TYPES = {
@@ -14,7 +14,23 @@ var TYPES = {
 	BARRACKS: 4
 }
 
-function Map(w, h, side, canvas){
+var EVENT = {
+	SERVER_CONNECT: 0,
+	JOIN_WAITING_ROOM: 1,
+	WAITING_ROOM_UPDATE: 2,
+	FORCE_START_STATUS: 3,
+	GAME_START: 4,
+	LEAVE_WAITING_ROOM: 5,
+	MAP_INITIALISATION: 6,
+	MAP_UPDATE: 7,
+	MOVE_TROOPS: 8
+};
+
+function Map(socket, w, h, side, canvas, playerID){
+	
+	//Networking
+	this.socket = socket;
+	this.playerID = playerID;
 	
 	//The data for the map is all stored in one big array
 	this.data = [];
@@ -96,6 +112,9 @@ function Map(w, h, side, canvas){
 			
 			this.drawHex(d.x, d.y, i, this.gridctx);
 		}
+		
+		//No flickering thanks
+		this.drawSelection();
 	}
 	
 	//Draw the map from the grid canvas to the canvas
@@ -168,7 +187,7 @@ function Map(w, h, side, canvas){
 		}
 		
 		if(tile.type !== TYPES.EMPTY){
-			ctx.fillText(tile.type, x + 5, y + 5);
+			ctx.fillText(tile.type, x + 10, y + 10);
 		}
 	}
 	
@@ -233,16 +252,22 @@ function Map(w, h, side, canvas){
 			//Select
 			this.selectedTile = i;
 			
-			//When drawing selected tile hex flowers, we draw a hex flower and then highlight the middle tile even more
-			
-			//Draw the hex to the grid canvas
-			this.drawHexFlower(0, 0, i, this.gridctx, this.highlightHex);
-			this.highlightHex(d.x, d.y, i, this.gridctx);
-			
-			//Render the hex simultaneously
-			this.drawHexFlower(this.x, this.y, i, this.ctx, this.highlightHex);
-			this.highlightHex(d.x + this.x, d.y + this.y, i, this.ctx);
+			this.drawSelection();
 		}
+	}
+	
+	this.drawSelection = function(){
+		var d = this.getTileData(this.selectedTile);
+		
+		//When drawing selected tile hex flowers, we draw a hex flower and then highlight the middle tile even more
+		
+		//Draw the hex to the grid canvas
+		this.drawHexFlower(0, 0, this.selectedTile, this.gridctx, this.highlightHex);
+		this.highlightHex(d.x, d.y, this.selectedTile, this.gridctx);
+		
+		//Render the hex simultaneously
+		this.drawHexFlower(this.x, this.y, this.selectedTile, this.ctx, this.highlightHex);
+		this.highlightHex(d.x + this.x, d.y + this.y, this.selectedTile, this.ctx);
 	}
 	
 	//Draws over a hex, but highlighted
@@ -420,6 +445,21 @@ function Map(w, h, side, canvas){
 		return false;
 	}
 	
+	//Rotation param the same as in this.getTileNeighbour, the direction in which the selection is to be moved
+	//Used with the QWEASD keys
+	this.moveSelection = function(rotation){
+		
+		//If the tile is owned by the player troops can be moved from it
+		if(this.data[this.selectedTile].owner && this.data[this.selectedTile].owner.id === this.playerID){
+			
+			//Move the troops
+			this.moveTroops(this.selectedTile, this.getTileNeighbour(this.selectedTile, rotation));
+		}
+		
+		//Select the new tile
+		this.selectHex(this.getTileNeighbour(this.selectedTile, rotation), this.selectedTile);
+	}
+	
 	//Point colliding with a bounding box?
 	//obj has x, y, w, h properties while point has x, y
 	//Returns boolean; true if colliding
@@ -431,6 +471,17 @@ function Map(w, h, side, canvas){
 			obj.h + obj.y > point.y
 		);
 	}
+	
+	/* Map Networking */
+	
+	this.moveTroops = function(o, n){
+		this.socket.emit(EVENT.MOVE_TROOPS, {
+			origin: o,
+			endpoint: n
+		});
+	}
+	
+	/* User interactivity */
 	
 	//When the mouse goes down on the canvas
 	this.mousedown = function(){
@@ -486,27 +537,27 @@ function Map(w, h, side, canvas){
 			
 			switch(key){
 				case 81: //Q
-					this.selectHex(this.getTileNeighbour(this.selectedTile, 5), this.selectedTile);
+					this.moveSelection(5);
 					break;
 				
 				case 87: //W
-					this.selectHex(this.getTileNeighbour(this.selectedTile, 0), this.selectedTile);
+					this.moveSelection(0);
 					break;
 				
 				case 69: //E
-					this.selectHex(this.getTileNeighbour(this.selectedTile, 1), this.selectedTile);
+					this.moveSelection(1);
 					break;
 				
 				case 65: //A
-					this.selectHex(this.getTileNeighbour(this.selectedTile, 4), this.selectedTile);
+					this.moveSelection(4);
 					break;
 				
 				case 83: //S
-					this.selectHex(this.getTileNeighbour(this.selectedTile, 3), this.selectedTile);
+					this.moveSelection(3);
 					break;
 				
 				case 68: //D
-					this.selectHex(this.getTileNeighbour(this.selectedTile, 2), this.selectedTile);
+					this.moveSelection(2);
 					break;
 			}
 		}

@@ -20,7 +20,8 @@ var EVENT = {
 	GAME_START: 4,
 	LEAVE_WAITING_ROOM: 5,
 	MAP_INITIALISATION: 6,
-	MAP_UPDATE: 7
+	MAP_UPDATE: 7,
+	MOVE_TROOPS: 8
 };
 
 //Connected to server
@@ -48,7 +49,7 @@ socket.on(EVENT.GAME_START, function(players){
 
 //Init map
 socket.on(EVENT.MAP_INITIALISATION, function(d){
-	map = new Map(d.w, d.h, 30, canvas);
+	map = new Map(socket, d.w, d.h, 30, canvas, data.id);
 	map.data = d.data;
 	map.prepareAndDrawMap();
 });

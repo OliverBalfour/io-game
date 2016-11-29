@@ -197,6 +197,34 @@
 			this.gameRoom.io.to(this.gameRoom.id).emit(EVENT.MAP_UPDATE, this.data);
 		}
 		
+		this.moveTroops = function(player, d){
+			
+			//Make sure the tiles exist first
+			if(!this.tileExists(d.origin) || !this.tileExists(d.endpoint)) return false;
+			
+			var origin = this.data[d.origin],
+				endpoint = this.data[d.endpoint];
+			
+			//If the player owns the tile the troops would be coming from, move the troops
+			if(origin.owner && origin.owner.id === player.id){
+				
+				//A player shouldn't kill their own troops
+				//But they should kill other troops
+				if(endpoint.owner && origin.owner.id === endpoint.owner.id){
+					endpoint.troops += origin.troops - 1;
+				}else{
+					endpoint.troops -= origin.troops - 1;
+					
+					if(endpoint.troops < 0){
+						endpoint.troops *= -1;
+						endpoint.owner = player;
+					}
+				}
+				
+				origin.troops = 1;
+			}
+		}
+		
 		this.timerInterval = setInterval(this.updateTiles.bind(this), this.turnLength * 1000);
 		
 		//Initialisation
