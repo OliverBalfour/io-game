@@ -21,6 +21,16 @@
 (function(){
 	var UUID = require('uuid');
 	
+	var EVENT = {
+		SERVER_CONNECT: 0,
+		JOIN_WAITING_ROOM: 1,
+		WAITING_ROOM_UPDATE: 2,
+		FORCE_START_STATUS: 3,
+		GAME_START: 4,
+		LEAVE_WAITING_ROOM: 5,
+		MAP_INITIALISATION: 6,
+		MAP_UPDATE: 7
+	};
 	
 	module.exports = function(io, callback, options){
 		//Save ourselves a lotta hassle
@@ -63,7 +73,7 @@
 			}
 			
 			//Send timer to all currently waiting clients
-			this.io.to(this.id).emit('w', this.client);
+			this.io.to(this.id).emit(EVENT.WAITING_ROOM_UPDATE, this.client);
 		}
 		
 		//When the timer starts (2 or more players in this.players) this will become a setInterval intervalId (number) for use with clearInterval
@@ -114,7 +124,7 @@
 			}
 			
 			//Send that data!
-			this.io.to(this.id).emit('w', this.client);
+			this.io.to(this.id).emit(EVENT.WAITING_ROOM_UPDATE, this.client);
 		}
 		
 		//Adds a player and updates relevant variables

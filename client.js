@@ -12,20 +12,31 @@ var data = {};
 //m - Map init
 //g - Map update
 
+var EVENT = {
+	SERVER_CONNECT: 0,
+	JOIN_WAITING_ROOM: 1,
+	WAITING_ROOM_UPDATE: 2,
+	FORCE_START_STATUS: 3,
+	GAME_START: 4,
+	LEAVE_WAITING_ROOM: 5,
+	MAP_INITIALISATION: 6,
+	MAP_UPDATE: 7
+};
+
 //Connected to server
-socket.on('s', function(id){
+socket.on(EVENT.SERVER_CONNECT, function(id){
 	console.log(id);
 	data.id = id;
 });
 
 //Waiting room update
-socket.on('w', function(room){
+socket.on(EVENT.WAITING_ROOM_UPDATE, function(room){
 	data.room = room;
 	updateRoom();
 });
 
 //Game has started
-socket.on('c', function(players){
+socket.on(EVENT.GAME_START, function(players){
 	console.log(players);
 	var playerNames = [];
 	players.forEach(function(player){ playerNames.push(player.name) });
@@ -36,14 +47,14 @@ socket.on('c', function(players){
 });
 
 //Init map
-socket.on('m', function(d){
+socket.on(EVENT.MAP_INITIALISATION, function(d){
 	map = new Map(d.w, d.h, 30, canvas);
 	map.data = d.data;
 	map.prepareAndDrawMap();
 });
 
 //Map update
-socket.on('g', function(d){
+socket.on(EVENT.MAP_UPDATE, function(d){
 	map.data = d;
 	map.prepareAndDrawMap();
 });
@@ -69,7 +80,7 @@ dom.changeScreen = function(s1, s2){
 
 
 function joinWaitingRoom(){
-	socket.emit('j', dom.id('name').value, function(room){
+	socket.emit(EVENT.JOIN_WAITING_ROOM, dom.id('name').value, function(room){
 		data.room = room;
 		updateRoom();
 		dom.changeScreen('start-screen', 'waiting-room');
@@ -77,7 +88,7 @@ function joinWaitingRoom(){
 }
 
 function leaveWaitingRoom(){
-	socket.emit('l', null);
+	socket.emit(EVENT.LEAVE_WAITING_ROOM, null);
 	dom.changeScreen('waiting-room', 'start-screen');
 }
 
@@ -110,5 +121,5 @@ function updateRoom(){
 
 function toggleForceStart(){
 	dom.id('force-start').classList.toggle('active');
-	socket.emit('f', dom.id('force-start').classList.contains('active'));
+	socket.emit(EVENT.FORCE_START_STATUS, dom.id('force-start').classList.contains('active'));
 }

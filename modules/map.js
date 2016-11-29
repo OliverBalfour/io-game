@@ -10,6 +10,17 @@
 
 (function(){
 	
+	var EVENT = {
+		SERVER_CONNECT: 0,
+		JOIN_WAITING_ROOM: 1,
+		WAITING_ROOM_UPDATE: 2,
+		FORCE_START_STATUS: 3,
+		GAME_START: 4,
+		LEAVE_WAITING_ROOM: 5,
+		MAP_INITIALISATION: 6,
+		MAP_UPDATE: 7
+	};
+	
 	module.exports = function(w, h, gameRoom, generationFunction){
 		
 		//Tile type enumeration
@@ -190,7 +201,7 @@
 			//Transmits everything
 			//Bandwidth inefficient and transmits data the user shouldn't see
 			//But it works
-			this.gameRoom.io.to(this.gameRoom.id).emit('g', this.data);
+			this.gameRoom.io.to(this.gameRoom.id).emit(EVENT.MAP_UPDATE, this.data);
 		}
 		
 		this.timerInterval = setInterval(this.updateTiles.bind(this), this.turnLength * 1000);
@@ -202,7 +213,7 @@
 		this.addPlayersToMap();
 		
 		//Init map dump
-		this.gameRoom.io.to(this.gameRoom.id).emit('m', {
+		this.gameRoom.io.to(this.gameRoom.id).emit(EVENT.MAP_INITIALISATION, {
 			w: this.mapWidth,
 			h: this.mapHeight,
 			data: this.data

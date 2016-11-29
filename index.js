@@ -59,6 +59,17 @@
 		return false;
 	}
 	
+	var EVENT = {
+		SERVER_CONNECT: 0,
+		JOIN_WAITING_ROOM: 1,
+		WAITING_ROOM_UPDATE: 2,
+		FORCE_START_STATUS: 3,
+		GAME_START: 4,
+		LEAVE_WAITING_ROOM: 5,
+		MAP_INITIALISATION: 6,
+		MAP_UPDATE: 7
+	};
+	
 	io.on('connection', function(socket){
 		console.log('A user connected');
 		
@@ -74,14 +85,14 @@
 		//g - Map update
 		
 		//Tell the user they're connected, and give them their ID
-		socket.emit('s', socket.id);
+		socket.emit(EVENT.SERVER_CONNECT, socket.id);
 		
 		//They are a player, yes?
 		socket.player = new Player(socket.id);
 		
 		//When the user hits play, they are given a waiting room
 		//That is, assuming their name is valid
-		socket.on('j', function(name, fn){
+		socket.on(EVENT.JOIN_WAITING_ROOM, function(name, fn){
 			//Stupid anons
 			socket.player.name = name !== '' ? name : 'Anonymous';
 			
@@ -101,13 +112,13 @@
 		});
 		
 		//Whenever the player toggles the force start button, this is triggered
-		socket.on('f', function(val){
+		socket.on(EVENT.FORCE_START_STATUS, function(val){
 			socket.player.forceStart = !!val;
 			game.waitingRoom.updateClient();
 		});
 		
 		//Whenever a player decides they're sick of waiting
-		socket.on('l', function(){
+		socket.on(EVENT.LEAVE_WAITING_ROOM, function(){
 			//If this isn't true, then they're making a lame hacking attempt lol
 			if(socket.player.isWaiting){
 				game.waitingRoom.removePlayer(socket.player);

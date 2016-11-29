@@ -11,6 +11,17 @@
 	var UUID = require('uuid');
 	var Map = require('./map');
 	
+	var EVENT = {
+		SERVER_CONNECT: 0,
+		JOIN_WAITING_ROOM: 1,
+		WAITING_ROOM_UPDATE: 2,
+		FORCE_START_STATUS: 3,
+		GAME_START: 4,
+		LEAVE_WAITING_ROOM: 5,
+		MAP_INITIALISATION: 6,
+		MAP_UPDATE: 7
+	};
+	
 	module.exports = function(io, id, players){
 		this.id = id || UUID();
 		
@@ -19,7 +30,7 @@
 		this.players = players;
 		
 		//Alert players that they have joined a game
-		this.io.to(this.id).emit('c', this.players);
+		this.io.to(this.id).emit(EVENT.GAME_START, this.players);
 		
 		//Alter the player's game IDs
 		for(var i = 0; i < this.players.length; i++){
@@ -49,6 +60,6 @@
 			return removed;
 		}
 		
-		this.map = new Map(32, 32, this);
+		this.map = new Map(16, 16, this);
 	}
 })();
