@@ -23,7 +23,10 @@ var EVENT = {
 	LEAVE_WAITING_ROOM: 5,
 	MAP_INITIALISATION: 6,
 	MAP_UPDATE: 7,
-	MOVE_TROOPS: 8
+	MOVE_TROOPS: 8,
+	PLAYER_CAPTURED: 9,
+	PLAYER_UPDATE: 10,
+	GAME_WON: 11
 };
 
 function Map(socket, w, h, side, canvas, playerID){
@@ -578,59 +581,95 @@ function Map(socket, w, h, side, canvas, playerID){
 	}
 	
 	/* Ugly event handlers */
+	//Event handlers have to be stored in the evt namespace so that the map destroy function can remove the event listeners
+	
+	this.evt = {};
 	
 	//Mouse
 	
-	this.canvas.addEventListener('mousedown', function(e){
+	this.evt.mousedown = function(e){
 		this.client.mouse.down = true;
 		this.client.mouse.x = e.clientX;
 		this.client.mouse.y = e.clientY;
 		
 		this.mousedown();
-	}.bind(this));
+	}.bind(this);
 	
-	this.canvas.addEventListener('mousemove', function(e){
+	this.canvas.addEventListener('mousedown', this.evt.mousedown);
+	
+	this.evt.mousemove = function(e){
 		this.client.mouse.x = e.clientX;
 		this.client.mouse.y = e.clientY;
 		
 		this.mousemove();
-	}.bind(this));
+	}.bind(this);
 	
-	this.canvas.addEventListener('mouseup', function(e){
+	this.canvas.addEventListener('mousemove', this.evt.mousemove);
+	
+	this.evt.mouseup = function(e){
 		this.client.mouse.down = false;
 		this.client.mouse.x = e.clientX;
 		this.client.mouse.y = e.clientY;
 		
 		this.mouseup();
-	}.bind(this));
+	}.bind(this)
 	
-	document.addEventListener('mouseout', function(){
+	this.canvas.addEventListener('mouseup', this.evt.mouseup);
+	
+	this.evt.mouseout = function(){
 		this.client.mouse.down = false;
 		
 		this.mouseup();
-	}.bind(this));
+	}.bind(this);
+	
+	document.addEventListener('mouseout', this.evt.mouseout);
 	
 	//Keyboard
 	
-	document.addEventListener('keydown', function(e){
+	this.evt.keydown = function(e){
 		
 		this.client.keys[e.which || e.keyCode] = true;
 		
 		this.keydown(e.which || e.keyCode);
 		
-	}.bind(this));
+	}.bind(this);
 	
-	document.addEventListener('keyup', function(e){
+	document.addEventListener('keydown', this.evt.keydown);
+	
+	this.evt.keyup = function(e){
 		
 		this.client.keys[e.which || e.keyCode] = false;
 		
 		this.keyup(e.which || e.keyCode);
 		
-	}.bind(this));
+	}.bind(this);
+	
+	document.addEventListener('keyup', this.evt.keyup);
 	
 	//Misc
 	
-	window.addEventListener('resize', this.setupCanvas.bind(this));
+	this.evt.windowResize = this.setupCanvas.bind(this);
+	
+	window.addEventListener('resize', this.evt.windowResize);
+	
+	//Now that all the handlers are set up, the destroy function is ready
+	
+	//Removes all event handlers and cleans up
+	//Essentially stops the map entirely
+	//Actually deleting the map once done with it is to be done externally
+	this.destroy = function(){
+		
+		this.canvas.removeEventListener('mousedown', this.evt.mousedown);
+		this.canvas.removeEventListener('mousemove', this.evt.mousemove);
+		this.canvas.removeEventListener('mouseup', this.evt.mouseup);
+		
+		document.removeEventListener('mouseout', this.evt.mouseout);
+		document.removeEventListener('keydown', this.evt.keydown);
+		document.removeEventListener('keyup', this.evt.keyup);
+		
+		window.removeEventListener('resize', this.evt.windowResize);
+		
+	}
 	
 	//Finally, initialisation
 	

@@ -160,21 +160,23 @@
 		
 		//Start game
 		this.startGame = function(){
-			console.log('New game started.');
 			
 			//Generate an ID for the game room
 			var gameRoomID = UUID();
+			console.log('New game started: ' + gameRoomID);
 			
 			//Cycle through all of the players in the waiting room
-			for(var i = 0; i < this.players.length; i++){
+			for(var i = 0, socket; i < this.players.length; i++){
 				this.players[i].isWaiting = false;
 				this.players[i].inGame = true;
 				
+				socket = this.io.sockets.connected[this.players[i].id];
+				
 				//Remove player from waiting room
-				this.io.sockets.connected[this.players[i].id].leave(this.id);
+				socket.leave(this.id);
 				
 				//Add player to game room
-				this.io.sockets.connected[this.players[i].id].join(gameRoomID);
+				socket.join(gameRoomID);
 			}
 			
 			//Call the callback

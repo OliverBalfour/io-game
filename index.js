@@ -91,8 +91,6 @@
 			//Stupid anons
 			socket.player.name = name !== '' ? name : 'Anonymous';
 			
-			socket.player.gameID = game.waitingRoom.id;
-			
 			console.log(socket.player.name + ' joined the waiting room.');
 			
 			//Add them to the waiting room

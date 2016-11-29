@@ -26,6 +26,11 @@
 		<div id='game-room' class='screen hidden'>
 			<canvas id='map'></canvas>
 			<div id='gr-players'></div>
+			<div id='game-end-modal' class='hidden'>
+				<span id='gr-win' class='hidden'>You win!</span>
+				<span id='gr-lose' class='hidden'>You lose...</span>
+				<button id='gr-finish' onclick='exitGame()'>FINISH</button>
+			</div>
 		</div>
 		
 		<script src='/socket.io/socket.io.js'></script>

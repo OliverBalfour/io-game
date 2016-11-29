@@ -24,6 +24,19 @@
 		//Is in a game?
 		this.inGame = false;
 		
+		//The ID of the game that the player is in
 		this.gameID = gameID || null;
+		
+		//If the player is in a game, this is a list of their castles
+		this.castles = [];
+		
+		this.factoryReset = function(){
+			this.forceStart = null;
+			this.isWaiting = false;
+			this.inGame = false;
+			this.gameID = null;
+			this.color = utils.randomColor();
+			this.castles = [];
+		}
 	}
 })();

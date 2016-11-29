@@ -21,7 +21,10 @@ var EVENT = {
 	LEAVE_WAITING_ROOM: 5,
 	MAP_INITIALISATION: 6,
 	MAP_UPDATE: 7,
-	MOVE_TROOPS: 8
+	MOVE_TROOPS: 8,
+	PLAYER_CAPTURED: 9,
+	PLAYER_UPDATE: 10,
+	GAME_WON: 11
 };
 
 //Connected to server
@@ -38,13 +41,19 @@ socket.on(EVENT.WAITING_ROOM_UPDATE, function(room){
 
 //Game has started
 socket.on(EVENT.GAME_START, function(players){
+	
 	console.log(players);
+	
+	//Concatenate player names into a list
 	var playerNames = [];
 	players.forEach(function(player){ playerNames.push(player.name) });
 	dom.id('gr-players').innerHTML = "<span class='gr-player'>" + playerNames.join("</span><span class='gr-player'>") + "</span>";
+	
+	//Change view
 	dom.changeScreen('waiting-room', 'game-room');
 	
-	canvas = document.getElementById('map');
+	//Reset force start status
+	dom.id('force-start').classList.remove('active');
 });
 
 //Init map
@@ -56,11 +65,27 @@ socket.on(EVENT.MAP_INITIALISATION, function(d){
 
 //Map update
 socket.on(EVENT.MAP_UPDATE, function(d){
-	map.data = d;
+	map.data = d.map;
+	data.turn = d.turn;
 	map.prepareAndDrawMap();
 });
 
-var canvas, map;
+//Sometimes you win, sometimes you lose
+socket.on(EVENT.PLAYER_CAPTURED, function(player){
+	dom.show('gr-lose');
+	dom.hide('gr-win');
+	dom.show('game-end-modal');
+});
+
+//Ok, maybe you always win
+socket.on(EVENT.GAME_WON, function(nothin){
+	dom.show('gr-win');
+	dom.hide('gr-lose');
+	dom.show('game-end-modal');
+})
+
+var canvas = document.getElementById('map'),
+	map; //Empty until game start (becomes Map() )
 
 //Namespace for abstracting the Document Object Model
 var dom = {};
@@ -123,4 +148,18 @@ function updateRoom(){
 function toggleForceStart(){
 	dom.id('force-start').classList.toggle('active');
 	socket.emit(EVENT.FORCE_START_STATUS, dom.id('force-start').classList.contains('active'));
+}
+
+function exitGame(){
+	
+	//Destroy map
+	map.destroy();
+	//map = null;
+	
+	//Change view
+	dom.changeScreen('game-room', 'start-screen');
+	
+	//Remove modal
+	dom.hide('game-end-modal');
+	
 }
