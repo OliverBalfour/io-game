@@ -58,9 +58,7 @@ Run the server
 
 Then navigate to [localhost:3000](http://localhost:3000)
 
-If you don't have git, download this repo, unzip and put into your directory of choice, then run all commands after the git clone command.
-
-If you don't have node.js, get it or die.
+If you don't have git, download this repo, unzip and put into your directory of choice, then run all commands after the git clone command. Or just get git. It's awesome. If you don't have node.js, don't even bother.
 
 ##Copyright notice
 
