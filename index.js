@@ -35,9 +35,16 @@
 		res.sendFile(path.join(__dirname, 'index.html'));
 	});
 	
-	//Get individual files on the server - currently unsafe
+	//The files in the root that the public aren't allowed to see
+	var blacklistedFiles = ['index.js', 'package.json', '.gitignore'];
+	
+	//Get individual files on the server
 	app.get('/*', function(req, res, next){
 		var file = req.params[0];
+		
+		//If the file is blacklisted from public viewing or in any directory other than the root, pretend it's a 404 error
+		if(blacklistedFiles.indexOf(file) !== -1 || file.indexOf('/') !== -1)
+			res.sendStatus(404);
 		
 		res.sendFile(path.join(__dirname, '/' + file));
 	});
