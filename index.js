@@ -12,6 +12,7 @@
 	var io = require('socket.io')(http);
 	var path = require('path');
 	var UUID = require('uuid');
+	var sanitizer = require('sanitizer');
 	
 	//Other modules
 	
@@ -95,8 +96,10 @@
 		//That is, assuming their name is valid
 		socket.on(EVENT.JOIN_WAITING_ROOM, function(name, fn){
 			
+			//Die XSS
+			name = sanitizer.sanitize(name);
+			
 			//Stupid anons
-			//WARNING: XSS VULNERABILITY
 			socket.player.name = name !== '' ? name : 'Anonymous';
 			
 			socket.player.gameID = game.waitingRoom.id;
