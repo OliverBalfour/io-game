@@ -49,6 +49,6 @@
 			return removed;
 		}
 		
-		this.map = new Map();
+		this.map = new Map(32, 32, this);
 	}
 })();

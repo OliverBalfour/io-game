@@ -70,6 +70,8 @@
 		//f - Changing a player's force start status
 		//c - Server alerting client that their game has started and that they have been transferred from the waiting room
 		//l - Leave waiting room, or cancel waiting
+		//m - Map init
+		//g - Map update
 		
 		//Tell the user they're connected, and give them their ID
 		socket.emit('s', socket.id);

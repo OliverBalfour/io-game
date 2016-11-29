@@ -9,6 +9,8 @@ var data = {};
 //f - Changing a player's force start status
 //c - Server alerting client that their game has started and that they have been transferred from the waiting room
 //l - Leave waiting room, or cancel waiting
+//m - Map init
+//g - Map update
 
 //Connected to server
 socket.on('s', function(id){
@@ -31,7 +33,19 @@ socket.on('c', function(players){
 	dom.changeScreen('waiting-room', 'game-room');
 	
 	canvas = document.getElementById('map');
-	map = new Map(32, 32, 30, canvas);
+});
+
+//Init map
+socket.on('m', function(d){
+	map = new Map(d.w, d.h, 30, canvas);
+	map.data = d.data;
+	map.prepareAndDrawMap();
+});
+
+//Map update
+socket.on('g', function(d){
+	map.data = d;
+	map.prepareAndDrawMap();
 });
 
 var canvas, map;

@@ -4,6 +4,16 @@
 //The map class contains all of the interface code, drawing code, prediction code
 //Does not have client side networking handling, but will expose an API for the main client file to interact with
 
+//Tile type enumeration
+var TYPES = {
+	UNKNOWN: -1,
+	EMPTY: 0,
+	CASTLE: 1,
+	FORT: 2,
+	FARM: 3,
+	BARRACKS: 4
+}
+
 function Map(w, h, side, canvas){
 	
 	//The data for the map is all stored in one big array
@@ -43,10 +53,11 @@ function Map(w, h, side, canvas){
 		//Populating that array with empty tile objects
 		this.data = [];
 		
-		for(var i = 0; i < w * h; i++){
+		for(var i = 0; i < this.mapWidth * this.mapHeight; i++){
 			this.data.push({
 				owner: null,
-				troops: 0
+				troops: 0,
+				type: TYPES.EMPTY
 			});
 		}
 	}
@@ -154,6 +165,10 @@ function Map(w, h, side, canvas){
 				x + this.tileSideLength - ctx.measureText(tile.troops).width / 2,
 				y + this.tileHeight / 2 + 4
 			);
+		}
+		
+		if(tile.type !== TYPES.EMPTY){
+			ctx.fillText(tile.type, x + 5, y + 5);
 		}
 	}
 	
