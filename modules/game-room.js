@@ -11,16 +11,7 @@
 	var UUID = require('uuid');
 	var Map = require('./map');
 	
-	var EVENT = {
-		SERVER_CONNECT: 0,
-		JOIN_WAITING_ROOM: 1,
-		WAITING_ROOM_UPDATE: 2,
-		FORCE_START_STATUS: 3,
-		GAME_START: 4,
-		LEAVE_WAITING_ROOM: 5,
-		MAP_INITIALISATION: 6,
-		MAP_UPDATE: 7
-	};
+	var EVENT = require('./const').EVENT;
 	
 	module.exports = function(io, id, players){
 		this.id = id || UUID();

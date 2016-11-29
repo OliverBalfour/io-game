@@ -24,6 +24,7 @@
 	var GameRoom = getModule('game-room');
 	var Player = getModule('player');
 	var utils = getModule('utils');
+	var EVENT = getModule('const').EVENT;
 	
 	//Game namespace
 	var game = {};
@@ -93,7 +94,9 @@
 		//When the user hits play, they are given a waiting room
 		//That is, assuming their name is valid
 		socket.on(EVENT.JOIN_WAITING_ROOM, function(name, fn){
+			
 			//Stupid anons
+			//WARNING: XSS VULNERABILITY
 			socket.player.name = name !== '' ? name : 'Anonymous';
 			
 			socket.player.gameID = game.waitingRoom.id;

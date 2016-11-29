@@ -40,7 +40,7 @@ socket.on(EVENT.GAME_START, function(players){
 	console.log(players);
 	var playerNames = [];
 	players.forEach(function(player){ playerNames.push(player.name) });
-	dom.id('gr-players').innerText = playerNames.join(', ');
+	dom.id('gr-players').innerHTML = "<span class='gr-player'>" + playerNames.join("</span><span class='gr-player'>") + "</span>";
 	dom.changeScreen('waiting-room', 'game-room');
 	
 	canvas = document.getElementById('map');
