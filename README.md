@@ -31,3 +31,37 @@ When a farm is conquered, it goes down a level and is given to the conqueror. A 
 If your food stores go below zero, then as many troops as needed to restore the balance will die, randomly selected from each tile.
 
 Barracks generate a troop every two turns, and are considerably cheaper than forts and castles. However, there are limitations on the barracks:fort:castle ratio. (Probably 6:3:1)
+
+##Setup
+
+You will need git, node.js and npm
+
+Go to your parent directory of choice
+
+`cd C:\Users\You\Your\Directory`
+
+Clone the repo into your directory; it'll add a folder Strategy-Game
+
+`git clone https://github.com/Tobsta/Strategy-Game.git`
+
+Go into the new dir
+
+`cd Strategy-Game`
+
+Install dependencies (socket.io, express, and a few other bits and bobs)
+
+`npm install`
+
+Run the server
+
+`node index`
+
+Then navigate to [localhost:3000](http://localhost:3000)
+
+If you don't have git, download this repo, unzip and put into your directory of choice, then run all commands after the git clone command.
+
+If you don't have node.js, get it or die.
+
+##Copyright notice
+
+Copyright Oliver Balfour 2016
