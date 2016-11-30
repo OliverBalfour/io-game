@@ -66,7 +66,6 @@
 			
 			//When the game ends, remove it from the array
 			game.gameRooms.splice(game.gameRooms.indexOf(room), 1);
-			console.log("Active games: " + game.gameRooms.length);
 			
 		}));
 		

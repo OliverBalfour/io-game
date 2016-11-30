@@ -80,7 +80,7 @@
 		
 		//Returns true if the tile index specified is in the boundaries
 		this.tileExists = function(i){
-			return i > 0 && i < this.data.length;
+			return i >= 0 && i < this.data.length;
 		}
 		
 		//Neighbour not neighbor American scumbags
@@ -218,7 +218,13 @@
 		this.moveTroops = function(player, d){
 			
 			//Make sure the tiles exist first
-			if(!this.tileExists(d.origin) || !this.tileExists(d.endpoint)) return false;
+			//And make sure they are neighbours - One tile at a time, hackers!
+			if(
+				!this.tileExists(d.origin) || !this.tileExists(d.endpoint) ||
+				!this.tilesAreNeighbours(d.origin, d.endpoint)
+			){
+				return false;
+			}
 			
 			var origin = this.data[d.origin],
 				endpoint = this.data[d.endpoint];
@@ -257,6 +263,21 @@
 				
 				origin.troops = 1;
 			}
+		}
+		
+		//Check if two tiles are neighbours
+		//Used in this.moveTroops to make sure the player isn't trying to hack the game and move troops more than one tile at a time
+		//Return boolean, of course
+		this.tilesAreNeighbours = function(a, b){
+			
+			//6 rotations
+			for(var i = 0; i < 6; i++){
+				if(this.getTileNeighbour(a, i) === b)
+					return true;
+			}
+			
+			//If the tiles do not border on any of their six sides, they aren't neighbours
+			return false;
 		}
 		
 		//Triggered when a player captures another player
