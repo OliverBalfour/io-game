@@ -179,9 +179,7 @@
 				
 				//For any owned tile, which needs to be updated
 				//A tile is only considered owned and in need of updating if the owner is online
-				//However, that code ( && this.gameRoom.players.indexOf(tile.owner) !== -1) isn't working
-				//xD
-				if(tile.owner !== null){
+				if(tile.owner !== null && this.gameRoom.hasPlayer(tile.owner)){
 					
 					if(tile.type === TYPES.CASTLE || tile.type === TYPES.FORT)
 						tile.troops++;
@@ -266,10 +264,8 @@
 		//Remember the order!
 		this.playerCaptured = function(capturer, captured){
 			
+			//Grab their socket
 			var capturedSocket = this.gameRoom.io.sockets.connected[captured.id];
-			
-			//Alert the captured player of their loss
-			this.gameRoom.io.to(captured.id).emit(EVENT.PLAYER_CAPTURED, capturer);
 			
 			//Hand over all of the the captured player's tiles to the capturer
 			for(var i = 0, tile; i < this.data.length; i++){
@@ -279,35 +275,29 @@
 					tile.owner = capturer;
 			}
 			
-			//Remove player from the game room
-			this.gameRoom.removePlayer(captured);
-			
-			//Alert all other players of captured's demise
-			//MWAH HA HAAAAA
-			capturedSocket.to(this.gameRoom.id).emit(EVENT.PLAYER_UPDATE, this.gameRoom.players);
-			
-			//If there is only one player left, let them know they've won
-			//The only player left is definitely the capturer
-			if(this.gameRoom.players.length === 1){
+			//Assuming the player is actually online, we send data
+			if(capturedSocket){
 				
-				//Update the game prematurely to show the winner and loser the final map
-				this.transmitMap();
+				//Alert the captured player of their loss
+				this.gameRoom.io.to(captured.id).emit(EVENT.PLAYER_CAPTURED, capturer);
 				
-				//Let them know
-				this.gameRoom.io.to(capturer.id).emit(EVENT.GAME_WON, null);
+				//Remove player from the game room
+				this.gameRoom.removePlayer(captured);
 				
-				//Stop updating game if it's finished
-				clearInterval(this.timerInterval);
+				//Alert all other players of captured's demise
+				//MWAH HA HAAAAA
+				capturedSocket.to(this.gameRoom.id).emit(EVENT.PLAYER_UPDATE, this.gameRoom.players);
 				
-				//Finish the game
-				this.gameRoom.endGame();
+				//Check if the game has been won
+				this.gameRoom.checkForWin(capturer);
+				
+				//Leave game room, stop receiving updates
+				capturedSocket.leave(this.gameRoom.id);
+				
+				//Change their game ID and status
+				captured.factoryReset();
 			}
 			
-			//Leave game room, stop receiving updates
-			capturedSocket.leave(this.gameRoom.id);
-			
-			//Change their game ID and status
-			captured.factoryReset();
 			
 		}
 		

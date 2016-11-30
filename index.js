@@ -52,7 +52,15 @@
 	//Everyone goes through the waiting room
 	//Once full, or everyone has agreed to start playing, or the timer has expired, all players inside get transferred to a new game room
 	game.waitingRoom = new WaitingRoom(io, function(id, players){
-		game.gameRooms.push(new GameRoom(io, id, players));
+		
+		//Create new room when the waiting room has done its job
+		game.gameRooms.push(new GameRoom(io, id, players, function(room){
+			
+			//When the game ends, remove it from the array
+			game.gameRooms.splice(game.gameRooms.indexOf(room), 1);
+			
+		}));
+		
 	});
 	
 	//An array of game rooms
@@ -149,6 +157,8 @@
 				
 				socketGame.removePlayer(socket.player);
 				socket.to(socketGame.id).emit(EVENT.PLAYER_UPDATE, socketGame.players);
+				
+				socketGame.checkForWin();
 				
 			}else if(socket.player.isWaiting){
 				
