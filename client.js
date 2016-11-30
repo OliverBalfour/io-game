@@ -1,17 +1,6 @@
 var socket = io();
 var data = {};
 
-//Socket event codes
-//These are minimised for minimal bandwidth usage
-//s - Connected to server
-//j - Join waiting room for new game room
-//w - Waiting room data update (timer, player count, force start count)
-//f - Changing a player's force start status
-//c - Server alerting client that their game has started and that they have been transferred from the waiting room
-//l - Leave waiting room, or cancel waiting
-//m - Map init
-//g - Map update
-
 var EVENT = {
 	SERVER_CONNECT: 0,
 	JOIN_WAITING_ROOM: 1,

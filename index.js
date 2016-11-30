@@ -1,9 +1,8 @@
 
-
 //Strategy game server server side code
 //Built with Node, Express and Socket.io
 
-//Copyright Oliver Balfour 2016
+//Copyright Oliver Balfour (aka Tobsta, Lord of the 32bit Ring) 2016
 
 (function(){
 	
@@ -27,9 +26,6 @@
 	var utils = getModule('utils');
 	var EVENT = getModule('const').EVENT;
 	
-	//Game namespace
-	var game = {};
-	
 	//At the root of the server, the game is served
 	app.get('/', function(req, res){
 		res.sendFile(path.join(__dirname, 'index.html'));
@@ -49,6 +45,18 @@
 		res.sendFile(path.join(__dirname, '/' + file));
 	});
 	
+	
+	//Game namespace
+	var game = {};
+	
+	//Get a game by it's ID
+	game.getGame = function(id){
+		for(var i = 0; i < this.gameRooms.length; i++){
+			if(this.gameRooms[i].id === id) return this.gameRooms[i];
+		}
+		return false;
+	}
+	
 	//Everyone goes through the waiting room
 	//Once full, or everyone has agreed to start playing, or the timer has expired, all players inside get transferred to a new game room
 	game.waitingRoom = new WaitingRoom(io, function(id, players){
@@ -58,6 +66,7 @@
 			
 			//When the game ends, remove it from the array
 			game.gameRooms.splice(game.gameRooms.indexOf(room), 1);
+			console.log("Active games: " + game.gameRooms.length);
 			
 		}));
 		
@@ -68,27 +77,8 @@
 	//These are where the actual game is played
 	game.gameRooms = [];
 	
-	//Get a game by it's ID
-	game.getGame = function(id){
-		for(var i = 0; i < this.gameRooms.length; i++){
-			if(this.gameRooms[i].id === id) return this.gameRooms[i];
-		}
-		return false;
-	}
-	
 	io.on('connection', function(socket){
 		console.log('A user connected');
-		
-		//Socket event codes
-		//These are minimised for minimal bandwidth usage
-		//s - Connected to server
-		//j - Join waiting room for new game room
-		//w - Waiting room data update (timer, player count, force start count)
-		//f - Changing a player's force start status
-		//c - Server alerting client that their game has started and that they have been transferred from the waiting room
-		//l - Leave waiting room, or cancel waiting
-		//m - Map init
-		//g - Map update
 		
 		//Tell the user they're connected, and give them their ID
 		socket.emit(EVENT.SERVER_CONNECT, socket.id);
@@ -138,8 +128,13 @@
 			}
 		});
 		
+		//When the player wishes to move their troops between two tiles
 		socket.on(EVENT.MOVE_TROOPS, function(d){
-			game.getGame(socket.player.gameID).map.moveTroops(socket.player, d);
+			
+			//Assuming the game they want to move troops in actually exists (ie it's still active) then move the troops
+			if(game.getGame(socket.player.gameID))
+				game.getGame(socket.player.gameID).map.moveTroops(socket.player, d);
+			
 		});
 		
 		//When they disconnect

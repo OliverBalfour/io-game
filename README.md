@@ -24,7 +24,7 @@ On each tile, a number of troops shall be present. A tile may be owned by a play
 
 A tile may also have certain buildings on it. A castle will generate a troop a turn, as will a fort. When all of a player's castles are captured by other players, the player loses. When a castle is captured, it becomes a fort. A fort may be upgraded to a castle, and any tile may be upgraded to a fort. Forts offer 30% defence, and castles 40%. In other words, an attacker needs at least 30%/40% more troops to conquer a tile like so. (The defence is calculated by multiplying defending troops by 1.3 (130%) or 1.4 (140%))
 
-Also available are farms, which generate 100 troops worth of food per second. Farms may be upgraded for high prices (if possible having more lower leveled farms are cheaper, but you run the risk of not being able to properly defend them)
+Also available are farms, which generate 100 troops worth of food per second (Farms could also generate money, which is needed for every castle, fort and other building). Farms may be upgraded for high prices (if possible having more lower leveled farms are cheaper, but you run the risk of not being able to properly defend them)
 
 When a farm is conquered, it goes down a level and is given to the conqueror. A level one farm will return to normal land.
 
