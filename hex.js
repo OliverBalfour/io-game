@@ -163,6 +163,8 @@ function Map(socket, w, h, side, canvas, playerID){
 		//Tile color
 		ctx.fillStyle = tile.owner ? tile.owner.color : 'lightgrey';
 		
+		if(tile.type === TYPES.UNKNOWN) ctx.fillStyle = '#444';
+		
 		//Hexagon path
 		
 		ctx.beginPath();
@@ -189,7 +191,7 @@ function Map(socket, w, h, side, canvas, playerID){
 			);
 		}
 		
-		if(tile.type !== TYPES.EMPTY){
+		if(tile.type !== TYPES.EMPTY && tile.type !== TYPES.UNKNOWN){
 			ctx.fillText(tile.type, x + 10, y + 10);
 		}
 	}

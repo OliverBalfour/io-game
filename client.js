@@ -1,6 +1,16 @@
 var socket = io();
 var data = {};
 
+//Tile type enumeration
+var TYPES = {
+	UNKNOWN: -1,
+	EMPTY: 0,
+	CASTLE: 1,
+	FORT: 2,
+	FARM: 3,
+	BARRACKS: 4
+}
+
 var EVENT = {
 	SERVER_CONNECT: 0,
 	JOIN_WAITING_ROOM: 1,
@@ -50,9 +60,25 @@ socket.on(EVENT.MAP_INITIALISATION, function(d){
 
 //Map update
 socket.on(EVENT.MAP_UPDATE, function(d){
+	
 	map.data = d.map;
+	
+	for(var i = 0; i < map.data.length; i++){
+		
+		//If the current tile is empty, make it not empty
+		if(!map.data[i]){
+			map.data[i] = {
+				owner: null,
+				troops: 0,
+				type: TYPES.UNKNOWN
+			}
+		}
+	}
+	
 	data.turn = d.turn;
+	
 	map.prepareAndDrawMap();
+	
 });
 
 socket.on(EVENT.PLAYER_UPDATE, function(players){

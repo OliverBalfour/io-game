@@ -201,6 +201,7 @@
 		//Transmit the map
 		this.transmitMap = function(){
 			
+			/*
 			//Crappy networking
 			//Transmits everything
 			//Bandwidth inefficient and transmits data the user shouldn't see
@@ -210,7 +211,57 @@
 				map: this.data,
 				turn: this.turn
 			});
+			*/
 			
+			//Less crappy networking
+			//Secure
+			//But not bandwidth efficient yet
+			for(var i = 0, player; i < this.gameRoom.players.length; i++){
+				
+				//Grab the player
+				player = this.gameRoom.players[i];
+				
+				//Send map data tailored to the player's tile positions
+				this.gameRoom.io.to(player.id).emit(EVENT.MAP_UPDATE, {
+					map: this.tailoredMapData(player),
+					turn: this.turn
+				});
+				
+			}
+			
+		}
+		
+		//Get a version of the map that can be safely viewed by a certain player
+		//Returns an altered version of the this.data array
+		this.tailoredMapData = function(player){
+			
+			//Empty array, a blank this.data
+			//Every tile that should be seen will be overriden
+			var data = new Array(this.data.length);
+			
+			for(var i = 0, tile, j, petal; i < this.data.length; i++){
+				
+				tile = this.data[i];
+				
+				//If the tile is owned by the player, make it and the flower around it viewable
+				if(tile.owner === player){
+					data[i] = this.data[i];
+					
+					//Flower of 6 petals
+					for(j = 0; j < 6; j++){
+						
+						petal = this.getTileNeighbour(i, j);
+						
+						data[petal] = this.data[petal];
+						
+					}
+					
+				}
+				
+			}
+			
+			//Return the finalised array
+			return data;
 		}
 		
 		//Triggered when a player wants to move their troops to another tile
@@ -331,6 +382,7 @@
 		this.addPlayersToMap();
 		
 		//Init map dump
+		//WARNING - TAILOR DATA BEFORE SENDING
 		this.gameRoom.io.to(this.gameRoom.id).emit(EVENT.MAP_INITIALISATION, {
 			w: this.mapWidth,
 			h: this.mapHeight,
