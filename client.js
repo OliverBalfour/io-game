@@ -42,12 +42,8 @@ socket.on(EVENT.WAITING_ROOM_UPDATE, function(room){
 //Game has started
 socket.on(EVENT.GAME_START, function(players){
 	
-	console.log(players);
-	
-	//Concatenate player names into a list
-	var playerNames = [];
-	players.forEach(function(player){ playerNames.push(player.name) });
-	dom.id('gr-players').innerHTML = "<span class='gr-player'>" + playerNames.join("</span><span class='gr-player'>") + "</span>";
+	data.players = players;
+	updatePlayers();
 	
 	//Change view
 	dom.changeScreen('waiting-room', 'game-room');
@@ -68,6 +64,12 @@ socket.on(EVENT.MAP_UPDATE, function(d){
 	map.data = d.map;
 	data.turn = d.turn;
 	map.prepareAndDrawMap();
+});
+
+socket.on(EVENT.PLAYER_UPDATE, function(players){
+	data.players = players;
+	
+	updatePlayers();
 });
 
 //Sometimes you win, sometimes you lose
@@ -148,6 +150,17 @@ function updateRoom(){
 function toggleForceStart(){
 	dom.id('force-start').classList.toggle('active');
 	socket.emit(EVENT.FORCE_START_STATUS, dom.id('force-start').classList.contains('active'));
+}
+
+function updatePlayers(){
+	var players = data.players;
+	
+	console.log(players)
+	
+	//Concatenate player names into a list
+	var playerNames = [];
+	players.forEach(function(player){ playerNames.push(player.name) });
+	dom.id('gr-players').innerHTML = "<span class='gr-player'>" + playerNames.join("</span><span class='gr-player'>") + "</span>";
 }
 
 function exitGame(){

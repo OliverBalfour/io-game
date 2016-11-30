@@ -178,6 +178,9 @@
 				tile = this.data[i];
 				
 				//For any owned tile, which needs to be updated
+				//A tile is only considered owned and in need of updating if the owner is online
+				//However, that code ( && this.gameRoom.players.indexOf(tile.owner) !== -1) isn't working
+				//xD
 				if(tile.owner !== null){
 					
 					if(tile.type === TYPES.CASTLE || tile.type === TYPES.FORT)
@@ -281,7 +284,7 @@
 			
 			//Alert all other players of captured's demise
 			//MWAH HA HAAAAA
-			capturedSocket.broadcast.emit(EVENT.PLAYER_UPDATE, this.gameRoom.players);
+			capturedSocket.to(this.gameRoom.id).emit(EVENT.PLAYER_UPDATE, this.gameRoom.players);
 			
 			//If there is only one player left, let them know they've won
 			//The only player left is definitely the capturer

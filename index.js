@@ -145,7 +145,10 @@
 				
 				console.log(socket.player.name + ' ragequit');
 				
-				game.getGame(socket.player.gameID).removePlayer(socket.player);
+				var socketGame = game.getGame(socket.player.gameID);
+				
+				socketGame.removePlayer(socket.player);
+				socket.to(socketGame.id).emit(EVENT.PLAYER_UPDATE, socketGame.players);
 				
 			}else if(socket.player.isWaiting){
 				
