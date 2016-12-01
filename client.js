@@ -53,9 +53,17 @@ socket.on(EVENT.GAME_START, function(players){
 
 //Init map
 socket.on(EVENT.MAP_INITIALISATION, function(d){
+	
 	map = new Map(socket, d.w, d.h, 30, canvas, data.id);
-	map.data = d.data;
+	
+	data.turn = d.turn;
+	
+	map.data = d.map;
+	
+	fixMap();
+	
 	map.prepareAndDrawMap();
+	
 });
 
 //Map update
@@ -63,6 +71,15 @@ socket.on(EVENT.MAP_UPDATE, function(d){
 	
 	map.data = d.map;
 	
+	data.turn = d.turn;
+	
+	fixMap();
+	
+	map.prepareAndDrawMap();
+	
+});
+
+function fixMap(){
 	for(var i = 0; i < map.data.length; i++){
 		
 		//If the current tile is empty, make it not empty
@@ -74,12 +91,7 @@ socket.on(EVENT.MAP_UPDATE, function(d){
 			}
 		}
 	}
-	
-	data.turn = d.turn;
-	
-	map.prepareAndDrawMap();
-	
-});
+}
 
 socket.on(EVENT.PLAYER_UPDATE, function(players){
 	data.players = players;

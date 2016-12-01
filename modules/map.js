@@ -382,11 +382,25 @@
 		this.addPlayersToMap();
 		
 		//Init map dump
-		//WARNING - TAILOR DATA BEFORE SENDING
-		this.gameRoom.io.to(this.gameRoom.id).emit(EVENT.MAP_INITIALISATION, {
-			w: this.mapWidth,
-			h: this.mapHeight,
-			data: this.data
-		});
+		this.initMapDump = function(){
+			
+			for(var i = 0, player; i < this.gameRoom.players.length; i++){
+				
+				//Grab the player
+				player = this.gameRoom.players[i];
+				
+				//Send map data tailored to the player's tile positions
+				this.gameRoom.io.to(player.id).emit(EVENT.MAP_INITIALISATION, {
+					map: this.tailoredMapData(player),
+					w: this.mapWidth,
+					h: this.mapHeight,
+					turn: this.turn
+				});
+				
+			}
+			
+		}
+		
+		this.initMapDump();
 	}
 })();
