@@ -38,9 +38,10 @@
 	app.get('/*', function(req, res, next){
 		var file = req.params[0];
 		
-		//If the file is blacklisted from public viewing or in any directory other than the root, pretend it's a 404 error
-		if(blacklistedFiles.indexOf(file) !== -1 || file.indexOf('/') !== -1)
+		//If the file is blacklisted from public viewing or in any directory other than the root or whitelisted directories, pretend it's a 404 error
+		if(blacklistedFiles.indexOf(file) !== -1 || (file.indexOf('/') !== -1 && file.startsWith('/icons'))){
 			res.sendStatus(404);
+		}
 		
 		res.sendFile(path.join(__dirname, '/' + file));
 	});

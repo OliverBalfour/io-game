@@ -80,7 +80,7 @@
 		
 		//Returns true if the tile index specified is in the boundaries
 		this.tileExists = function(i){
-			return i >= 0 && i < this.data.length;
+			return typeof i === 'number' && i >= 0 && i < this.data.length;
 		}
 		
 		//Neighbour not neighbor American scumbags
@@ -201,18 +201,6 @@
 		//Transmit the map
 		this.transmitMap = function(){
 			
-			/*
-			//Crappy networking
-			//Transmits everything
-			//Bandwidth inefficient and transmits data the user shouldn't see
-			//But it works
-			//For now
-			this.gameRoom.io.to(this.gameRoom.id).emit(EVENT.MAP_UPDATE, {
-				map: this.data,
-				turn: this.turn
-			});
-			*/
-			
 			//Less crappy networking
 			//Secure
 			//But not bandwidth efficient yet
@@ -221,13 +209,21 @@
 				//Grab the player
 				player = this.gameRoom.players[i];
 				
-				//Send map data tailored to the player's tile positions
-				this.gameRoom.io.to(player.id).emit(EVENT.MAP_UPDATE, {
-					map: this.tailoredMapData(player),
-					turn: this.turn
-				});
+				//Transmit
+				this.transmitMapTo(player);
 				
 			}
+			
+		}
+		
+		//Transmit a tailored map to a player
+		this.transmitMapTo = function(player){
+			
+			//Send map data tailored to the player's tile positions
+			this.gameRoom.io.to(player.id).emit(EVENT.MAP_UPDATE, {
+				map: this.tailoredMapData(player),
+				turn: this.turn
+			});
 			
 		}
 		
@@ -286,7 +282,10 @@
 				//A player shouldn't kill their own troops
 				//But they should kill other troops
 				if(endpoint.owner && origin.owner.id === endpoint.owner.id){
+					
+					//Simply transfer troops from one tile to the other
 					endpoint.troops += origin.troops - 1;
+					
 				}else{
 					endpoint.troops -= origin.troops - 1;
 					
@@ -305,13 +304,14 @@
 						}
 						
 						endpoint.owner = player;
-					}
 					
-					//Downgrading
-					if(endpoint.type === TYPES.CASTLE)
-						endpoint.type = TYPES.FORT;
+						//Downgrading
+						if(endpoint.type === TYPES.CASTLE)
+							endpoint.type = TYPES.FORT;
+					}
 				}
 				
+				//Always at the end of a movement the amount of troops on the first tile will be 1, the least possible to own a tile (0 is possible but buggy)
 				origin.troops = 1;
 			}
 		}
@@ -349,6 +349,10 @@
 			
 			//Assuming the player is actually online, we send data
 			if(capturedSocket){
+				
+				//Prematurely send the captured player a map update to show them the map after they lost
+				//This will be blank, of course, for their tiles are no longer theirs
+				this.transmitMapTo(captured);
 				
 				//Alert the captured player of their loss
 				this.gameRoom.io.to(captured.id).emit(EVENT.PLAYER_CAPTURED, capturer);

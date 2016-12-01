@@ -180,19 +180,27 @@ function Map(socket, w, h, side, canvas, playerID){
 		ctx.fill();
 		ctx.stroke();
 		
+		//If the tile type is not unknown or empty, draw the appropriate icon
+		if(tile.type !== TYPES.EMPTY && tile.type !== TYPES.UNKNOWN){
+			
+			//Grab the appropriate icon
+			var icon = this.icons[this.typeMap[tile.type]];
+			
+			//Draw it
+			ctx.drawImage(icon, x + this.tileWidth / 6, y + this.tileHeight / 10, this.tileWidth / 1.5, this.tileWidth / 1.5);
+			
+		}
+		
 		//Write troop number in the middle of the hexagon if there are any troops
 		if(tile.troops > 0){
-			ctx.fillStyle = 'black';
+			ctx.fillStyle = 'white';
+			ctx.font = '14px arial';
 			
 			ctx.fillText(
 				tile.troops,
 				x + this.tileSideLength - ctx.measureText(tile.troops).width / 2,
 				y + this.tileHeight / 2 + 4
 			);
-		}
-		
-		if(tile.type !== TYPES.EMPTY && tile.type !== TYPES.UNKNOWN){
-			ctx.fillText(tile.type, x + 10, y + 10);
 		}
 	}
 	
@@ -485,6 +493,22 @@ function Map(socket, w, h, side, canvas, playerID){
 			endpoint: n
 		});
 	}
+	
+	this.icons = {};
+	
+	this.loadIcon = function(name, file){
+		this.icons[name] = new Image();
+		this.icons[name].src = 'icons/' + file;
+	}
+	
+	var icons = ['barn.png', 'castle.png', 'medieval-pavilion.png', 'peaks.png', 'stone-tower.png'],
+		names = ['farm', 'castle', 'barracks', 'mountains', 'fort'];
+	
+	for(var i = 0; i < icons.length; i++){
+		this.loadIcon(names[i], icons[i]);
+	}
+	
+	this.typeMap = [null, 'castle', 'fort', 'farm', 'barracks'];
 	
 	/* User interactivity */
 	
