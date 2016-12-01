@@ -184,7 +184,7 @@ function Map(socket, w, h, side, canvas, playerID){
 		if(tile.type !== TYPES.EMPTY && tile.type !== TYPES.UNKNOWN){
 			
 			//Grab the appropriate icon
-			var icon = this.icons[this.typeMap[tile.type]];
+			var icon = this.getIcon(tile.type);
 			
 			//Draw it
 			ctx.drawImage(icon, x + this.tileWidth / 6, y + this.tileHeight / 10, this.tileWidth / 1.5, this.tileWidth / 1.5);
@@ -509,6 +509,10 @@ function Map(socket, w, h, side, canvas, playerID){
 	}
 	
 	this.typeMap = [null, 'castle', 'fort', 'farm', 'barracks'];
+	
+	this.getIcon = function(type){
+		return this.icons[this.typeMap[type]];
+	}
 	
 	/* User interactivity */
 	
