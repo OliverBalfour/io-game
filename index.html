@@ -31,10 +31,31 @@
 				Turn <span id='turn-count'>0</span>
 			</div>
 			<div id='action-bar'>
-				<img onclick='upgradeTile(3)' src='icons/barn.png' id='bd-barn' />
-				<img onclick='upgradeTile(4)' src='icons/medieval-pavilion.png' id='bd-barracks' />
-				<img onclick='upgradeTile(2)' src='icons/stone-tower.png' id='bd-fort' />
-				<img onclick='upgradeTile(1)' src='icons/castle.png' id='bd-castle' />
+				<div id='action-toggle-detail' onclick='toggleActionBarDetail()'>&lt;</div>
+				<div id='action-icons'>
+					<img onclick='upgradeTile(3)' src='icons/barn.png' id='bd-barn' title='Farm - $500' />
+					<img onclick='upgradeTile(4)' src='icons/medieval-pavilion.png' id='bd-barracks' title='Barracks - $2000' />
+					<img onclick='upgradeTile(2)' src='icons/stone-tower.png' id='bd-fort' title='Fort - $4000' />
+					<img onclick='upgradeTile(1)' src='icons/castle.png' id='bd-castle' title='Castle - $7500 + Fort' />
+				</div>
+				<div id='action-details'>
+					<div class='action-detail'>
+						<span class='name'>Farm - $500</span>
+						<span class='detail'>Generates $5 per turn.</span>
+					</div>
+					<div class='action-detail'>
+						<span class='name'>Barracks - $2000</span>
+						<span class='detail'>Generates 1 troop every 2nd turn.</span>
+					</div>
+					<div class='action-detail'>
+						<span class='name'>Fort - $4000</span>
+						<span class='detail'>Generates 1 troop and $10 per turn.</span>
+					</div>
+					<div class='action-detail'>
+						<span class='name'>Castle - $7500 + Fort</span>
+						<span class='detail'>Generates 1 troop and $10 per turn. When your last castle is captured you lose.</span>
+					</div>
+				</div>
 			</div>
 			<div id='game-end-modal' class='hidden'>
 				<span id='gr-win' class='hidden'>You win!</span>

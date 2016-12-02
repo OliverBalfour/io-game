@@ -98,6 +98,7 @@ socket.on(EVENT.MAP_UPDATE, function(d){
 	
 });
 
+//Fixes the map data sent
 function fixMap(){
 	for(var i = 0; i < map.data.length; i++){
 		
@@ -112,6 +113,7 @@ function fixMap(){
 	}
 }
 
+//Client validation for tile upgrade request, saves the server a bit of bandwidth
 function upgradeTile(upgrade){
 	if(map.selectedTile !== -1){
 		
@@ -144,6 +146,12 @@ function upgradeTile(upgrade){
 			sendData();
 		
 	}
+}
+
+//Toggle the details panel on the action bar
+function toggleActionBarDetail(){
+	dom.id('action-bar').classList.toggle('expanded');
+	dom.id('action-toggle-detail').innerText = dom.id('action-toggle-detail').innerText === '<' ? '>' : '<';
 }
 
 socket.on(EVENT.PLAYER_UPDATE, function(players){
