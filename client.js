@@ -51,7 +51,7 @@ socket.on(EVENT.GAME_START, function(players){
 //Init map
 socket.on(EVENT.MAP_INITIALISATION, function(d){
 	
-	map = new Map(socket, d.w, d.h, 30, canvas, data.id);
+	map = new Map(socket, d.w, d.h, 30, canvas, data.id, data);
 	
 	data.turn = d.turn;
 	
@@ -75,6 +75,8 @@ socket.on(EVENT.MAP_INITIALISATION, function(d){
 	//Reset force start status
 	dom.id('force-start').classList.remove('active');
 	
+	map.updateActionBar();
+	
 });
 
 //Map update
@@ -91,6 +93,8 @@ socket.on(EVENT.MAP_UPDATE, function(d){
 	fixMap();
 	
 	map.prepareAndDrawMap();
+	
+	map.updateActionBar();
 	
 });
 
@@ -110,10 +114,35 @@ function fixMap(){
 
 function upgradeTile(upgrade){
 	if(map.selectedTile !== -1){
-		socket.emit(EVENT.TILE_UPGRADE, {
-			i: map.selectedTile,
-			u: upgrade
-		});
+		
+		function sendData(){
+			socket.emit(EVENT.TILE_UPGRADE, {
+				i: map.selectedTile,
+				u: upgrade
+			});
+		}
+		
+		var i = map.selectedTile;
+		
+		//Ensure the player owns the tile
+		if(map.data[i].owner.id !== data.id) return false;
+		
+		//Cycle through the possibilities and only send data if it matches one to save bandwidth
+		//Of course, the server still checks everything
+		
+		//Building stuff on empty ground
+		if(map.data[i].type === TYPES.EMPTY){
+			
+			//Build a farm, barracks or fort
+			if(upgrade === TYPES.FARM && data.money >= 500 || upgrade === TYPES.BARRACKS && data.money >= 2000 || upgrade === TYPES.FORT && data.money >= 5000)
+				sendData();
+			
+		}
+		
+		//Upgrade fort to castle
+		if(map.data[i].type === TYPES.FORT && upgrade === TYPES.CASTLE && data.money >= 7500)
+			sendData();
+		
 	}
 }
 
@@ -128,6 +157,9 @@ socket.on(EVENT.PLAYER_CAPTURED, function(player){
 	dom.show('gr-lose');
 	dom.hide('gr-win');
 	dom.show('game-end-modal');
+	
+	//Deselect whatever tile they had selected
+	map.selectedTile = -1;
 });
 
 //Ok, maybe you always win

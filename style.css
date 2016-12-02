@@ -183,6 +183,11 @@ button:hover{
 	border: 1px solid black;
 }
 
+#action-bar img.disabled{
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
 #game-end-modal{
 	position: absolute;
 	top: calc(50% - 50px);

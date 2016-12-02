@@ -30,7 +30,7 @@ var EVENT = {
 	TILE_UPGRADE: 12
 };
 
-function Map(socket, w, h, side, canvas, playerID){
+function Map(socket, w, h, side, canvas, playerID, playerData){
 	
 	//Networking
 	this.socket = socket;
@@ -68,6 +68,8 @@ function Map(socket, w, h, side, canvas, playerID){
 	//Position of map
 	this.x = 0;
 	this.y = 0;
+	
+	this.playerData = playerData;
 	
 	this.generate = function(){
 		//Populating that array with empty tile objects
@@ -222,7 +224,7 @@ function Map(socket, w, h, side, canvas, playerID){
 	this.selectedTile = -1;
 	
 	//Triggered when the client clicks on a tile, given the tile index in this.data
-	//Also optionally takes the previous tile as a secondary parameter, to ensure that they are a tile apart
+	//Also optionally takes the previous tile as a secondary parameter, to ensure that they are a tile apart (to avoid accidental screen wrap)
 	this.selectHex = function(i, oldI){
 		
 		//If i isn't valid (if it doesn't exist) then abort
@@ -241,6 +243,8 @@ function Map(socket, w, h, side, canvas, playerID){
 			
 			//Deselect
 			this.selectedTile = -1;
+			
+			this.updateActionBar();
 			
 		}else{
 			
@@ -266,7 +270,10 @@ function Map(socket, w, h, side, canvas, playerID){
 			//Select
 			this.selectedTile = i;
 			
+			this.updateActionBar();
+			
 			this.drawSelection();
+			
 		}
 	}
 	
@@ -546,6 +553,52 @@ function Map(socket, w, h, side, canvas, playerID){
 	}
 	
 	/* User interactivity */
+	
+	//Uses the client
+	//Updates the action bar, which shows what the currently selected tile can be upgraded into
+	this.updateActionBar = function(){
+		
+		//Start with all of the buttons disabled
+		dom.id('bd-barn').classList.add('disabled');
+		dom.id('bd-barracks').classList.add('disabled');
+		dom.id('bd-fort').classList.add('disabled');
+		dom.id('bd-castle').classList.add('disabled');
+		
+		//If the player owns the tile, then the player may be able to build on it
+		if(this.tileExists(this.selectedTile) && this.data[this.selectedTile].owner && this.data[this.selectedTile].owner.id === this.playerID){
+			
+			//If types.TYPE is false, it cannot be built
+			//Overidden below
+			var types = {
+				barn: false,
+				barracks: false,
+				fort: false,
+				castle: false
+			};
+			
+			var type = this.data[this.selectedTile].type;
+			
+			//If the tile is empty, anything other than a castle can be built
+			if(type === TYPES.EMPTY)
+				types.barn = types.barracks = types.fort = true;
+			
+			//If the tile is a fort, a castle can be built
+			if(type === TYPES.FORT)
+				types.castle = true;
+			
+			//Check one by one for buttons that should be enabled
+			if(types.barn)
+				dom.id('bd-barn').classList.remove('disabled');
+			if(types.barracks)
+				dom.id('bd-barracks').classList.remove('disabled');
+			if(types.fort)
+				dom.id('bd-fort').classList.remove('disabled');
+			if(types.castle)
+				dom.id('bd-castle').classList.remove('disabled');
+			
+		}
+		
+	}
 	
 	//When the mouse goes down on the canvas
 	this.mousedown = function(){
