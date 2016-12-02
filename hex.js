@@ -559,6 +559,7 @@ function Map(socket, w, h, side, canvas, playerID, playerData){
 	this.updateActionBar = function(){
 		
 		//Start with all of the buttons disabled
+		dom.id('bd-demolisher').classList.add('disabled');
 		dom.id('bd-barn').classList.add('disabled');
 		dom.id('bd-barracks').classList.add('disabled');
 		dom.id('bd-fort').classList.add('disabled');
@@ -605,6 +606,9 @@ function Map(socket, w, h, side, canvas, playerID, playerData){
 				dom.id('bd-fort').classList.remove('disabled');
 			if(types.castle)
 				dom.id('bd-castle').classList.remove('disabled');
+			
+			if(type !== TYPES.EMPTY && type !== TYPES.UNKNOWN && type !== TYPES.CASTLE)
+				dom.id('bd-demolisher').classList.remove('disabled');
 			
 		}
 		

@@ -145,6 +145,10 @@ function upgradeTile(upgrade){
 		if(map.data[i].type === TYPES.FORT && upgrade === TYPES.CASTLE && data.money >= 7500)
 			sendData();
 		
+		//They want to demolish something
+		if(upgrade === TYPES.EMPTY && map.data[i].type !== TYPES.EMPTY && map.data[i].type !== TYPES.UNKNOWN)
+			sendData();
+		
 	}
 }
 

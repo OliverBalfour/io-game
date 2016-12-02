@@ -386,6 +386,8 @@
 		}
 		
 		//Triggered when a player wants to build something on a tile
+		//Or demolish something
+		//Entirely up to them
 		this.upgradeTile = function(player, d){
 			
 			//Ensure the tile exists
@@ -422,6 +424,22 @@
 				this.data[d.i].type = TYPES.CASTLE;
 				player.castles.push(d.i);
 				player.money -= 7500;
+			}
+			
+			//If the tile isn't empty and they want it to be, I don't see why not...
+			if(this.data[d.i].type !== TYPES.EMPTY && d.u === TYPES.EMPTY){
+				
+				//WTF is wrong with you...
+				//You're demolishing a CASTLE of all things?
+				//I suppose some people don't strive to win
+				//Or, you know, have fun
+				//...
+				//Sorry, but you really can't demolish a castle
+				//I can't be bothered programming the check for loss in
+				if(this.data[d.i].type !== TYPES.CASTLE){
+					this.data[d.i].type = TYPES.EMPTY;
+				}
+				
 			}
 			
 		}

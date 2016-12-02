@@ -179,7 +179,7 @@ button:hover{
 	position: absolute;
 	bottom: 0;
 	right: 0;
-	height: 192px;
+	height: 240px;
 	width: 58px;
 	overflow: hidden;
 	transition: width 0.5s;
@@ -193,7 +193,7 @@ button:hover{
 	position: absolute;
 	top: 0;
 	left: 0;
-	height: 192px;
+	height: 240px;
 	width: 10px;
 	text-align: center;
 	background: darkslategrey;
@@ -208,7 +208,7 @@ button:hover{
 	position: absolute;
 	top: 0;
 	left: 10px;
-	height: 192px;
+	height: 240px;
 	width: 48px;
 	border-top: 1px solid darkslategrey;
 	background: lightgrey;
@@ -236,7 +236,7 @@ button:hover{
 	position: absolute;
 	top: 0;
 	left: 58px;
-	height: 192px;
+	height: 240px;
 	width: 250px;
 	background: rgba(0, 0, 0, 0.6);
 }
