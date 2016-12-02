@@ -26,7 +26,8 @@ var EVENT = {
 	MOVE_TROOPS: 8,
 	PLAYER_CAPTURED: 9,
 	PLAYER_UPDATE: 10,
-	GAME_WON: 11
+	GAME_WON: 11,
+	TILE_UPGRADE: 12
 };
 
 function Map(socket, w, h, side, canvas, playerID){
@@ -163,7 +164,7 @@ function Map(socket, w, h, side, canvas, playerID){
 		//Tile color
 		ctx.fillStyle = tile.owner ? tile.owner.color : 'lightgrey';
 		
-		if(tile.type === TYPES.UNKNOWN) ctx.fillStyle = '#444';
+		if(tile.type === TYPES.UNKNOWN) ctx.fillStyle = '#777';
 		
 		//Hexagon path
 		

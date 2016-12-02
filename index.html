@@ -8,7 +8,7 @@
 	</head>
 	<body>
 		<div id='start-screen' class='screen'>
-			<input type='text' id='name' placeholder='Anonymous' />
+			<input type='text' id='name' placeholder='Anonymous' maxlength='30' />
 			<button id='play-button' onclick='joinWaitingRoom()'>PLAY</button>
 		</div>
 		<div id='waiting-room' class='screen hidden'>
@@ -26,6 +26,12 @@
 		<div id='game-room' class='screen hidden'>
 			<canvas id='map'></canvas>
 			<div id='gr-players'></div>
+			<div id='action-bar'>
+				<img onclick='upgradeTile(3)' src='icons/barn.png' />
+				<img onclick='upgradeTile(4)' src='icons/medieval-pavilion.png' />
+				<img onclick='upgradeTile(2)' src='icons/stone-tower.png' />
+				<img onclick='upgradeTile(1)' src='icons/castle.png' />
+			</div>
 			<div id='game-end-modal' class='hidden'>
 				<span id='gr-win' class='hidden'>You win!</span>
 				<span id='gr-lose' class='hidden'>You lose...</span>

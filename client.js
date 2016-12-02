@@ -23,7 +23,8 @@ var EVENT = {
 	MOVE_TROOPS: 8,
 	PLAYER_CAPTURED: 9,
 	PLAYER_UPDATE: 10,
-	GAME_WON: 11
+	GAME_WON: 11,
+	TILE_UPGRADE: 12
 };
 
 //Connected to server
@@ -39,16 +40,11 @@ socket.on(EVENT.WAITING_ROOM_UPDATE, function(room){
 });
 
 //Game has started
+//The view is changed once the map has been sorted out
 socket.on(EVENT.GAME_START, function(players){
 	
 	data.players = players;
 	updatePlayers();
-	
-	//Change view
-	dom.changeScreen('waiting-room', 'game-room');
-	
-	//Reset force start status
-	dom.id('force-start').classList.remove('active');
 	
 });
 
@@ -63,14 +59,21 @@ socket.on(EVENT.MAP_INITIALISATION, function(d){
 	
 	fixMap();
 	
+	//Focus around the center tile
 	for(var i = 0; i < map.data.length; i++){
 		if(map.data[i].owner){
 			map.centerTile(i);
-			map.selectedTile = i;
 		}
 	}
 	
+	//Initial map draw
 	map.prepareAndDrawMap();
+	
+	//Change view
+	dom.changeScreen('waiting-room', 'game-room');
+	
+	//Reset force start status
+	dom.id('force-start').classList.remove('active');
 	
 });
 
@@ -98,6 +101,15 @@ function fixMap(){
 				type: TYPES.UNKNOWN
 			}
 		}
+	}
+}
+
+function upgradeTile(upgrade){
+	if(map.selectedTile !== -1){
+		socket.emit(EVENT.TILE_UPGRADE, {
+			i: map.selectedTile,
+			u: upgrade
+		});
 	}
 }
 

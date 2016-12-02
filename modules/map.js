@@ -377,6 +377,37 @@
 			
 		}
 		
+		//Triggered when a player wants to build something on a tile
+		this.upgradeTile = function(player, d){
+			
+			//Ensure the tile exists
+			if(!this.tileExists(d.i)) return false;
+			
+			//Building stuff on empty ground
+			if(this.data[d.i].type === TYPES.EMPTY){
+				
+				//Build a farm
+				if(d.u === TYPES.FARM)
+					this.data[d.i].type = TYPES.FARM;
+				
+				//Build a barracks
+				if(d.u === TYPES.BARRACKS)
+					this.data[d.i].type = TYPES.BARRACKS;
+				
+				//Build a fort
+				if(d.u === TYPES.FORT)
+					this.data[d.i].type = TYPES.FORT;
+				
+			}
+			
+			//Upgrade fort to castle
+			if(this.data[d.i].type === TYPES.FORT && d.u === TYPES.CASTLE){
+				this.data[d.i].type = TYPES.CASTLE;
+				player.castles.push(d.i);
+			}
+			
+		}
+		
 		this.timerInterval = setInterval(this.updateTiles.bind(this), this.turnLength * 1000);
 		
 		//Initialisation

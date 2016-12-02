@@ -17,7 +17,8 @@
 		MOVE_TROOPS: 8,			//A player wants to move troops from tile A to tile B (tiles A and B must be next to each other)
 		PLAYER_CAPTURED: 9,		//Sent to a player when they have lost the game (I LOST THE GAME!!!)
 		PLAYER_UPDATE: 10,		//Sent when the in game leaderboard needs to be updated
-		GAME_WON: 11			//Sent to the winner of the game (I LOST THE GAME!!!)
+		GAME_WON: 11,			//Sent to the winner of the game (I LOST THE GAME!!!)
+		TILE_UPGRADE: 12		//A player wants to upgrade a tile, or build something on it
 	};
 	
 	module.exports.TYPES = {

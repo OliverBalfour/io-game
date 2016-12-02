@@ -93,6 +93,9 @@
 			//Die XSS
 			name = sanitizer.sanitize(name);
 			
+			//Enforce name length limit
+			if(name.length > 30) name = name.substring(0, 29);
+			
 			//Stupid anons
 			socket.player.name = name !== '' ? name : 'Anonymous';
 			
@@ -134,6 +137,14 @@
 			//Assuming the game they want to move troops in actually exists (ie it's still active) then move the troops
 			if(game.getGame(socket.player.gameID))
 				game.getGame(socket.player.gameID).map.moveTroops(socket.player, d);
+			
+		});
+		
+		socket.on(EVENT.TILE_UPGRADE, function(d){
+			
+			//Assuming the game they want to upgrade a tile in in actually exists (ie it's still active) then upgrade the tile
+			if(game.getGame(socket.player.gameID))
+				game.getGame(socket.player.gameID).map.upgradeTile(socket.player, d);
 			
 		});
 		
