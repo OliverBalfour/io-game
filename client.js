@@ -49,6 +49,7 @@ socket.on(EVENT.GAME_START, function(players){
 	
 	//Reset force start status
 	dom.id('force-start').classList.remove('active');
+	
 });
 
 //Init map
@@ -61,6 +62,13 @@ socket.on(EVENT.MAP_INITIALISATION, function(d){
 	map.data = d.map;
 	
 	fixMap();
+	
+	for(var i = 0; i < map.data.length; i++){
+		if(map.data[i].owner){
+			map.centerTile(i);
+			map.selectedTile = i;
+		}
+	}
 	
 	map.prepareAndDrawMap();
 	

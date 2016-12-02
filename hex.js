@@ -473,6 +473,23 @@ function Map(socket, w, h, side, canvas, playerID){
 		this.selectHex(this.getTileNeighbour(this.selectedTile, rotation), this.selectedTile);
 	}
 	
+	//Returns true if the tile index specified is in the boundaries
+	this.tileExists = function(i){
+		return typeof i === 'number' && i >= 0 && i < this.data.length;
+	}
+	
+	//Center the map about the given tile
+	this.centerTile = function(i){
+		if(!this.tileExists(i)) return false;
+		
+		var d = this.getTileData(i);
+		
+		this.x = Math.floor(-d.x + innerWidth / 2);
+		this.y = Math.floor(-d.y + innerHeight / 2);
+		
+		this.handleMapBoundaries();
+	}
+	
 	//Point colliding with a bounding box?
 	//obj has x, y, w, h properties while point has x, y
 	//Returns boolean; true if colliding
@@ -514,6 +531,19 @@ function Map(socket, w, h, side, canvas, playerID){
 		return this.icons[this.typeMap[type]];
 	}
 	
+	//Map boundaries
+	//The map is allowed to be a third off the screen
+	this.handleMapBoundaries = function(){
+		if(this.x > Math.floor(innerWidth / 3))
+			this.x = Math.floor(innerWidth / 3);
+		if(this.y > Math.floor(innerHeight / 3))
+			this.y = Math.floor(innerHeight / 3);
+		if(this.x < -this.gridcanvas.width + Math.floor(innerWidth / 3 * 2))
+			this.x = -this.gridcanvas.width + Math.floor(innerWidth / 3 * 2);
+		if(this.y < -this.gridcanvas.height + Math.floor(innerHeight / 3 * 2))
+			this.y = -this.gridcanvas.height + Math.floor(innerHeight / 3 * 2);
+	}
+	
 	/* User interactivity */
 	
 	//When the mouse goes down on the canvas
@@ -544,16 +574,7 @@ function Map(socket, w, h, side, canvas, playerID){
 			this.x = this.client.mouse.x - this.client.mouse.offsetX;
 			this.y = this.client.mouse.y - this.client.mouse.offsetY;
 			
-			//Map boundaries
-			//The map is allowed to be a third of the screen
-			if(this.x > Math.floor(innerWidth / 3))
-				this.x = Math.floor(innerWidth / 3);
-			if(this.y > Math.floor(innerHeight / 3))
-				this.y = Math.floor(innerHeight / 3);
-			if(this.x < -this.gridcanvas.width + Math.floor(innerWidth / 3 * 2))
-				this.x = -this.gridcanvas.width + Math.floor(innerWidth / 3 * 2);
-			if(this.y < -this.gridcanvas.height + Math.floor(innerHeight / 3 * 2))
-				this.y = -this.gridcanvas.height + Math.floor(innerHeight / 3 * 2);
+			this.handleMapBoundaries();
 			
 			this.draw();
 		}
