@@ -30,6 +30,10 @@
 		//If the player is in a game, this is a list of their castles
 		this.castles = [];
 		
+		//In game currency used to pay for buildings
+		this.money = 0;
+		
+		//Reset a player for a new game
 		this.factoryReset = function(){
 			this.forceStart = null;
 			this.isWaiting = false;
@@ -37,6 +41,7 @@
 			this.gameID = null;
 			this.color = utils.randomColor();
 			this.castles = [];
+			this.money = 0;
 		}
 	}
 })();

@@ -133,6 +133,14 @@ button:hover{
 	background: grey;
 }
 
+#stats{
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: rgba(0, 0, 0, 0.6);
+	color: white;
+}
+
 #gr-players{
 	position: absolute;
 	right: 0;

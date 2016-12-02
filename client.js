@@ -83,6 +83,10 @@ socket.on(EVENT.MAP_UPDATE, function(d){
 	map.data = d.map;
 	
 	data.turn = d.turn;
+	dom.id('turn-count').innerText = d.turn;
+	
+	data.money = d.money;
+	dom.id('money-count').innerText = d.money;
 	
 	fixMap();
 	

@@ -181,11 +181,17 @@
 				//A tile is only considered owned and in need of updating if the owner is online
 				if(tile.owner !== null && this.gameRoom.hasPlayer(tile.owner)){
 					
-					if(tile.type === TYPES.CASTLE || tile.type === TYPES.FORT)
+					if(tile.type === TYPES.CASTLE || tile.type === TYPES.FORT){
 						tile.troops++;
+						if(tile.owner) tile.owner.money += 10;
+					}
 					
-					if(tile.type === TYPES.EMPTY && this.turn % 25 === 0)
+					if(tile.type === TYPES.EMPTY && this.turn % 25 === 0){
 						tile.troops++;
+						if(tile.owner) tile.owner.money += 5;
+					}else{
+						if(tile.owner) tile.owner.money ++;
+					}
 					
 				}
 			}
@@ -220,9 +226,11 @@
 		this.transmitMapTo = function(player){
 			
 			//Send map data tailored to the player's tile positions
+			//Also send turn and player's money
 			this.gameRoom.io.to(player.id).emit(EVENT.MAP_UPDATE, {
 				map: this.tailoredMapData(player),
-				turn: this.turn
+				turn: this.turn,
+				money: player.money
 			});
 			
 		}
@@ -383,27 +391,37 @@
 			//Ensure the tile exists
 			if(!this.tileExists(d.i)) return false;
 			
+			//Ensure the player owns the tile
+			if(this.data[d.i].owner !== player) return false;
+			
 			//Building stuff on empty ground
 			if(this.data[d.i].type === TYPES.EMPTY){
 				
 				//Build a farm
-				if(d.u === TYPES.FARM)
+				if(d.u === TYPES.FARM && player.money >= 500){
 					this.data[d.i].type = TYPES.FARM;
+					player.money -= 500;
+				}
 				
 				//Build a barracks
-				if(d.u === TYPES.BARRACKS)
+				if(d.u === TYPES.BARRACKS && player.money >= 2000){
 					this.data[d.i].type = TYPES.BARRACKS;
+					player.money -= 2000;
+				}
 				
 				//Build a fort
-				if(d.u === TYPES.FORT)
+				if(d.u === TYPES.FORT && player.money >= 5000){
 					this.data[d.i].type = TYPES.FORT;
+					player.money -= 5000;
+				}
 				
 			}
 			
 			//Upgrade fort to castle
-			if(this.data[d.i].type === TYPES.FORT && d.u === TYPES.CASTLE){
+			if(this.data[d.i].type === TYPES.FORT && d.u === TYPES.CASTLE && player.money >= 7500){
 				this.data[d.i].type = TYPES.CASTLE;
 				player.castles.push(d.i);
+				player.money -= 7500;
 			}
 			
 		}
