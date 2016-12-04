@@ -237,7 +237,7 @@
 			//Send map data tailored to the player's tile positions
 			//Also send turn and player's money
 			this.gameRoom.io.to(player.id).emit(EVENT.MAP_UPDATE, {
-				map: this.tailoredMapData(player),
+				map: this.minifiedTailoredMapData(player),
 				turn: this.turn,
 				money: player.money
 			});
@@ -275,6 +275,26 @@
 			
 			//Return the finalised array
 			return data;
+		}
+		
+		//Gets minified tailored map data; essentially minifies tailored map data
+		this.minifiedTailoredMapData = function(player){
+			
+			//Grab tailored map data
+			var arr = this.tailoredMapData(player),
+				data = [];
+			
+			//Loop through it and only keep actual data
+			//Keep track of positions by adding an i (index) property
+			for(var i = 0; i < arr.length; i++){
+				if(arr[i]){
+					arr[i].i = i;
+					data.push(arr[i]);
+				}
+			}
+			
+			return data;
+			
 		}
 		
 		//Get a version of a player's data that can be safely viewed by players
@@ -496,7 +516,7 @@
 				
 				//Send map data tailored to the player's tile positions
 				this.gameRoom.io.to(player.id).emit(EVENT.MAP_INITIALISATION, {
-					map: this.tailoredMapData(player),
+					map: this.minifiedTailoredMapData(player),
 					w: this.mapWidth,
 					h: this.mapHeight,
 					turn: this.turn

@@ -82,9 +82,7 @@ socket.on(EVENT.MAP_INITIALISATION, function(d){
 	
 	data.turn = d.turn;
 	
-	map.data = d.map;
-	
-	fixMap();
+	fixMap(d.map);
 	
 	//Focus around the center tile
 	for(var i = 0; i < map.data.length; i++){
@@ -109,15 +107,13 @@ socket.on(EVENT.MAP_INITIALISATION, function(d){
 //Map update
 socket.on(EVENT.MAP_UPDATE, function(d){
 	
-	map.data = d.map;
-	
 	data.turn = d.turn;
 	dom.id('turn-count').innerText = d.turn;
 	
 	data.money = d.money;
 	dom.id('money-count').innerText = d.money;
 	
-	fixMap();
+	fixMap(d.map);
 	
 	map.prepareAndDrawMap();
 	
@@ -125,12 +121,22 @@ socket.on(EVENT.MAP_UPDATE, function(d){
 	
 });
 
-//Fixes the map data sent
-function fixMap(){
+//Fixes the map data sent and stores it
+function fixMap(data){
+	
+	var tiles = [];
+	
+	//Cycle through tiles that need updating and update them
+	for(var i = 0; i < data.length; i++){
+		if(data[i]){
+			tiles.push(data[i].i);
+			map.data[data[i].i] = data[i];
+		}
+	}
+	
+	//Cycle through not updated tiles and replace them
 	for(var i = 0; i < map.data.length; i++){
-		
-		//If the current tile is empty, make it not empty
-		if(!map.data[i]){
+		if(tiles.indexOf(i) === -1){
 			map.data[i] = {
 				owner: null,
 				troops: 0,
@@ -138,9 +144,13 @@ function fixMap(){
 			}
 		}
 	}
+	
 }
 
 //Client validation for tile upgrade request, saves the server a bit of bandwidth
+//As in, a tiny tiny bit
+//Like, 5KB a month
+//xD
 function upgradeTile(upgrade){
 	if(map.selectedTile !== -1){
 		
@@ -213,7 +223,7 @@ socket.on(EVENT.GAME_WON, function(nothin){
 var canvas = document.getElementById('map'),
 	map; //Empty until game start (becomes Map() )
 
-//Namespace for abstracting the Document Object Model
+//Namespace for abstracting the Document Object Model into a somewhat useful pile of crap
 var dom = {};
 
 dom.id = function(str){
