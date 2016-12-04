@@ -279,7 +279,7 @@
 			return data;
 		}
 		
-		//Gets minified tailored map data; essentially minifies tailored map data
+		//Essentially minifies tailored map data
 		//Also replaces the owner of each tile with their ID, making it safe to transmit
 		this.minifiedTailoredMapData = function(player){
 			
@@ -289,22 +289,18 @@
 			
 			//Loop through it and only keep actual data
 			//Keep track of positions by adding an i (index) property
+			//Tiles are stored as strings following a specific format to save memory
 			for(var i = 0, tile; i < arr.length; i++){
 				if(arr[i]){
 					
-					tile = {
-						troops: arr[i].troops,
-						type: arr[i].type
-					};
+					tile = arr[i].troops + ' ' + arr[i].type;
 					
 					//Add the index property
-					tile.i = i;
+					tile += ' ' + i;
 					
 					//Replace owner with their ID
 					if(arr[i].owner)
-						tile.owner = arr[i].owner.id;
-					else
-						tile.owner = null;
+						tile += ' ' + arr[i].owner.id;
 					
 					//Add it
 					data.push(tile);

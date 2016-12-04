@@ -127,10 +127,24 @@ function fixMap(data){
 	var tiles = [];
 	
 	//Cycle through tiles that need updating and update them
-	for(var i = 0; i < data.length; i++){
+	for(var i = 0, tile, da, ij; i < data.length; i++){
 		if(data[i]){
-			tiles.push(data[i].i);
-			map.data[data[i].i] = data[i];
+			
+			tile = {};
+			da = data[i].split(' ');
+			
+			if(typeof da[0] !== 'undefined') tile.troops = parseInt(da[0]);
+			if(typeof da[1] !== 'undefined') tile.type = parseInt(da[1]);
+			if(typeof da[2] !== 'undefined') ij = parseInt(da[2]);
+			if(typeof da[3] !== 'undefined')
+				tile.owner = da[3];
+			else
+				tile.owner = null;
+			
+			map.data[ij] = tile;
+			
+			tiles.push(ij);
+			
 		}
 	}
 	
