@@ -1,7 +1,7 @@
 
 //Constants
 
-//Has constants for event codes and tile types
+//Has constants for event codes and tile types and other bits and bobs
 
 (function(){
 	
@@ -29,5 +29,12 @@
 		FARM: 3,				//Generate money, which is needed to sustain buildings
 		BARRACKS: 4				//Generate troops more cheaply than a castle or fort, once every two turns a troop is trained
 	};
+	
+	module.exports.COST = {
+		CASTLE: 7500,			//Castle costs 7500 to build on top of an already present fort
+		FORT: 5000,				//Fort costs 5000 to build
+		BARRACKS: 1500,			//Barracks cost 1500 to build
+		FARM: 500				//Farms cost 500 to build
+	}
 	
 })();

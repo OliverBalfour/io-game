@@ -1,5 +1,5 @@
 var socket = io();
-var data = {};
+var data = {room: {}};
 
 //Tile type enumeration
 var TYPES = {
@@ -35,9 +35,36 @@ socket.on(EVENT.SERVER_CONNECT, function(id){
 
 //Waiting room update
 socket.on(EVENT.WAITING_ROOM_UPDATE, function(room){
-	data.room = room;
-	updateRoom();
+	waitingRoomUpdate(room);
 });
+
+function waitingRoomUpdate(room){
+	
+	var nums = [];
+	
+	//Grab all of the data in an array
+	if(typeof room === 'string'){
+		nums = room.split(' ');
+		
+		//Parse everything into numbers
+		nums = nums.map(function(str){
+			return parseInt(str);
+		});
+	}else{
+		//Just the timer sent as a number
+		nums = [room];
+	}
+	
+	//If a certain attribute has been sent, update to it
+	if(typeof nums[0] !== 'undefined') data.room.timer = nums[0];
+	if(typeof nums[1] !== 'undefined') data.room.forceStartCount = nums[1];
+	if(typeof nums[2] !== 'undefined') data.room.playerCount = nums[2];
+	if(typeof nums[3] !== 'undefined') data.room.playerLimit = nums[3];
+	if(typeof nums[4] !== 'undefined') data.room.minPlayers = nums[4];
+	
+	updateRoom();
+	
+}
 
 //Game has started
 //The view is changed once the map has been sorted out
@@ -127,7 +154,7 @@ function upgradeTile(upgrade){
 		var i = map.selectedTile;
 		
 		//Ensure the player owns the tile
-		if(map.data[i].owner.id !== data.id) return false;
+		if(!map.data[i].owner || map.data[i].owner.id !== data.id) return false;
 		
 		//Cycle through the possibilities and only send data if it matches one to save bandwidth
 		//Of course, the server still checks everything
@@ -136,7 +163,7 @@ function upgradeTile(upgrade){
 		if(map.data[i].type === TYPES.EMPTY){
 			
 			//Build a farm, barracks or fort
-			if(upgrade === TYPES.FARM && data.money >= 500 || upgrade === TYPES.BARRACKS && data.money >= 2000 || upgrade === TYPES.FORT && data.money >= 5000)
+			if(upgrade === TYPES.FARM && data.money >= 500 || upgrade === TYPES.BARRACKS && data.money >= 1500 || upgrade === TYPES.FORT && data.money >= 5000)
 				sendData();
 			
 		}
@@ -166,6 +193,8 @@ socket.on(EVENT.PLAYER_UPDATE, function(players){
 
 //Sometimes you win, sometimes you lose
 socket.on(EVENT.PLAYER_CAPTURED, function(player){
+	console.log(player);
+	
 	dom.show('gr-lose');
 	dom.hide('gr-win');
 	dom.show('game-end-modal');
@@ -204,7 +233,7 @@ dom.changeScreen = function(s1, s2){
 
 function joinWaitingRoom(){
 	socket.emit(EVENT.JOIN_WAITING_ROOM, dom.id('name').value, function(room){
-		data.room = room;
+		waitingRoomUpdate(room);
 		updateRoom();
 		dom.changeScreen('start-screen', 'waiting-room');
 	});

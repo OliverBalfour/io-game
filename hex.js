@@ -568,7 +568,7 @@ function Map(socket, w, h, side, canvas, playerID, playerData){
 		//If the player owns the tile, then the player may be able to build on it
 		if(this.tileExists(this.selectedTile) && this.data[this.selectedTile].owner && this.data[this.selectedTile].owner.id === this.playerID){
 			
-			//If types.TYPE is false, it cannot be built
+			//If types['TYPE'] is false, it cannot be built
 			//Overidden below
 			var types = {
 				barn: false,
@@ -584,9 +584,9 @@ function Map(socket, w, h, side, canvas, playerID, playerData){
 			if(type === TYPES.EMPTY){
 				
 				//Checking money
-				if(this.playerData.money >= 4000)
+				if(this.playerData.money >= 5000)
 					types.barn = types.barracks = types.fort = true;
-				else if(this.playerData.money >= 2000)
+				else if(this.playerData.money >= 1500)
 					types.barn = types.barracks = true;
 				else if(this.playerData.money >= 500)
 					types.barn = true;

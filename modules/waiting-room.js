@@ -64,7 +64,7 @@
 			}
 			
 			//Send timer to all currently waiting clients
-			this.io.to(this.id).emit(EVENT.WAITING_ROOM_UPDATE, this.client);
+			this.io.to(this.id).emit(EVENT.WAITING_ROOM_UPDATE, this.client.timer);
 		}
 		
 		//When the timer starts (2 or more players in this.players) this will become a setInterval intervalId (number) for use with clearInterval
@@ -115,7 +115,11 @@
 			}
 			
 			//Send that data!
-			this.io.to(this.id).emit(EVENT.WAITING_ROOM_UPDATE, this.client);
+			//We send it in a much more efficient format than JSON; just a string, but given that the waiting room updates are never huge anyway that is enough
+			this.io.to(this.id).emit(
+				EVENT.WAITING_ROOM_UPDATE,
+				this.client.timer + ' ' + this.client.forceStartCount + ' ' + this.client.playerCount
+			);
 		}
 		
 		//Adds a player and updates relevant variables
@@ -156,6 +160,11 @@
 			this.client.playerCount = this.players.length;
 			
 			return removed;
+		}
+		
+		//Grabs a transmissable waiting room client data string
+		this.getFullClient = function(){
+			return this.client.timer + ' ' + this.client.forceStartCount + ' ' + this.client.playerCount + ' ' + this.client.playerLimit + ' ' + this.client.minPlayers;
 		}
 		
 		//Start game

@@ -23,14 +23,6 @@
 		
 		this.end = end;
 		
-		//Alter the players game IDs
-		for(var i = 0; i < this.players.length; i++){
-			this.players[i].gameID = this.id;
-		}
-		
-		//Alert players that they have joined a game
-		this.io.to(this.id).emit(EVENT.GAME_START, this.players);
-		
 		//Removes a player and updates variables
 		//Returns boolean, indicating success
 		this.removePlayer = function(player){
@@ -114,6 +106,15 @@
 			this.end();
 		}
 		
+		//Make a map
 		this.map = new Map(16, 16, this);
+		
+		//Alter the players game IDs
+		for(var i = 0; i < this.players.length; i++){
+			this.players[i].gameID = this.id;
+		}
+		
+		//Alert players that they have joined a game
+		this.io.to(this.id).emit(EVENT.GAME_START, this.map.tailoredPlayerArray());
 	}
 })();

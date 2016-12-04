@@ -13,6 +13,7 @@
 	var CONSTANTS = require('./const');
 	var EVENT = CONSTANTS.EVENT;
 	var TYPES = CONSTANTS.TYPES;
+	var COST = CONSTANTS.COST;
 	
 	module.exports = function(w, h, gameRoom, generationFunction){
 		
@@ -186,11 +187,19 @@
 						if(tile.owner) tile.owner.money += 10;
 					}
 					
+					if(tile.type === TYPES.BARRACKS && this.turn % 2 === 0){
+						tile.troops++;
+					}
+					
+					if(tile.type === TYPES.FARM){
+						if(tile.owner) tile.owner.money += 10;
+					}
+					
 					if(tile.type === TYPES.EMPTY && this.turn % 25 === 0){
 						tile.troops++;
-						if(tile.owner) tile.owner.money += 5;
-					}else{
-						if(tile.owner) tile.owner.money ++;
+						if(tile.owner) tile.owner.money++;
+					}else if(this.turn % 5 === 0){
+						if(tile.owner) tile.owner.money++;
 					}
 					
 				}
@@ -266,6 +275,31 @@
 			
 			//Return the finalised array
 			return data;
+		}
+		
+		//Get a version of a player's data that can be safely viewed by players
+		this.tailoredPlayerData = function(player){
+			return {
+				id: player.id,
+				name: player.name,
+				money: player.money
+			}
+		}
+		
+		//Get a version of this.gameRoom.players that is safe for players to see
+		this.tailoredPlayerArray = function(){
+			
+			//Empty array
+			var players = [];
+			
+			//Populate it with tailored player data
+			for(var i = 0; i < this.gameRoom.players.length; i++){
+				players.push(this.tailoredPlayerData(this.gameRoom.players[i]));
+			}
+			
+			//Return it, duh!
+			return players;
+			
 		}
 		
 		//Triggered when a player wants to move their troops to another tile
@@ -363,14 +397,14 @@
 				this.transmitMapTo(captured);
 				
 				//Alert the captured player of their loss
-				this.gameRoom.io.to(captured.id).emit(EVENT.PLAYER_CAPTURED, capturer);
+				this.gameRoom.io.to(captured.id).emit(EVENT.PLAYER_CAPTURED, this.tailoredPlayerData(capturer));
 				
 				//Remove player from the game room
 				this.gameRoom.removePlayer(captured);
 				
 				//Alert all other players of captured's demise
 				//MWAH HA HAAAAA
-				capturedSocket.to(this.gameRoom.id).emit(EVENT.PLAYER_UPDATE, this.gameRoom.players);
+				capturedSocket.to(this.gameRoom.id).emit(EVENT.PLAYER_UPDATE, this.tailoredPlayerArray());
 				
 				//Check if the game has been won
 				this.gameRoom.checkForWin(capturer);
@@ -400,30 +434,30 @@
 			if(this.data[d.i].type === TYPES.EMPTY){
 				
 				//Build a farm
-				if(d.u === TYPES.FARM && player.money >= 500){
+				if(d.u === TYPES.FARM && player.money >= COST.FARM){
 					this.data[d.i].type = TYPES.FARM;
-					player.money -= 500;
+					player.money -= COST.FARM;
 				}
 				
 				//Build a barracks
-				if(d.u === TYPES.BARRACKS && player.money >= 2000){
+				if(d.u === TYPES.BARRACKS && player.money >= COST.BARRACKS){
 					this.data[d.i].type = TYPES.BARRACKS;
-					player.money -= 2000;
+					player.money -= COST.BARRACKS;
 				}
 				
 				//Build a fort
-				if(d.u === TYPES.FORT && player.money >= 5000){
+				if(d.u === TYPES.FORT && player.money >= COST.FORT){
 					this.data[d.i].type = TYPES.FORT;
-					player.money -= 5000;
+					player.money -= COST.FORT;
 				}
 				
 			}
 			
 			//Upgrade fort to castle
-			if(this.data[d.i].type === TYPES.FORT && d.u === TYPES.CASTLE && player.money >= 7500){
+			if(this.data[d.i].type === TYPES.FORT && d.u === TYPES.CASTLE && player.money >= COST.CASTLE){
 				this.data[d.i].type = TYPES.CASTLE;
 				player.castles.push(d.i);
-				player.money -= 7500;
+				player.money -= COST.CASTLE;
 			}
 			
 			//If the tile isn't empty and they want it to be, I don't see why not...

@@ -108,8 +108,8 @@
 			socket.player.isWaiting = true;
 			game.waitingRoom.updateClient();
 			
-			//Send back barebones waiting room data - the timer, force start count and player count
-			fn(game.waitingRoom.client);
+			//Send back init waiting room data - minimum and maximum players; as well as the timer, force start count and player count
+			fn(game.waitingRoom.getFullClient());
 		});
 		
 		//Whenever the player toggles the force start button, this is triggered
@@ -162,7 +162,7 @@
 				var socketGame = game.getGame(socket.player.gameID);
 				
 				socketGame.removePlayer(socket.player);
-				socket.to(socketGame.id).emit(EVENT.PLAYER_UPDATE, socketGame.players);
+				socket.to(socketGame.id).emit(EVENT.PLAYER_UPDATE, socketGame.map.tailoredPlayerArray());
 				
 				socketGame.checkForWin();
 				
