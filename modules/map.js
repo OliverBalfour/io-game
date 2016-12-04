@@ -245,6 +245,8 @@
 		}
 		
 		//Get a version of the map that can be safely viewed by a certain player
+		//Well, almost
+		//The owner for each tile is clear and easy to access, which is dangerous because that contains an array of their castle's positions
 		//Returns an altered version of the this.data array
 		this.tailoredMapData = function(player){
 			
@@ -278,6 +280,7 @@
 		}
 		
 		//Gets minified tailored map data; essentially minifies tailored map data
+		//Also replaces the owner of each tile with their ID, making it safe to transmit
 		this.minifiedTailoredMapData = function(player){
 			
 			//Grab tailored map data
@@ -286,10 +289,26 @@
 			
 			//Loop through it and only keep actual data
 			//Keep track of positions by adding an i (index) property
-			for(var i = 0; i < arr.length; i++){
+			for(var i = 0, tile; i < arr.length; i++){
 				if(arr[i]){
-					arr[i].i = i;
-					data.push(arr[i]);
+					
+					tile = {
+						troops: arr[i].troops,
+						type: arr[i].type
+					};
+					
+					//Add the index property
+					tile.i = i;
+					
+					//Replace owner with their ID
+					if(arr[i].owner)
+						tile.owner = arr[i].owner.id;
+					else
+						tile.owner = null;
+					
+					//Add it
+					data.push(tile);
+					
 				}
 			}
 			
@@ -302,7 +321,8 @@
 			return {
 				id: player.id,
 				name: player.name,
-				money: player.money
+				money: player.money,
+				color: player.color
 			}
 		}
 		

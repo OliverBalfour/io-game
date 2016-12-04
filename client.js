@@ -1,5 +1,5 @@
 var socket = io();
-var data = {room: {}};
+var data = {room: {}, players: []};
 
 //Tile type enumeration
 var TYPES = {
@@ -84,7 +84,7 @@ socket.on(EVENT.MAP_INITIALISATION, function(d){
 	
 	fixMap(d.map);
 	
-	//Focus around the center tile
+	//Center the map on the only owned tile on the screen - the player's castle
 	for(var i = 0; i < map.data.length; i++){
 		if(map.data[i].owner){
 			map.centerTile(i);
@@ -164,7 +164,7 @@ function upgradeTile(upgrade){
 		var i = map.selectedTile;
 		
 		//Ensure the player owns the tile
-		if(!map.data[i].owner || map.data[i].owner.id !== data.id) return false;
+		if(!map.data[i].owner || map.data[i].owner !== data.id) return false;
 		
 		//Cycle through the possibilities and only send data if it matches one to save bandwidth
 		//Of course, the server still checks everything
@@ -193,6 +193,15 @@ function upgradeTile(upgrade){
 function toggleActionBarDetail(){
 	dom.id('action-bar').classList.toggle('expanded');
 	dom.id('action-toggle-detail').innerText = dom.id('action-toggle-detail').innerText === '<' ? '>' : '<';
+}
+
+//Get a player object by their ID
+function getPlayer(id){
+	for(var i = 0; i < data.players.length; i++){
+		if(data.players[i].id === id) return data.players[i];
+	}
+	
+	return false;
 }
 
 socket.on(EVENT.PLAYER_UPDATE, function(players){

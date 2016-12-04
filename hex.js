@@ -164,7 +164,7 @@ function Map(socket, w, h, side, canvas, playerID, playerData){
 		//Draw hexagon
 		
 		//Tile color
-		ctx.fillStyle = tile.owner ? tile.owner.color : 'lightgrey';
+		ctx.fillStyle = tile.owner ? getPlayer(tile.owner).color : 'lightgrey';
 		
 		if(tile.type === TYPES.UNKNOWN) ctx.fillStyle = '#777';
 		
@@ -471,10 +471,11 @@ function Map(socket, w, h, side, canvas, playerID, playerData){
 	this.moveSelection = function(rotation){
 		
 		//If the tile is owned by the player troops can be moved from it
-		if(this.data[this.selectedTile].owner && this.data[this.selectedTile].owner.id === this.playerID){
+		if(this.data[this.selectedTile].owner === this.playerID){
 			
 			//Move the troops
 			this.moveTroops(this.selectedTile, this.getTileNeighbour(this.selectedTile, rotation));
+			
 		}
 		
 		//Select the new tile
@@ -566,7 +567,7 @@ function Map(socket, w, h, side, canvas, playerID, playerData){
 		dom.id('bd-castle').classList.add('disabled');
 		
 		//If the player owns the tile, then the player may be able to build on it
-		if(this.tileExists(this.selectedTile) && this.data[this.selectedTile].owner && this.data[this.selectedTile].owner.id === this.playerID){
+		if(this.tileExists(this.selectedTile) && this.data[this.selectedTile].owner === this.playerID){
 			
 			//If types['TYPE'] is false, it cannot be built
 			//Overidden below
