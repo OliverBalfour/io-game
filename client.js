@@ -1,5 +1,5 @@
 var socket = io();
-var data = {room: {}, players: []};
+var data = {room: {}, players: [], indexes: []};
 
 //Tile type enumeration
 var TYPES = {
@@ -82,6 +82,9 @@ socket.on(EVENT.MAP_INITIALISATION, function(d){
 	
 	data.turn = d.turn;
 	
+	//Indexes, essentially game specific IDs for players, great for saving bandwidth (1 byte instead of 16)
+	data.indexes = d.indexes;
+	
 	fixMap(d.map);
 	
 	//Center the map on the only owned tile on the screen - the player's castle
@@ -122,22 +125,22 @@ socket.on(EVENT.MAP_UPDATE, function(d){
 });
 
 //Fixes the map data sent and stores it
-function fixMap(data){
+function fixMap(d){
 	
 	var tiles = [];
 	
 	//Cycle through tiles that need updating and update them
-	for(var i = 0, tile, da, ij; i < data.length; i++){
-		if(data[i]){
+	for(var i = 0, tile, da, ij; i < d.length; i++){
+		if(d[i]){
 			
 			tile = {};
-			da = data[i].split(' ');
+			da = d[i].split(' ');
 			
 			if(typeof da[0] !== 'undefined') tile.troops = parseInt(da[0]);
 			if(typeof da[1] !== 'undefined') tile.type = parseInt(da[1]);
 			if(typeof da[2] !== 'undefined') ij = parseInt(da[2]);
 			if(typeof da[3] !== 'undefined')
-				tile.owner = da[3];
+				tile.owner = data.indexes[parseInt(da[3])];
 			else
 				tile.owner = null;
 			

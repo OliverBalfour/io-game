@@ -69,6 +69,19 @@
 			return ret;
 		}
 		
+		//Returns an array of player IDs that are in the same order as this.players; useful for indentifying players without their full ID (less bytes to transmit)
+		this.getPlayerIndexes = function(){
+			
+			var players = [];
+			
+			for(var i = 0; i < this.players.length; i++){
+				players.push(this.players[i].id);
+			}
+			
+			return players;
+			
+		}
+		
 		//Check to see if this game has been won
 		//Triggered whenever a player loses or disconnects
 		this.checkForWin = function(){

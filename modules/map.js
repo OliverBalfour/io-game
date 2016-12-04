@@ -244,6 +244,8 @@
 			
 		}
 		
+		this.indexes = this.gameRoom.getPlayerIndexes();
+		
 		//Get a version of the map that can be safely viewed by a certain player
 		//Well, almost
 		//The owner for each tile is clear and easy to access, which is dangerous because that contains an array of their castle's positions
@@ -298,9 +300,9 @@
 					//Add the index property
 					tile += ' ' + i;
 					
-					//Replace owner with their ID
+					//Replace owner with their index ID
 					if(arr[i].owner)
-						tile += ' ' + arr[i].owner.id;
+						tile += ' ' + this.indexes.indexOf(arr[i].owner.id);
 					
 					//Add it
 					data.push(tile);
@@ -333,7 +335,6 @@
 				players.push(this.tailoredPlayerData(this.gameRoom.players[i]));
 			}
 			
-			//Return it, duh!
 			return players;
 			
 		}
@@ -535,7 +536,8 @@
 					map: this.minifiedTailoredMapData(player),
 					w: this.mapWidth,
 					h: this.mapHeight,
-					turn: this.turn
+					turn: this.turn,
+					indexes: this.indexes
 				});
 				
 			}
