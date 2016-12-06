@@ -93,7 +93,7 @@
 			if(this.players.length === 1){
 				
 				//Update the game prematurely to show the winner the final map
-				this.map.transmitMap();
+				this.map.transmitMap(true);
 				
 				//Let them know
 				this.io.to(this.players[0].id).emit(EVENT.GAME_WON, null);

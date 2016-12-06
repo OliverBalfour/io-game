@@ -79,7 +79,7 @@ function Map(socket, w, h, side, canvas, playerID, playerData){
 			this.data.push({
 				owner: null,
 				troops: 0,
-				type: TYPES.EMPTY
+				type: TYPES.UNKNOWN
 			});
 		}
 	}

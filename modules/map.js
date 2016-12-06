@@ -36,7 +36,8 @@
 				this.data.push({
 					owner: null,
 					troops: 0,
-					type: TYPES.EMPTY
+					type: TYPES.EMPTY,
+					changed: false
 				});
 			}
 		}
@@ -209,12 +210,13 @@
 			this.turn++;
 			
 			//Send it to the users
-			this.transmitMap();
+			this.transmitMap(true);
 		}
 		
 		//Networking
 		//Transmit the map
-		this.transmitMap = function(){
+		//If changed is true, only send tiles that have changed unpredictably (not according to code; ie a player moving troops)
+		this.transmitMap = function(changed){
 			
 			//Less crappy networking
 			//Secure
@@ -225,19 +227,25 @@
 				player = this.gameRoom.players[i];
 				
 				//Transmit
-				this.transmitMapTo(player);
+				this.transmitMapTo(player, changed);
 				
+			}
+			
+			//Reset all of the 'changed' attributes of tiles
+			for(var i = 0; i < this.data.length; i++){
+				this.data[i].changed = false;
 			}
 			
 		}
 		
 		//Transmit a tailored map to a player
-		this.transmitMapTo = function(player){
+		//The changed parameter is as in this.transmitMap
+		this.transmitMapTo = function(player, changed){
 			
 			//Send map data tailored to the player's tile positions
 			//Also send turn and player's money
 			this.gameRoom.io.to(player.id).emit(EVENT.MAP_UPDATE, {
-				map: this.minifiedTailoredMapData(player),
+				map: this.minifiedTailoredMapData(player, changed),
 				turn: this.turn,
 				money: player.money
 			});
@@ -283,7 +291,8 @@
 		
 		//Essentially minifies tailored map data
 		//Also replaces the owner of each tile with their ID, making it safe to transmit
-		this.minifiedTailoredMapData = function(player){
+		//The changed parameter is as in this.transmitMap
+		this.minifiedTailoredMapData = function(player, changed){
 			
 			//Grab tailored map data
 			var arr = this.tailoredMapData(player),
@@ -292,8 +301,10 @@
 			//Loop through it and only keep actual data
 			//Keep track of positions by adding an i (index) property
 			//Tiles are stored as strings following a specific format to save memory
+			//Also, only add tiles if they have been changed in an unpredictable manner should changed === true
 			for(var i = 0, tile; i < arr.length; i++){
-				if(arr[i]){
+				
+				if(arr[i] && (changed && arr[i].changed || !changed)){
 					
 					tile = arr[i].troops + ' ' + arr[i].type;
 					
@@ -308,6 +319,7 @@
 					data.push(tile);
 					
 				}
+				
 			}
 			
 			return data;
@@ -354,6 +366,9 @@
 			
 			var origin = this.data[d.origin],
 				endpoint = this.data[d.endpoint];
+			
+			//Indicate that the tiles have been changed, and need to be transmitted
+			origin.changed = endpoint.changed = true;
 			
 			//If the player owns the tile the troops would be coming from, move the troops
 			if(origin.owner && origin.owner.id === player.id){
@@ -431,7 +446,7 @@
 				
 				//Prematurely send the captured player a map update to show them the map after they lost
 				//This will be blank, of course, for their tiles are no longer theirs
-				this.transmitMapTo(captured);
+				this.transmitMapTo(captured, true);
 				
 				//Alert the captured player of their loss
 				this.gameRoom.io.to(captured.id).emit(EVENT.PLAYER_CAPTURED, this.tailoredPlayerData(capturer));
@@ -466,6 +481,9 @@
 			
 			//Ensure the player owns the tile
 			if(this.data[d.i].owner !== player) return false;
+			
+			//Indicate that the tile has been changed and needs to be transmitted
+			this.data[d.i].changed = true;
 			
 			//Building stuff on empty ground
 			if(this.data[d.i].type === TYPES.EMPTY){
@@ -533,7 +551,7 @@
 				
 				//Send map data tailored to the player's tile positions
 				this.gameRoom.io.to(player.id).emit(EVENT.MAP_INITIALISATION, {
-					map: this.minifiedTailoredMapData(player),
+					map: this.minifiedTailoredMapData(player, false),
 					w: this.mapWidth,
 					h: this.mapHeight,
 					turn: this.turn,

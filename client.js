@@ -116,6 +116,8 @@ socket.on(EVENT.MAP_UPDATE, function(d){
 	data.money = d.money;
 	dom.id('money-count').innerText = d.money;
 	
+	updateTiles();
+	
 	fixMap(d.map);
 	
 	map.prepareAndDrawMap();
@@ -151,23 +153,45 @@ function fixMap(d){
 		}
 	}
 	
-	//Cycle through not updated tiles and replace them
-	for(var i = 0; i < map.data.length; i++){
-		if(tiles.indexOf(i) === -1){
-			map.data[i] = {
-				owner: null,
-				troops: 0,
-				type: TYPES.UNKNOWN
+}
+
+//Client prediction; everything that isn't overridden by the server is predictable with constant change
+function updateTiles(){
+	for(var i = 0, tile; i < map.data.length; i++){
+		tile = map.data[i];
+		
+		//For any owned tile, which needs to be updated
+		if(tile.owner !== null){
+			
+			if(tile.type === TYPES.CASTLE || tile.type === TYPES.FORT){
+				tile.troops++;
+				if(tile.owner) tile.owner.money += 10;
 			}
+			
+			if(tile.type === TYPES.BARRACKS && data.turn % 2 === 0){
+				tile.troops++;
+			}
+			
+			if(tile.type === TYPES.FARM){
+				if(tile.owner) tile.owner.money += 10;
+			}
+			
+			if(tile.type === TYPES.EMPTY && data.turn % 25 === 0){
+				tile.troops++;
+				if(tile.owner) tile.owner.money++;
+			}else if(data.turn % 5 === 0){
+				if(tile.owner) tile.owner.money++;
+			}
+			
 		}
 	}
-	
 }
 
 //Client validation for tile upgrade request, saves the server a bit of bandwidth
 //As in, a tiny tiny bit
 //Like, 5KB a month
 //xD
+//But the code is copy/pasted so whatever
 function upgradeTile(upgrade){
 	if(map.selectedTile !== -1){
 		
