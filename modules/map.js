@@ -370,6 +370,18 @@
 			//Indicate that the tiles have been changed, and need to be transmitted
 			origin.changed = endpoint.changed = true;
 			
+			//For the sake of fog of war, all of the tiles around the endpoint get flagged changed too, because if they aren't, the player won't see them
+			//Veeeery hacky but it works xD
+			for(var r = 0, t; r < 6; r++){
+				
+				t = this.getTileNeighbour(d.endpoint, r);
+				
+				if(t){
+					this.data[t].changed = true;
+				}
+				
+			}
+			
 			//If the player owns the tile the troops would be coming from, move the troops
 			if(origin.owner && origin.owner.id === player.id){
 				
