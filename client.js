@@ -1,3 +1,4 @@
+
 var socket = io();
 var data = {room: {}, players: [], indexes: []};
 
@@ -268,7 +269,7 @@ socket.on(EVENT.GAME_WON, function(nothin){
 	dom.show('gr-win');
 	dom.hide('gr-lose');
 	dom.show('game-end-modal');
-})
+});
 
 var canvas = document.getElementById('map'),
 	map; //Empty until game start (becomes Map() )

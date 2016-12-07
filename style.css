@@ -45,7 +45,7 @@ button:hover{
 
 
 #start-screen{
-	background: #333;
+	background: darkslategrey;
 }
 
 
@@ -77,7 +77,7 @@ button:hover{
 
 
 #waiting-room{
-	background: #333;
+	background: darkslategrey;
 }
 
 
@@ -141,7 +141,7 @@ button:hover{
 	position: absolute;
 	top: 0;
 	left: 0;
-	background: grey;
+	background: darkslategrey;
 }
 
 
