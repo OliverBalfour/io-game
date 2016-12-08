@@ -13,6 +13,8 @@
 	
 	var EVENT = require('./const').EVENT;
 	
+	var sanitizer = require('sanitizer');
+	
 	module.exports = function(io, id, players, end){
 		
 		this.id = id;
@@ -79,6 +81,20 @@
 			}
 			
 			return players;
+			
+		}
+		
+		//Player sends a message
+		this.sendMessage = function(player, m){
+			
+			//Stuff you XSS
+			m = sanitizer.sanitize(m);
+			
+			this.io.to(this.id).emit(EVENT.CHAT_MESSAGE, {
+				t: 'p',
+				i: this.map.indexes.indexOf(player.id),
+				m: m
+			});
 			
 		}
 		

@@ -25,7 +25,8 @@ var EVENT = {
 	PLAYER_CAPTURED: 9,
 	PLAYER_UPDATE: 10,
 	GAME_WON: 11,
-	TILE_UPGRADE: 12
+	TILE_UPGRADE: 12,
+	CHAT_MESSAGE: 13
 };
 
 //Connected to server
@@ -361,3 +362,26 @@ function exitGame(){
 	dom.hide('game-end-modal');
 	
 }
+
+//When client presses enter in the chat field, send message
+dom.id('chatbox').addEventListener('keydown', function(e){
+	
+	if(e.which === 13){
+		socket.emit(EVENT.CHAT_MESSAGE, dom.id('chatbox').value);
+		dom.id('chatbox').value = '';
+	}
+	
+});
+
+socket.on(EVENT.CHAT_MESSAGE, function(msg){
+	var html = '';
+	
+	if(msg.t === 'p'){
+		html = "<div class='message'><span style='color: " + getPlayer(data.indexes[msg.i]).color + "'>" + getPlayer(data.indexes[msg.i]).name + ": </span>" + msg.m + "</div>";
+	}else{
+		html = "<div class='message'><b>" + msg.m + "</b></div>";
+	}
+	
+	dom.id('messages').innerHTML += html;
+});
+

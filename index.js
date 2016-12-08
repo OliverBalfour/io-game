@@ -142,9 +142,17 @@
 		
 		socket.on(EVENT.TILE_UPGRADE, function(d){
 			
-			//Assuming the game they want to upgrade a tile in in actually exists (ie it's still active) then upgrade the tile
+			//Assuming the game they want to upgrade a tile in actually exists (ie it's still active) then upgrade the tile
 			if(game.getGame(socket.player.gameID))
 				game.getGame(socket.player.gameID).map.upgradeTile(socket.player, d);
+			
+		});
+		
+		socket.on(EVENT.CHAT_MESSAGE, function(m){
+			
+			//Assuming the game they want to send a message in actually exists (ie it's still active) then send the message
+			if(game.getGame(socket.player.gameID))
+				game.getGame(socket.player.gameID).sendMessage(socket.player, m);
 			
 		});
 		

@@ -4,32 +4,6 @@
 //The map class contains all of the interface code, drawing code, prediction code
 //Also has networking sorted
 
-//Tile type enumeration
-var TYPES = {
-	UNKNOWN: -1,
-	EMPTY: 0,
-	CASTLE: 1,
-	FORT: 2,
-	FARM: 3,
-	BARRACKS: 4
-}
-
-var EVENT = {
-	SERVER_CONNECT: 0,
-	JOIN_WAITING_ROOM: 1,
-	WAITING_ROOM_UPDATE: 2,
-	FORCE_START_STATUS: 3,
-	GAME_START: 4,
-	LEAVE_WAITING_ROOM: 5,
-	MAP_INITIALISATION: 6,
-	MAP_UPDATE: 7,
-	MOVE_TROOPS: 8,
-	PLAYER_CAPTURED: 9,
-	PLAYER_UPDATE: 10,
-	GAME_WON: 11,
-	TILE_UPGRADE: 12
-};
-
 function Map(socket, w, h, side, canvas, playerID, playerData){
 	
 	//Networking

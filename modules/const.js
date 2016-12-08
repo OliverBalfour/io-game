@@ -18,7 +18,8 @@
 		PLAYER_CAPTURED: 9,		//Sent to a player when they have lost the game (I LOST THE GAME!!!)
 		PLAYER_UPDATE: 10,		//Sent when the in game leaderboard needs to be updated
 		GAME_WON: 11,			//Sent to the winner of the game (I LOST THE GAME!!!)
-		TILE_UPGRADE: 12		//A player wants to upgrade a tile, or build something on it
+		TILE_UPGRADE: 12,		//A player wants to upgrade a tile, or build something on it
+		CHAT_MESSAGE: 13		//A player is sending or has sent a message, or the server is sending a message in game
 	};
 	
 	module.exports.TYPES = {
