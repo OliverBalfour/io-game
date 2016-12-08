@@ -376,7 +376,8 @@
 				
 				t = this.getTileNeighbour(d.endpoint, r);
 				
-				if(t){
+				//t could be 0, so no if(t){ ... }
+				if(t !== false){
 					this.data[t].changed = true;
 				}
 				
