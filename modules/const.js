@@ -28,7 +28,8 @@
 		CASTLE: 1,				//Castle tile, when all of a player's castles are captured they lose
 		FORT: 2,				//Fort/fortress, generates a troop a turn along with castles
 		FARM: 3,				//Generate money, which is needed to sustain buildings
-		BARRACKS: 4				//Generate troops more cheaply than a castle or fort, once every two turns a troop is trained
+		BARRACKS: 4,			//Generate troops more cheaply than a castle or fort, once every two turns a troop is trained
+		MOUNTAIN: 5				//Mountain tile; cannot be passed
 	};
 	
 	module.exports.COST = {

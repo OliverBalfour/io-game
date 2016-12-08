@@ -367,6 +367,10 @@
 			var origin = this.data[d.origin],
 				endpoint = this.data[d.endpoint];
 			
+			//Make sure the tile isn't a mountain
+			if(endpoint.type === TYPES.MOUNTAIN)
+				return false;
+			
 			//Indicate that the tiles have been changed, and need to be transmitted
 			origin.changed = endpoint.changed = true;
 			
@@ -401,7 +405,7 @@
 						endpoint.troops *= -1;
 						
 						//If a castle has been captured, check to see if that was the player's last castle
-						if(endpoint.type === TYPES.CASTLE){
+						if(endpoint.type === TYPES.CASTLE && endpoint.owner){
 							endpoint.owner.castles.splice(endpoint.owner.castles.indexOf(d.endpoint), 1);
 							
 							//If that was their last castle, they lose

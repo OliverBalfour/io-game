@@ -9,7 +9,8 @@ var TYPES = {
 	CASTLE: 1,
 	FORT: 2,
 	FARM: 3,
-	BARRACKS: 4
+	BARRACKS: 4,
+	MOUNTAIN: 5
 }
 
 var EVENT = {

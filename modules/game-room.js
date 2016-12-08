@@ -12,6 +12,7 @@
 	var Map = require('./map');
 	
 	var EVENT = require('./const').EVENT;
+	var TYPES = require('./const').TYPES;
 	
 	var sanitizer = require('sanitizer');
 	
@@ -136,7 +137,18 @@
 		}
 		
 		//Make a map
-		this.map = new Map(16, 16, this);
+		this.map = new Map(32, 32, this, function(){
+			this.data = [];
+			
+			for(var i = 0; i < this.mapWidth * this.mapHeight; i++){
+				this.data.push({
+					owner: null,
+					troops: 0,
+					type: Math.random() < 0.1 ? TYPES.MOUNTAIN : TYPES.EMPTY,
+					changed: false
+				});
+			}
+		});
 		
 		//Alter the players game IDs
 		for(var i = 0; i < this.players.length; i++){

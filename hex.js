@@ -501,14 +501,14 @@ function Map(socket, w, h, side, canvas, playerID, playerData){
 		this.icons[name].src = 'icons/' + file;
 	}
 	
-	var icons = ['barn.png', 'castle.png', 'medieval-pavilion.png', 'peaks.png', 'stone-tower.png'],
-		names = ['farm', 'castle', 'barracks', 'mountains', 'fort'];
+	var icons = ['barn.png', 'castle.png', 'medieval-pavilion.png', 'peaks.png', 'stone-tower.png', 'peaks.png'],
+		names = ['farm', 'castle', 'barracks', 'mountains', 'fort', 'mountain'];
 	
 	for(var i = 0; i < icons.length; i++){
 		this.loadIcon(names[i], icons[i]);
 	}
 	
-	this.typeMap = [null, 'castle', 'fort', 'farm', 'barracks'];
+	this.typeMap = [null, 'castle', 'fort', 'farm', 'barracks', 'mountain'];
 	
 	this.getIcon = function(type){
 		return this.icons[this.typeMap[type]];
