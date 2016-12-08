@@ -724,7 +724,8 @@ function Map(socket, w, h, side, canvas, playerID, playerData){
 		
 		this.client.keys[e.which || e.keyCode] = true;
 		
-		this.keydown(e.which || e.keyCode);
+		if(document.activeElement !== dom.id('chatbox'))
+			this.keydown(e.which || e.keyCode);
 		
 	}.bind(this);
 	
@@ -734,7 +735,8 @@ function Map(socket, w, h, side, canvas, playerID, playerData){
 		
 		this.client.keys[e.which || e.keyCode] = false;
 		
-		this.keyup(e.which || e.keyCode);
+		if(document.activeElement !== dom.id('chatbox'))
+			this.keyup(e.which || e.keyCode);
 		
 	}.bind(this);
 	

@@ -361,6 +361,9 @@ function exitGame(){
 	//Remove modal
 	dom.hide('game-end-modal');
 	
+	//Clear the last game's messages
+	dom.id('messages').innerHTML = '';
+	
 }
 
 //When client presses enter in the chat field, send message
@@ -374,6 +377,7 @@ dom.id('chatbox').addEventListener('keydown', function(e){
 });
 
 socket.on(EVENT.CHAT_MESSAGE, function(msg){
+	
 	var html = '';
 	
 	if(msg.t === 'p'){
@@ -383,5 +387,12 @@ socket.on(EVENT.CHAT_MESSAGE, function(msg){
 	}
 	
 	dom.id('messages').innerHTML += html;
+	
+	updateScroll();
+	
 });
 
+function updateScroll(){
+	var el = dom.id('messages');
+	el.scrollTop = el.scrollHeight - 110;
+}
