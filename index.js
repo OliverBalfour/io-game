@@ -32,7 +32,7 @@
 	});
 	
 	//The files in the root that the public aren't allowed to see
-	var blacklistedFiles = ['index.js', 'package.json', '.gitignore'];
+	var blacklistedFiles = ['index.js', 'package.json', '.gitignore', 'TODO.txt', 'README.md'];
 	
 	//Get individual files on the server
 	app.get('/*', function(req, res, next){
@@ -91,6 +91,10 @@
 		//When the user hits play, they are given a waiting room
 		//That is, assuming their name is valid
 		socket.on(EVENT.JOIN_WAITING_ROOM, function(name, fn){
+			
+			//Stuff you hackers
+			if(typeof name !== 'string' || typeof fn !== 'function')
+				return false;
 			
 			//Die XSS
 			name = sanitizer.sanitize(name);
@@ -153,7 +157,8 @@
 		socket.on(EVENT.CHAT_MESSAGE, function(m){
 			
 			//Assuming the game they want to send a message in actually exists (ie it's still active) then send the message
-			if(game.getGame(socket.player.gameID))
+			//Also, it needs to not be a function or it looks weird as hell
+			if(typeof m === 'string' && game.getGame(socket.player.gameID))
 				game.getGame(socket.player.gameID).sendMessage(socket.player, m);
 			
 		});

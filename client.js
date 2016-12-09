@@ -346,8 +346,8 @@ function updatePlayers(){
 	
 	//Concatenate player names into a list
 	var playerNames = [];
-	players.forEach(function(player){ playerNames.push(player.name) });
-	dom.id('gr-players').innerHTML = "<span class='gr-player'>" + playerNames.join("</span><span class='gr-player'>") + "</span>";
+	players.forEach(function(player){ playerNames.push("<span class='gr-player' style='color: " + player.color + "'>" + player.name + "</span>") });
+	dom.id('gr-players').innerHTML = playerNames.join('');
 }
 
 function exitGame(){

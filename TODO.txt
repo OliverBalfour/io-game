@@ -1,0 +1,36 @@
+TODO
+
+Development
+
+ - Add more things to this list
+ - Set up Grunt for uglification of files
+ - Add movement queues; such that you may only move once per turn
+ - Add right click + drag to quickly and easily make movement chains
+ - Add rivers/streams
+ - Make mountain placement better, and either:
+    - Ensure maps are fair; no players cut off by mountains from the rest of the map, or
+	- Make some way of crossing mountains
+ - Make players spawn a certain distance from each other
+ - Make leaderboards display money, land and total troops
+ - Add in building times for each building, in which they are inactive (being built)
+ - Make buildings more affordable
+ - Add several game modes, 8v8, 1v1, 2v2 teams, hex with a player in each corner, singleplayer against AI, hot seat, diplomacy w/ 6 players
+ - Build AIs to sneak into games when no one else is playing
+ - Add in naturally spawning castles
+ - Add in 'fallen civilisations,' which have money and castles and a little land
+ - Generate mountain ranges, allowing for strategy to be a lot better
+ - Add defensive multipliers; castles have +40%, forts +30%, barracks +20%, farms +15%, and normal tiles +10%
+ - Properly sanitize and type check all data sent in to prevent trolls crashing the server for lols
+ 
+ Publishing
+ 
+ - Name the game
+ - Buy [name].io on Amazon AWS Route 53 (using the 100 USD on the account)
+ - Set up DigitalOcean droplet hosting and apply $50 GitHub Student Pack offer to it (10 MONTHS of free hosting)
+ - Put in ads, and make unobtrusive
+ - Build a plea with adblockers saying "Your Majesty! The peasants are starving! Please disable your AdBlocker!"
+ - Publish the game to the droplet
+ - Send iogames.space an email about the game and mention the button
+ - Put in the button (Link back to iogames.space)
+ - Roll in money and players
+ - Brag about having made an io game
