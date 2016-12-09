@@ -456,6 +456,9 @@
 				
 				if(tile.owner === captured)
 					tile.owner = capturer;
+				
+				//It has changed ownership after all
+				tile.changed = true;
 			}
 			
 			//Assuming the player is actually online, we send data
