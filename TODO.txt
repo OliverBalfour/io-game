@@ -9,7 +9,7 @@ Development
  - Add rivers/streams
  - Make mountain placement better, and either:
     - Ensure maps are fair; no players cut off by mountains from the rest of the map, or
-	- Make some way of crossing mountains
+    - Make some way of crossing mountains
  - Make players spawn a certain distance from each other
  - Make leaderboards display money, land and total troops
  - Add in building times for each building, in which they are inactive (being built)
@@ -20,7 +20,7 @@ Development
  - Add in 'fallen civilisations,' which have money and castles and a little land
  - Generate mountain ranges, allowing for strategy to be a lot better
  - Add defensive multipliers; castles have +40%, forts +30%, barracks +20%, farms +15%, and normal tiles +10%
- - Properly sanitize and type check all data sent in to prevent trolls crashing the server for lols
+DONE - Properly sanitize and type check all data sent in to prevent trolls crashing the server for lols
  
  Publishing
  

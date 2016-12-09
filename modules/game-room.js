@@ -151,13 +151,20 @@
 		this.map = new Map(32, 32, this, function(){
 			this.data = [];
 			
-			for(var i = 0; i < this.mapWidth * this.mapHeight; i++){
-				this.data.push({
+			for(var i = 0, tile; i < this.mapWidth * this.mapHeight; i++){
+				tile = {
 					owner: null,
 					troops: 0,
-					type: Math.random() < 0.1 ? TYPES.MOUNTAIN : TYPES.EMPTY,
+					type: Math.random() > 0.1 ? TYPES.EMPTY :
+						Math.random() > 0.3 ? TYPES.MOUNTAIN : TYPES.FORT,
 					changed: false
-				});
+				}
+				
+				//If the tile is a naturally generated fort, add troops to it (randomised between 50 and 75)
+				if(tile.type === TYPES.FORT)
+					tile.troops = Math.floor(Math.random() * 26) + 50;
+				
+				this.data.push(tile);
 			}
 		});
 		
