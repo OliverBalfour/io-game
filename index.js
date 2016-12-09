@@ -70,6 +70,8 @@
 			
 		}));
 		
+		game.getGame(id).sendServerMessage('Game started.');
+		
 	});
 	
 	//An array of game rooms
@@ -168,6 +170,8 @@
 				console.log(socket.player.name + ' ragequit');
 				
 				var socketGame = game.getGame(socket.player.gameID);
+				
+				socketGame.sendServerMessage(socket.player.name + ' ragequit');
 				
 				socketGame.removePlayer(socket.player);
 				socket.to(socketGame.id).emit(EVENT.PLAYER_UPDATE, socketGame.map.tailoredPlayerArray());

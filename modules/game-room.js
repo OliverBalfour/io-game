@@ -99,6 +99,16 @@
 			
 		}
 		
+		//Server sends a message
+		this.sendServerMessage = function(m){
+			
+			this.io.to(this.id).emit(EVENT.CHAT_MESSAGE, {
+				t: 's',
+				m: m
+			});
+			
+		}
+		
 		//Check to see if this game has been won
 		//Triggered whenever a player loses or disconnects
 		this.checkForWin = function(){
@@ -126,6 +136,7 @@
 		//The game has been won
 		this.endGame = function(winner){
 			console.log('A game has been won by ' + winner.name);
+			this.sendServerMessage('The game has been won by ' + winner.name);
 			
 			for(var i = 0; i < this.players.length; i++){
 				this.players[i].factoryReset();

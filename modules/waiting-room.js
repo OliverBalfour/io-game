@@ -172,6 +172,7 @@
 			
 			//Generate an ID for the game room
 			var gameRoomID = UUID();
+			
 			console.log('New game started: ' + gameRoomID);
 			
 			//Cycle through all of the players in the waiting room

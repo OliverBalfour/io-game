@@ -461,6 +461,8 @@
 			//Assuming the player is actually online, we send data
 			if(capturedSocket){
 				
+				this.gameRoom.sendServerMessage(captured.name + ' was captured by ' + capturer.name);
+				
 				//Prematurely send the captured player a map update to show them the map after they lost
 				//This will be blank, of course, for their tiles are no longer theirs
 				this.transmitMapTo(captured, true);
