@@ -33,6 +33,9 @@
 		//In game currency used to pay for buildings
 		this.money = 0;
 		
+		//Indicates whether, in the current turn, the player has moved
+		this.moved = false;
+		
 		//Reset a player for a new game
 		this.factoryReset = function(){
 			this.forceStart = null;
@@ -42,6 +45,7 @@
 			this.color = utils.randomColor();
 			this.castles = [];
 			this.money = 0;
+			this.moved = false;
 		}
 	}
 })();

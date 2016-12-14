@@ -211,6 +211,12 @@
 			
 			//Send it to the users
 			this.transmitMap(true);
+			
+			//Go through all of the players and reset their moved variable
+			for(var i = 0; i < this.gameRoom.players.length; i++){
+				this.gameRoom.players[i].moved = false;
+			}
+			
 		}
 		
 		//Networking
@@ -355,6 +361,10 @@
 		//Given a player and an object d containing origin and endpoint properties, integers, indicating the tile indexes for the origin and endpoint of the movement
 		this.moveTroops = function(player, d){
 			
+			//Check to make sure that the player hasn't already moved
+			if(player.moved)
+				return false;
+			
 			//Make sure the tiles exist first
 			//And make sure they are neighbours - One tile at a time, hackers!
 			if(
@@ -373,6 +383,9 @@
 			
 			//Indicate that the tiles have been changed, and need to be transmitted
 			origin.changed = endpoint.changed = true;
+			
+			//The player has made their move, yes?
+			player.moved = true;
 			
 			//For the sake of fog of war, all of the tiles around the endpoint get flagged changed too, because if they aren't, the player won't see them
 			//Veeeery hacky but it works xD

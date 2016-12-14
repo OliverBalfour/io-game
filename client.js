@@ -1,6 +1,13 @@
 
 var socket = io();
-var data = {room: {}, players: [], indexes: []};
+
+var data = {
+	room: {},
+	players: [],
+	indexes: [],
+	moved: false,
+	queue: []
+};
 
 //Tile type enumeration
 var TYPES = {
@@ -113,6 +120,8 @@ socket.on(EVENT.MAP_INITIALISATION, function(d){
 //Map update
 socket.on(EVENT.MAP_UPDATE, function(d){
 	
+	//Turn and money updating
+	
 	data.turn = d.turn;
 	dom.id('turn-count').innerText = d.turn;
 	
@@ -121,11 +130,20 @@ socket.on(EVENT.MAP_UPDATE, function(d){
 	
 	updateTiles();
 	
+	//Set the map data as a cleaned up version of the transmission
 	fixMap(d.map);
 	
+	//Reset the map entirely
 	map.prepareAndDrawMap();
 	
+	//Highlight and dull the appropriate buttons on the action bar
 	map.updateActionBar();
+	
+	//They haven't made their move for the turn
+	data.moved = false;
+	
+	//Or have they?
+	map.nextInQueue();
 	
 });
 

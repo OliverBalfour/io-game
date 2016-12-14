@@ -95,6 +95,9 @@ function Map(socket, w, h, side, canvas, playerID, playerData){
 		
 		//No flickering thanks
 		this.drawSelection();
+		
+		//Draw the queue
+		this.drawQueue();
 	}
 	
 	//Draw the map from the grid canvas to the canvas
@@ -128,6 +131,18 @@ function Map(socket, w, h, side, canvas, playerID, playerData){
 		if(xArr % 2 === 1) y += this.tileHeight / 2;
 		
 		return {x: x, y: y};
+	}
+	
+	//Get the x, y coords central to a tile (like this.getTileData but the center and not the top left corner of the bounding box)
+	this.getAbsoluteTileData = function(i){
+		
+		var d = this.getTileData(i);
+		
+		d.x += this.tileWidth / 2;
+		d.y += this.tileHeight / 2;
+		
+		return d;
+		
 	}
 	
 	//Draw a hexagon (i, index in this.data) and anything in it to a canvas given at x, y (the canvas is provided so that it can be drawn to either the grid or rendering canvas)
@@ -224,8 +239,10 @@ function Map(socket, w, h, side, canvas, playerID, playerData){
 			
 			//Validate the new tile to select
 			
+			//Tile existence check
 			if(i < 0 || i >= this.data.length) return false;
 			
+			//Ensure the tile isn't wrapped around the edge
 			if(oldI){
 				if(
 					oldI % this.mapWidth === this.mapWidth - 1 && i    % this.mapWidth === 0 ||
@@ -234,6 +251,10 @@ function Map(socket, w, h, side, canvas, playerID, playerData){
 					return false;
 				}
 			}
+			
+			//Check it's not a mountain or unknown tile we're selecting
+			if(this.data[i].type === TYPES.MOUNTAIN || this.data[i].type === TYPES.UNKNOWN)
+				return false;
 			
 			//To clear us of the currently selected tile, we redraw a flower of hexes around the selected tile
 			if(this.selectedTile !== -1){
@@ -249,6 +270,10 @@ function Map(socket, w, h, side, canvas, playerID, playerData){
 			this.drawSelection();
 			
 		}
+		
+		//Redraw the queue cuz I'm too lazy to make a proper thingo
+		this.drawQueue();
+		
 	}
 	
 	this.drawSelection = function(){
@@ -263,6 +288,10 @@ function Map(socket, w, h, side, canvas, playerID, playerData){
 		//Render the hex simultaneously
 		this.drawHexFlower(this.x, this.y, this.selectedTile, this.ctx, this.highlightHex);
 		this.highlightHex(d.x + this.x, d.y + this.y, this.selectedTile, this.ctx);
+		
+		//Draw the queue on top
+		this.drawQueue();
+
 	}
 	
 	//Draws over a hex, but highlighted
@@ -310,12 +339,41 @@ function Map(socket, w, h, side, canvas, playerID, playerData){
 		extrapolateParamsAndDraw(i);
 		
 		//Outer hexes
-		extrapolateParamsAndDraw(that.getTileNeighbour.call(that, i, 0));
-		extrapolateParamsAndDraw(that.getTileNeighbour.call(that, i, 1));
-		extrapolateParamsAndDraw(that.getTileNeighbour.call(that, i, 2));
-		extrapolateParamsAndDraw(that.getTileNeighbour.call(that, i, 3));
-		extrapolateParamsAndDraw(that.getTileNeighbour.call(that, i, 4));
-		extrapolateParamsAndDraw(that.getTileNeighbour.call(that, i, 5));
+		for(var j = 0; j < 6; j++){
+			extrapolateParamsAndDraw(that.getTileNeighbour.call(that, i, j));
+		}
+		
+	}
+	
+	//Draw the entire queue
+	this.drawQueue = function(){
+		
+		for(var i = 0; i < data.queue.length; i++){
+			
+			this.drawQueuePart(data.queue[i], true);
+			
+		}
+		
+		this.draw();
+		
+	}
+	
+	//Draw a single part of the queue
+	this.drawQueuePart = function(part, doNotDraw){
+		
+		var origin = this.getAbsoluteTileData(part.origin),
+			endpoint = this.getAbsoluteTileData(part.endpoint);
+		
+		this.gridctx.fillStyle = this.gridctx.strokeStyle = 'black';
+		this.gridctx.beginPath();
+		this.gridctx.moveTo(origin.x, origin.y);
+		this.gridctx.lineTo(endpoint.x, endpoint.y);
+		this.gridctx.stroke();
+		this.gridctx.fillRect(endpoint.x - 2, endpoint.y - 2, 4, 4);
+		
+		if(!doNotDraw)
+			this.draw();
+		
 	}
 	
 	//Neighbour not neighbor American scumbags
@@ -444,8 +502,11 @@ function Map(socket, w, h, side, canvas, playerID, playerData){
 	//Used with the QWEASD keys
 	this.moveSelection = function(rotation){
 		
+		var tile = this.data[this.selectedTile];
+		
 		//If the tile is owned by the player troops can be moved from it
-		if(this.data[this.selectedTile].owner === this.playerID){
+		//Only accept movements if they are onto a valid tile though (ie not a mountain)
+		if(tile.owner === this.playerID && tile.type !== TYPES.MOUNTAIN && tile.type !== TYPES.UNKNOWN){
 			
 			//Move the troops
 			this.moveTroops(this.selectedTile, this.getTileNeighbour(this.selectedTile, rotation));
@@ -487,11 +548,53 @@ function Map(socket, w, h, side, canvas, playerID, playerData){
 	
 	/* Map Networking */
 	
+	//Move troops, or add them to the queue
 	this.moveTroops = function(o, n){
-		this.socket.emit(EVENT.MOVE_TROOPS, {
+		
+		var movement = {
 			origin: o,
 			endpoint: n
-		});
+		};
+		
+		//Only move the their troops if they can be moved, right?
+		//If they can't be moved this turn they are queued
+		if(!data.moved){
+			
+			this.socket.emit(EVENT.MOVE_TROOPS, movement);
+			
+			data.moved = true;
+			
+		}else{
+			
+			//Queued movements take precedence over other moves. That's why dequeuing is so important
+			data.queue.push(movement);
+			
+			//Show the new entry to the queue
+			this.drawQueue();
+			
+		}
+		
+	}
+	
+	//If there is a queued movement, then it takes precedence over other movements
+	this.nextInQueue = function(){
+		
+		//If there is a queued movement, make it
+		if(data.queue.length > 0){
+			
+			//Send it
+			socket.emit(EVENT.MOVE_TROOPS, data.queue[0]);
+			
+			//Remove it from the queue
+			data.queue.shift();
+			
+			//Flag the player as having moved
+			//Client only, of course
+			//The server has it's own measures
+			data.moved = true;
+			
+		}
+		
 	}
 	
 	this.icons = {};
