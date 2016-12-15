@@ -43,11 +43,15 @@
 		}
 		
 		//Add starting castles, one per player, to the map
+		//If the amount of players isn't enough for the map, this'll go into an infinite loop
+		//Players spawn at least 5 tiles away from each other
 		this.addPlayersToMap = function(){
 			for(var i = 0, player, j; i < this.gameRoom.players.length; i++){
 				player = this.gameRoom.players[i];
 				
-				var tile = this.getEmptyTile();
+				//Get a random empty tile with no players within five hexagons
+				var that = this,
+					tile = this.getEmptyTile(5, function(i){ return !that.data[i].owner; });
 				
 				this.data[tile].owner = player;
 				this.data[tile].troops = 1;
@@ -59,14 +63,130 @@
 		
 		//Get a random empty tile
 		//Returns the index
-		this.getEmptyTile = function(){
-			var i = Math.floor(Math.random() * this.data.length);
+		//Takes an optional parameter, indicating the radius in which the tiles around it must also be empty (radius meaning number of hexagonal rings)
+		//If the optional parameter is given, another parameter, a function, has to be given
+		//This function is passed a tile index as a parameter and should return a boolean indicating whether it is indeed 'empty' in the way intended
+		this.getEmptyTile = function(r, isEmpty){
 			
-			while(!this.tileIsEmpty(i)){
-				i = Math.floor(Math.random() * this.data.length);
+			//Array for all tiles which are empty and have r || 0 hexagonal rings, when passed into a secondary parameter, a function, for every tile, is true
+			var empty = [];
+			
+			//If we need to check for
+			if(r && isEmpty){
+				
+				//Array for all tiles which the second parameter function, isEmpty, fails
+				var notEmpty = [];
+				
+				//Populate notEmpty
+				for(var i = 0; i < this.data.length; i++){
+					if(!isEmpty(i)) notEmpty.push(i);
+				}
+				
 			}
 			
-			return i;
+			for(var i = 0; i < this.data.length; i++){
+				
+				if(this.data[i].type === TYPES.EMPTY && !this.data[i].owner){
+					
+					if(r){
+						
+						var invalid = false;
+						
+						//Loop through not empty tiles and check each one to see if it is in the radius
+						for(var j = 0, ta = this.getTilePosition(i), tb; j < notEmpty.length; j++){
+							tb = this.getTilePosition(notEmpty[j]);
+							
+							//Ahhh fuck it
+							//Just a simple, incorrect, inaccurate hypotenuse distance check
+							//Haven't even bothered to treat as hexes, these act as squares
+							//This is not even slightly accurate
+							//But it should do an ok job
+							
+							//If the tile is probably in the radius, say it is
+							if(Math.hypot(ta.x - tb.x, ta.y - tb.y) < r){
+								invalid = true;
+								break;
+							}
+						}
+						
+						//Goddamnit, if it's valid add it
+						if(!invalid){
+							empty.push(i);
+						}
+						
+						//This code took too long to write to want to waste
+						//It's ridiculously overcomplicated though
+						/*
+						
+						var invalid = false;
+						
+						//The number of tiles in all rings surrounding the central tile
+						//Equal to (rings + 1) * 6 * rings * 0.5
+						//Essentially Gauss's adding numbers 1-100 by multiplying 100+1 by 100 and halving, but altered slightly (*0.5 being halving)
+						var numTiles = ( (r + 1) * 6 ) * r * 0.5;
+						
+						for(var j = 0; j < r; j++){
+							
+							//Gets filled with the corner indexes for the six corners of the hex ring
+							//Follows the ordering of sides with this.getTileNeighbour, assuming sides are replaced by their most anticlockwise tiles, or leftmost corners
+							var corners = [];
+							
+							for(var corner = 0, path; corner < 6; corner++){
+								
+								//Reset variable tracking position of corner
+								path = i;
+								
+								//For this corner, we go out in the direction of the corner the number of times there are rings
+								//Each iteration is a step in the direction of the corner
+								//If the corner tile does not exist, we forget about that entire side revolving around it
+								//And revert to the closest side that actually exists (should not cause any noticeable problems, except in really extreme cases)
+								
+								for(var dist = 0, p; dist <= j; dist++){
+									
+									p = this.getTileNeighbour(path, corner);
+									
+									if(p)
+										path = p;
+									else
+										break;
+									
+								}
+								
+								//We have the corner's index, hopefully, so we can add it
+								corners.push(path);
+								
+							}
+							
+							for(var t = 0, ringSide, ringSideIndex; t < (j + 1) * 6; t++){
+								
+								//Corner index and side of the ring
+								ringSide = Math.floor(t / 6);
+								
+								//Position along the ring side starting at the corner
+								ringSideIndex = t % 6;
+								
+								for(var )
+								
+							}
+							
+						}
+						
+						if(!invalid)
+							empty.push(i);
+						
+						*/
+						
+					}else{
+						if(this.tileIsEmpty(i)) empty.push(i);
+					}
+					
+				}
+				
+			}
+			
+			//Return a random tile from the possible tiles
+			return empty[Math.floor(Math.random() * empty.length)];
+			
 		}
 		
 		//Returns true if the tile is empty (unowned and ownable)
@@ -83,6 +203,16 @@
 		//Returns true if the tile index specified is in the boundaries
 		this.tileExists = function(i){
 			return typeof i === 'number' && i >= 0 && i < this.data.length;
+		}
+		
+		//Get the x, y position of a tile on the grid given its index
+		this.getTilePosition = function(i){
+			
+			return {
+				x: i % this.mapWidth,
+				y: Math.floor(i / this.mapWidth)
+			}
+			
 		}
 		
 		//Neighbour not neighbor American scumbags
