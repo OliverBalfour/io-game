@@ -33,6 +33,11 @@
 		//In game currency used to pay for buildings
 		this.money = 0;
 		
+		//Total land and troops, used for measuring a player's greatness
+		//Land starts at 1; their castle
+		this.land = 1;
+		this.troops = 0;
+		
 		//Indicates whether, in the current turn, the player has moved
 		this.moved = false;
 		
@@ -45,6 +50,8 @@
 			this.color = utils.randomColor();
 			this.castles = [];
 			this.money = 0;
+			this.land = 1;
+			this.troops = 0;
 			this.moved = false;
 		}
 	}

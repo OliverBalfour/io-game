@@ -148,7 +148,7 @@
 		}
 		
 		//Make a map
-		this.map = new Map(32, 32, this, function(){
+		this.map = new Map(16, 16, this, function(){
 			this.data = [];
 			
 			for(var i = 0, tile; i < this.mapWidth * this.mapHeight; i++){

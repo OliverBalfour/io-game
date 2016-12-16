@@ -158,20 +158,41 @@ button:hover{
 	position: absolute;
 	right: 0;
 	top: 0;
-	width: 200px;
-	background: rgba(0, 0, 0, 0.6);
-	border-right: 1px solid #000;
-	border-bottom: 1px solid black;
+	width: 308px;
+	background: rgba(50, 50, 50, 0.8);
+	border-collapse: collapse;
 }
 
-.gr-player{
+#gr-players th{
 	color: white;
-	display: block;
-	width: 100%;
+	font-size: 12px;
+	border: 1px solid #000;
+}
+
+.gr-money, .gr-land, .gr-troops, .gr-stat{
+	width: 50px;
+	font-size: 13px;
+}
+
+.gr-name{
+	width: calc(100% - 150px);
+	word-break: break-all;
+}
+
+.gr-player td{
+	color: white;
 	padding: 4px;
 	border: 1px solid #000;
-	border-bottom: 1px solid #666;
-	border-right: 1px solid #666;
+}
+
+.col-money{
+	background: rgba(255, 215, 0, 0.8);
+}
+.col-land{
+	background: rgba(0, 255, 127, 0.8);
+}
+.col-army{
+	background: rgba(255, 99, 71, 0.8);
 }
 
 
@@ -181,7 +202,7 @@ button:hover{
 	left: 0;
 	height: 150px;
 	width: 250px;
-	background: rgba(0, 0, 0, 0.6);
+	background: rgba(0, 0, 0, 0.2);
 	border: 1px solid black;
 }
 

@@ -136,6 +136,9 @@ socket.on(EVENT.MAP_UPDATE, function(d){
 	data.money = d.money;
 	dom.id('money-count').innerText = d.money;
 	
+	data.players = d.players;
+	updatePlayers();
+	
 	updateTiles();
 	
 	//Set the map data as a cleaned up version of the transmission
@@ -386,8 +389,17 @@ function updatePlayers(){
 	
 	//Concatenate player names into a list
 	var playerNames = [];
-	players.forEach(function(player){ playerNames.push("<span class='gr-player' style='color: " + player.color + "'>" + player.name + "</span>") });
-	dom.id('gr-players').innerHTML = playerNames.join('');
+	players.forEach(function(player){
+		playerNames.push(
+			"<tr class='gr-player'>"
+			 + "<td class='gr-name' style='color: " + player.color + "'>" + player.name + "</td>"
+			 + "<td class='gr-money'>" + player.money + "</td>"
+			 + "<td class='gr-land'>" + player.land + "</td>"
+			 + "<td class='gr-troops'>" + player.troops + "</td>"
+			 + "</tr>"
+		);
+	});
+	dom.id('gr-players-dump').innerHTML = playerNames.join('');
 }
 
 function exitGame(){

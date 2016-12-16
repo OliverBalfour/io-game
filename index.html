@@ -25,7 +25,25 @@
 		</div>
 		<div id='game-room' class='screen hidden'>
 			<canvas id='map'></canvas>
-			<div id='gr-players'></div>
+			<table id='gr-players'>
+				<colgroup>
+					<col class='col-name' />
+					<col class='col-money' />
+					<col class='col-land' />
+					<col class='col-army' />
+				</colgroup>
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th class='gr-stat'>Money</th>
+						<th class='gr-stat'>Land</th>
+						<th class='gr-stat'>Army</th>
+					</tr>
+				</thead>
+				<tbody id='gr-players-dump'>
+					<!-- Player rows are put here -->
+				</tbody>
+			</table>
 			<div id='stats'>
 				$<span id='money-count'>0</span><br>
 				Turn <span id='turn-count'>0</span>

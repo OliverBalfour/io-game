@@ -315,22 +315,25 @@
 					
 					if(tile.type === TYPES.CASTLE || tile.type === TYPES.FORT){
 						tile.troops++;
-						if(tile.owner) tile.owner.money += 10;
+						tile.owner.troops++;
+						tile.owner.money += 10;
 					}
 					
 					if(tile.type === TYPES.BARRACKS && this.turn % 2 === 0){
 						tile.troops++;
+						tile.owner.troops++;
 					}
 					
 					if(tile.type === TYPES.FARM){
-						if(tile.owner) tile.owner.money += 10;
+						tile.owner.money += 10;
 					}
 					
 					if(tile.type === TYPES.EMPTY && this.turn % 25 === 0){
 						tile.troops++;
-						if(tile.owner) tile.owner.money++;
+						tile.owner.troops++;
+						tile.owner.money++;
 					}else if(this.turn % 5 === 0){
-						if(tile.owner) tile.owner.money++;
+						tile.owner.money++;
 					}
 					
 				}
@@ -383,7 +386,8 @@
 			this.gameRoom.io.to(player.id).emit(EVENT.MAP_UPDATE, {
 				map: this.minifiedTailoredMapData(player, changed),
 				turn: this.turn,
-				money: player.money
+				money: player.money,
+				players: this.tailoredPlayerArray()
 			});
 			
 		}
@@ -468,6 +472,8 @@
 				id: player.id,
 				name: player.name,
 				money: player.money,
+				land: player.land,
+				troops: player.troops,
 				color: player.color
 			}
 		}
@@ -543,17 +549,30 @@
 				}else{
 					
 					//Ensure defence multipliers are used
-					var mult = CONSTANTS.MULTIPLIERS[endpoint.type]
+					var mult = CONSTANTS.MULTIPLIERS[endpoint.type];
 					
 					var def = Math.round( endpoint.troops * (1 + mult) ) - (origin.troops - 1);
-					if(def < 0)
+					if(def < 0){
+						if(endpoint.owner) endpoint.owner.troops -= endpoint.troops;
 						endpoint.troops = def;
-					else
+						//Set the attacker's troop count
+						player.troops -= origin.troops - 1 + def;
+					}else{
 						endpoint.troops -= (origin.troops - 1) * (1 - mult);
+						if(endpoint.owner) endpoint.owner.troops -= (origin.troops - 1) * (1 - mult);
+					}
 					
 					//If the tile has been captured, transfer ownership
 					if(endpoint.troops < 0){
 						endpoint.troops *= -1;
+						
+						//Update the previous owner's land count
+						if(endpoint.owner){
+							endpoint.owner.land--;
+						}
+						
+						//Update the new owner's land count
+						player.land++;
 						
 						//If a castle has been captured, check to see if that was the player's last castle
 						if(endpoint.type === TYPES.CASTLE && endpoint.owner){
@@ -566,10 +585,6 @@
 						}
 						
 						endpoint.owner = player;
-					
-						//Downgrading
-						if(endpoint.type === TYPES.CASTLE)
-							endpoint.type = TYPES.FORT;
 					}
 				}
 				
@@ -611,6 +626,9 @@
 				//It has changed ownership after all
 				tile.changed = true;
 			}
+			
+			//Update the land leaderboard stat
+			capturer.land += captured.land;
 			
 			//Assuming the player is actually online, we send data
 			if(capturedSocket){

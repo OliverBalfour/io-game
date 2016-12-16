@@ -100,7 +100,7 @@
 			name = sanitizer.sanitize(name);
 			
 			//Enforce name length limit
-			if(name.length > 30) name = name.substring(0, 29);
+			if(name.length > 20) name = name.substring(0, 19);
 			
 			//Stupid anons
 			socket.player.name = name !== '' ? name : 'Anonymous';

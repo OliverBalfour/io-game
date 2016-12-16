@@ -7,7 +7,7 @@ Development
  - Add in 'fallen civilisations,' which have money and castles and a little land
  - Generate mountain ranges, allowing for strategy to be a lot better
  - Add a tutorial explaining the whole damned game and make it easily reachable with maybe a page of documentation if people still don't get it
- 
+
 DONE - Properly sanitize and type check all data sent in to prevent trolls crashing the server for lols
 DONE - Make fog of war not hacky and fix the fog of war immediately after capturing another player
 DONE - Add in naturally spawning castles
@@ -20,12 +20,14 @@ Publishing
 
  - Name the game
  - Buy [name].io
+ - Make an icon
  - Set up DigitalOcean droplet hosting and apply $50 GitHub Student Pack offer to it (10 MONTHS of free hosting)
  - Put in ads, and make unobtrusive
  - Build a plea with adblockers saying something along the lines of "Your Majesty! The peasants are starving! Please disable your AdBlocker!"
  - Publish the game to the droplet
  - Send iogames.space an email about the game and mention the button
  - Put in the button (Link back to iogames.space)
+ - Add a donate button (maybe accept paypal and bitcoin or something)
  - Roll in money and players
  - Brag about having made an io game
 
@@ -42,3 +44,5 @@ Suggestions
  - Build AIs to sneak into games when no one else is playing
  - Add in building times for each building, in which they are inactive (being built)
  - Add several game modes, 8v8, 1v1, 2v2 teams, hex with a player in each corner, singleplayer against AI, hot seat, diplomacy w/ 6 players
+ - Replays
+ - End of game graphs
