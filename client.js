@@ -136,7 +136,7 @@ socket.on(EVENT.MAP_UPDATE, function(d){
 	data.money = d.money;
 	dom.id('money-count').innerText = d.money;
 	
-	data.players = d.players;
+	fixPlayers(d.players);
 	updatePlayers();
 	
 	updateTiles();
@@ -170,13 +170,25 @@ function fixMap(d){
 			tile = {};
 			da = d[i].split(' ');
 			
-			if(typeof da[0] !== 'undefined') tile.troops = parseInt(da[0]);
-			if(typeof da[1] !== 'undefined') tile.type = parseInt(da[1]);
-			if(typeof da[2] !== 'undefined') ij = parseInt(da[2]);
-			if(typeof da[3] !== 'undefined')
+			if(typeof da[0] !== 'undefined')
+				tile.troops = parseInt(da[0]);
+			
+			if(typeof da[1] !== 'undefined')
+				tile.type = parseInt(da[1]);
+			
+			if(typeof da[2] !== 'undefined')
+				ij = parseInt(da[2]);
+			
+			if(typeof da[3] !== 'undefined'){
+				
+				//Set the new owner
 				tile.owner = data.indexes[parseInt(da[3])];
-			else
+				
+			}else{
+				
 				tile.owner = null;
+				
+			}
 			
 			map.data[ij] = tile;
 			
@@ -184,6 +196,62 @@ function fixMap(d){
 			
 		}
 	}
+	
+	cleanupViewableTiles();
+	
+}
+
+//Fixes player data sent and stores it
+function fixPlayers(players){
+	
+	for(var i = 0; i < players.length; i++){
+		
+		data.players[i].money = players[i].split(' ')[0];
+		data.players[i].land = players[i].split(' ')[1];
+		data.players[i].troops = players[i].split(' ')[2];
+		
+	}
+	
+}
+
+//Check all tiles to make sure that they are supposed to be seen (no actual danger of hacking, just looks bad)
+function cleanupViewableTiles(){
+	
+	var viewable = [];
+	
+	//Cycle through all tiles
+	for(var i = 0; i < map.data.length; i++){
+		
+		//If the tile is the client's...
+		if(map.data[i].owner === data.id){
+			
+			//Make it and surrounding tiles viewable
+			
+			viewable[i] = true;
+			
+			for(var j = 0; j < 6; j++){
+				if(map.getTileNeighbour(i, j))
+					viewable[map.getTileNeighbour(i, j)] = true;
+			}
+			
+		}
+		
+	}
+	
+	//Cycle through again, if a tile isn't supposed to be visible reset it
+	for(var i = 0; i < map.data.length; i++){
+		if(!viewable[i]){
+			map.data[i] = {
+				owner: null,
+				troops: 0,
+				type: TYPES.UNKNOWN
+			};
+		}
+	}
+	
+	//If the selected tile has been cleaned, reset it
+	if(map.selectedTile !== -1 && map.data[map.selectedTile].type === TYPES.UNKNOWN)
+		map.selectedTile = -1;
 	
 }
 
