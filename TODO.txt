@@ -4,10 +4,8 @@ Development
 
  - Set up Grunt for uglification of files
  - Make leaderboards display money, land and total troops
- - Make buildings more affordable
  - Add in 'fallen civilisations,' which have money and castles and a little land
  - Generate mountain ranges, allowing for strategy to be a lot better
- - Add defensive multipliers; castles have +40%, forts +30%, barracks +20%, farms +15%, and normal tiles +10%
  - Add a tutorial explaining the whole damned game and make it easily reachable with maybe a page of documentation if people still don't get it
  
 DONE - Properly sanitize and type check all data sent in to prevent trolls crashing the server for lols
@@ -15,6 +13,8 @@ DONE - Make fog of war not hacky and fix the fog of war immediately after captur
 DONE - Add in naturally spawning castles
 DONE - Add movement queues; such that you may only move once per turn
 DONE - Make players spawn a certain distance from each other
+DONE - Make buildings more affordable
+DONE - Add defensive multipliers; castles have +40%, forts +30%, barracks +20%, farms +15%, and normal tiles +10%
 
 Publishing
 

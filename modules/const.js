@@ -5,6 +5,7 @@
 
 (function(){
 	
+	//Event code enumeration
 	module.exports.EVENT = {
 		SERVER_CONNECT: 0,		//Connected to server
 		JOIN_WAITING_ROOM: 1,	//Join waiting room to wait for a new game room
@@ -22,6 +23,7 @@
 		CHAT_MESSAGE: 13		//A player is sending or has sent a message, or the server is sending a message in game
 	};
 	
+	//Tile type enumeration
 	module.exports.TYPES = {
 		UNKNOWN: -1,			//Client only, indicates if a tile's type is completely unknown
 		EMPTY: 0,				//Empty tile (may have troops)
@@ -32,11 +34,23 @@
 		MOUNTAIN: 5				//Mountain tile; cannot be passed
 	};
 	
+	//Building costs
 	module.exports.COST = {
 		CASTLE: 5000,			//Castle costs 5000 to build on top of an already present fort
 		FORT: 2000,				//Fort costs 2000 to build
 		BARRACKS: 500,			//Barracks cost 500 to build
 		FARM: 200				//Farms cost 200 to build
 	}
+	
+	//Tile defence multipliers, MULTIPLIERS[tile.type] gets the relevant multiplier
+	//eg. for 0.4, defending troops simulate being 1 + 0.4 times larger in force
+	module.exports.MULTIPLIERS = [
+		0.1,					//Empty
+		0.4,					//Castle
+		0.3,					//Fort
+		0.15,					//Farm
+		0.2,					//Barracks
+		1						//Mountain, WTF?
+	]
 	
 })();

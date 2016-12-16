@@ -541,7 +541,15 @@
 					endpoint.troops += origin.troops - 1;
 					
 				}else{
-					endpoint.troops -= origin.troops - 1;
+					
+					//Ensure defence multipliers are used
+					var mult = CONSTANTS.MULTIPLIERS[endpoint.type]
+					
+					var def = Math.round( endpoint.troops * (1 + mult) ) - (origin.troops - 1);
+					if(def < 0)
+						endpoint.troops = def;
+					else
+						endpoint.troops -= (origin.troops - 1) * (1 - mult);
 					
 					//If the tile has been captured, transfer ownership
 					if(endpoint.troops < 0){
@@ -565,7 +573,7 @@
 					}
 				}
 				
-				//Always at the end of a movement the amount of troops on the first tile will be 1, the least possible to own a tile (0 is possible but buggy)
+				//Always at the end of a movement the amount of troops on the first tile will be 1, the least possible to own a tile (0 is possible but as a result of an attack only)
 				origin.troops = 1;
 			}
 		}
