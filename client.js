@@ -39,7 +39,6 @@ var EVENT = {
 
 //Connected to server
 socket.on(EVENT.SERVER_CONNECT, function(id){
-	console.log(id);
 	data.id = id;
 });
 
@@ -359,8 +358,6 @@ function toggleForceStart(){
 
 function updatePlayers(){
 	var players = data.players;
-	
-	console.log(players)
 	
 	//Concatenate player names into a list
 	var playerNames = [];

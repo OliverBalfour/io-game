@@ -551,26 +551,39 @@ function Map(socket, w, h, side, canvas, playerID, playerData){
 	//Move troops, or add them to the queue
 	this.moveTroops = function(o, n){
 		
-		var movement = {
-			origin: o,
-			endpoint: n
-		};
+		//The tiles have to fucking exist
+		if(!this.tileExists(o) || !this.tileExists(n))
+			return false;
 		
-		//Only move the their troops if they can be moved, right?
-		//If they can't be moved this turn they are queued
-		if(!data.moved){
+		//Validate endpoint first and ensure there are actually enough troops to attack with (assuming they are attacking)
+		if(
+			this.data[n].type !== TYPES.MOUNTAIN &&
+			this.data[n].type !== TYPES.UNKNOWN &&
+			(this.data[o].owner !== data.id && this.data[o].troops > 1 || this.data[o].owner === data.id)
+		){
 			
-			this.socket.emit(EVENT.MOVE_TROOPS, movement);
+			var movement = {
+				origin: o,
+				endpoint: n
+			};
 			
-			data.moved = true;
-			
-		}else{
-			
-			//Queued movements take precedence over other moves. That's why dequeuing is so important
-			data.queue.push(movement);
-			
-			//Show the new entry to the queue
-			this.drawQueue();
+			//Only move the their troops if they can be moved, right?
+			//If they can't be moved this turn they are queued
+			if(!data.moved){
+				
+				this.socket.emit(EVENT.MOVE_TROOPS, movement);
+				
+				data.moved = true;
+				
+			}else{
+				
+				//Queued movements take precedence over other moves. That's why dequeuing is so important
+				data.queue.push(movement);
+				
+				//Show the new entry to the queue
+				this.drawQueue();
+				
+			}
 			
 		}
 		
