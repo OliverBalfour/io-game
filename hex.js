@@ -675,17 +675,17 @@ function Map(socket, w, h, side, canvas, playerID, playerData){
 			if(type === TYPES.EMPTY){
 				
 				//Checking money
-				if(this.playerData.money >= 5000)
+				if(this.playerData.money >= COST.FORT)
 					types.barn = types.barracks = types.fort = true;
-				else if(this.playerData.money >= 1500)
+				else if(this.playerData.money >= COST.BARRACKS)
 					types.barn = types.barracks = true;
-				else if(this.playerData.money >= 500)
+				else if(this.playerData.money >= COST.FARM)
 					types.barn = true;
 				
 			}
 			
 			//If the tile is a fort, a castle can be built (if the player has enough money)
-			if(type === TYPES.FORT && this.playerData.money >= 7500)
+			if(type === TYPES.FORT && this.playerData.money >= COST.CASTLE)
 				types.castle = true;
 			
 			//Check one by one for buttons that should be enabled

@@ -33,10 +33,10 @@
 	};
 	
 	module.exports.COST = {
-		CASTLE: 7500,			//Castle costs 7500 to build on top of an already present fort
-		FORT: 5000,				//Fort costs 5000 to build
-		BARRACKS: 1500,			//Barracks cost 1500 to build
-		FARM: 500				//Farms cost 500 to build
+		CASTLE: 5000,			//Castle costs 5000 to build on top of an already present fort
+		FORT: 2000,				//Fort costs 2000 to build
+		BARRACKS: 500,			//Barracks cost 500 to build
+		FARM: 200				//Farms cost 200 to build
 	}
 	
 })();

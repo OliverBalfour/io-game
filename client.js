@@ -20,6 +20,7 @@ var TYPES = {
 	MOUNTAIN: 5
 }
 
+//Event code enumeration
 var EVENT = {
 	SERVER_CONNECT: 0,
 	JOIN_WAITING_ROOM: 1,
@@ -36,6 +37,14 @@ var EVENT = {
 	TILE_UPGRADE: 12,
 	CHAT_MESSAGE: 13
 };
+
+//Costs of various buildings
+var COST = {
+	CASTLE: 5000,
+	FORT: 2000,
+	BARRACKS: 500,
+	FARM: 200
+}
 
 //Connected to server
 socket.on(EVENT.SERVER_CONNECT, function(id){
@@ -234,13 +243,13 @@ function upgradeTile(upgrade){
 		if(map.data[i].type === TYPES.EMPTY){
 			
 			//Build a farm, barracks or fort
-			if(upgrade === TYPES.FARM && data.money >= 500 || upgrade === TYPES.BARRACKS && data.money >= 1500 || upgrade === TYPES.FORT && data.money >= 5000)
+			if(upgrade === TYPES.FARM && data.money >= COST.FARM || upgrade === TYPES.BARRACKS && data.money >= COST.BARRACKS || upgrade === TYPES.FORT && data.money >= COST.FORT)
 				sendData();
 			
 		}
 		
 		//Upgrade fort to castle
-		if(map.data[i].type === TYPES.FORT && upgrade === TYPES.CASTLE && data.money >= 7500)
+		if(map.data[i].type === TYPES.FORT && upgrade === TYPES.CASTLE && data.money >= COST.CASTLE)
 			sendData();
 		
 		//They want to demolish something
@@ -273,22 +282,35 @@ socket.on(EVENT.PLAYER_UPDATE, function(players){
 
 //Sometimes you win, sometimes you lose
 socket.on(EVENT.PLAYER_CAPTURED, function(player){
-	console.log(player);
 	
 	dom.show('gr-lose');
 	dom.hide('gr-win');
 	dom.show('game-end-modal');
 	
-	//Deselect whatever tile they had selected
-	map.selectedTile = -1;
+	gameEnd();
+	
 });
 
 //Ok, maybe you always win
 socket.on(EVENT.GAME_WON, function(nothin){
+	
 	dom.show('gr-win');
 	dom.hide('gr-lose');
 	dom.show('game-end-modal');
+	
+	gameEnd();
+	
 });
+
+function gameEnd(){
+	
+	//Deselect whatever tile they had selected
+	map.selectedTile = -1;
+	
+	//Clear queue
+	data.queue = [];
+	
+}
 
 var canvas = document.getElementById('map'),
 	map; //Empty until game start (becomes Map() )
@@ -298,6 +320,9 @@ var dom = {};
 
 dom.id = function(str){
 	return document.getElementById(str);
+}
+dom.className = function(str){
+	return document.getElementsByClassName(str);
 }
 dom.hide = function(str){
 	this.id(str).classList.add('hidden');
@@ -412,3 +437,36 @@ function updateScroll(){
 	var el = dom.id('messages');
 	el.scrollTop = el.scrollHeight - 110;
 }
+
+/*
+//Populate the HTML with building costs
+function populateCosts(){
+	
+	//var names = dom.className('name'),
+	//	actionIcons = dom.className('action-icon');
+	
+	//for(var i = 0; i < names.length; i++){
+	//	names[i].innerHTML = names[i].innerHTML.replace(/%([A-Z]+)/g, /%([A-Z]+)/g.exec(names[i].innerHTML)[1]);
+	//}
+	
+	var regex = /%([A-Z]+)/g;
+	
+	var match = regex.exec(document.body.innerHTML);
+	
+	var res = document.body.innerHTML;
+	
+	while(match !== null){
+		
+		var val = window[match[0]]
+		
+		res = res.replace(/%([A-Z]+)/, val);
+		
+		match = regex.exec(document.body.innerHTML);
+		
+	}
+	
+	document.body.innerHTML = res;
+	
+}
+populateCosts();
+*/

@@ -3,22 +3,12 @@ TODO
 Development
 
  - Set up Grunt for uglification of files
- - Add right click + drag to quickly and easily make movement chains
- - Add rivers/streams
- - Make mountain placement better, and either:
-    - Ensure maps are fair; no players cut off by mountains from the rest of the map, or
-    - Make some way of crossing mountains
  - Make leaderboards display money, land and total troops
- - Add in building times for each building, in which they are inactive (being built)
  - Make buildings more affordable
- - Add several game modes, 8v8, 1v1, 2v2 teams, hex with a player in each corner, singleplayer against AI, hot seat, diplomacy w/ 6 players
- - Build AIs to sneak into games when no one else is playing
  - Add in 'fallen civilisations,' which have money and castles and a little land
  - Generate mountain ranges, allowing for strategy to be a lot better
  - Add defensive multipliers; castles have +40%, forts +30%, barracks +20%, farms +15%, and normal tiles +10%
  - Add a tutorial explaining the whole damned game and make it easily reachable with maybe a page of documentation if people still don't get it
- - Make the leaderboard show money, land, troops etc.
- - Make colour picking for players or something with ['orangered', 'orange', 'royalblue', 'yellow', 'limegreen', 'indigo', 'greenyellow', 'gold', 'darkblue', 'teal']
  
 DONE - Properly sanitize and type check all data sent in to prevent trolls crashing the server for lols
 DONE - Make fog of war not hacky and fix the fog of war immediately after capturing another player
@@ -41,5 +31,14 @@ Publishing
 
 Suggestions
 
+ - Add right click + drag to quickly and easily make movement chains
  - Supply lines/battle fronts by setting up automatic queuing
  - Heatmap view to show troop concentration
+ - Add rivers/streams
+ - Make mountain placement better, and either:
+    - Ensure maps are fair; no players cut off by mountains from the rest of the map, or
+    - Make some way of crossing mountains
+ - Make colour picking for players or something with ['orangered', 'orange', 'royalblue', 'yellow', 'limegreen', 'indigo', 'greenyellow', 'gold', 'darkblue', 'teal']
+ - Build AIs to sneak into games when no one else is playing
+ - Add in building times for each building, in which they are inactive (being built)
+ - Add several game modes, 8v8, 1v1, 2v2 teams, hex with a player in each corner, singleplayer against AI, hot seat, diplomacy w/ 6 players
