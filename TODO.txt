@@ -2,7 +2,6 @@ TODO
 
 Development
 
- - Set up Grunt for uglification of files
  - Add in 'fallen civilisations,' which have money and castles and a little land
  - Generate mountain ranges, allowing for strategy to be a lot better
  - Add a tutorial explaining the whole damned game and make it easily reachable with maybe a page of documentation if people still don't get it
@@ -15,6 +14,7 @@ DONE - Make players spawn a certain distance from each other
 DONE - Make buildings more affordable
 DONE - Add defensive multipliers; castles have +30%, forts +20%, barracks +10%, farms +5%, and normal tiles +0%
 DONE - Make leaderboards display money, land and total troops
+DONE - Set up Grunt for uglification of files
 
 Publishing
 

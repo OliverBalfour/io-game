@@ -1,0 +1,365 @@
+@import url('https://fonts.googleapis.com/css?family=Raleway');
+
+
+
+*{
+	box-sizing: border-box;
+	font-family: Raleway, sans-serif;
+}
+
+
+
+body{
+	overflow: hidden;
+}
+
+
+
+.screen{
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+}
+
+.hidden{
+	display: none !important;
+}
+
+
+
+button{
+	background: #DDD;
+	border: none;
+	outline: none;
+	color: darkslategrey;
+	transition: 0.3s;
+	cursor: pointer;
+}
+
+button:hover{
+	background: #AAB;
+}
+
+
+
+#start-screen{
+	background: #333;
+}
+
+
+#name{
+	position: absolute;
+	bottom: 50%;
+	left: calc(50% - 150px);
+	height: 40px;
+	width: 300px;
+	margin-bottom: 8px;
+	padding: 8px;
+	text-align: center;
+	font-size: 20px;
+	outline: none;
+	border: none;
+	background: #DDD;
+}
+
+#play-button{
+	position: absolute;
+	top: 50%;
+	left: calc(50% - 70px);
+	height: 56px;
+	width: 140px;
+	margin-top: 8px;
+	font-size: 30px;
+}
+
+
+
+#waiting-room{
+	background: darkslategrey;
+}
+
+
+#wr-count-cont{
+	position: absolute;
+	bottom: 50%;
+	left: 0;
+	width: 100%;
+	margin-bottom: 24px;
+	text-align: center;
+	font-size: 32px;
+	color: white;
+}
+
+#wr-timer-cont{
+	position: absolute;
+	bottom: 50%;
+	width: 100%;
+	text-align: center;
+	color: white;
+}
+
+
+#force-start{
+	position: absolute;
+	top: 50%;
+	left: calc(50% - 90px);
+	width: 180px;
+	height: 36px;
+	margin-top: 16px;
+	font-size: 18px;
+}
+
+#force-start.active{
+	background: #555;
+	color: white;
+}
+
+#force-start.active:hover{
+	background: #444;
+}
+
+
+#wr-cancel{
+	position: absolute;
+	top: calc(50% + 60px);
+	left: calc(50% - 50px);
+	height: 32px;
+	width: 100px;
+	font-size: 16px;
+	transition: top 0s;
+}
+
+#wr-cancel.fill-gap{
+	top: 50%;
+}
+
+
+
+#map{
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: #333;
+}
+
+
+#stats{
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: rgba(0, 0, 0, 0.6);
+	color: white;
+}
+
+
+#gr-players{
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 308px;
+	background: rgba(50, 50, 50, 0.8);
+	border-collapse: collapse;
+}
+
+#gr-players th{
+	color: white;
+	font-size: 12px;
+	border: 1px solid #000;
+}
+
+.gr-money, .gr-land, .gr-troops, .gr-stat{
+	width: 50px;
+	font-size: 13px;
+}
+
+.gr-name{
+	width: calc(100% - 150px);
+	word-break: break-all;
+}
+
+.gr-player td{
+	color: white;
+	padding: 4px;
+	border: 1px solid #000;
+}
+
+.col-money{
+	background: rgba(255, 215, 0, 0.8);
+}
+.col-land{
+	background: rgba(0, 255, 127, 0.8);
+}
+.col-army{
+	background: rgba(255, 99, 71, 0.8);
+}
+
+
+#chat{
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	height: 150px;
+	width: 250px;
+	background: rgba(0, 0, 0, 0.2);
+	border: 1px solid black;
+}
+
+#messages{
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 110px;
+	width: 100%;
+	overflow-y: auto;
+}
+
+.message{
+	font-family: arial;
+	color: white;
+}
+
+#chatbox{
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	height: 40px;
+	width: 100%;
+	outline: none;
+	border: 2px solid white;
+	padding: 10px;
+	font-size: 14px;
+	font-family: arial;
+}
+
+#chatbox:focus{
+	border: 2px solid limegreen;
+}
+
+
+#action-bar{
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	height: 240px;
+	width: 58px;
+	overflow: hidden;
+	transition: width 0.5s;
+}
+
+#action-bar.expanded{
+	width: 308px;
+}
+
+#action-toggle-detail{
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 240px;
+	width: 10px;
+	text-align: center;
+	background: darkslategrey;
+	color: white;
+	cursor: pointer;
+	padding-top: 90px;
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
+}
+
+#action-icons{
+	position: absolute;
+	top: 0;
+	left: 10px;
+	height: 240px;
+	width: 48px;
+	border-top: 1px solid darkslategrey;
+	background: lightgrey;
+}
+
+#action-icons img{
+	height: 48px;
+	width: 48px;
+	margin: 0;
+	display: block;
+	cursor: pointer;
+}
+
+#action-icons img:hover{
+	background: rgba(0, 0, 0, 0.2);
+	border: 1px solid darkslategrey;
+}
+
+#action-icons img.disabled{
+	opacity: 0.8;
+	cursor: not-allowed;
+}
+
+#action-details{
+	position: absolute;
+	top: 0;
+	left: 58px;
+	height: 240px;
+	width: 250px;
+	background: rgba(0, 0, 0, 0.6);
+}
+
+.action-detail{
+	height: 48px;
+	width: 250px;
+	float: top;
+	padding: 4px;
+	color: white;
+}
+
+.action-detail .name{
+	font-size: 14px;
+	display: block;
+}
+
+.action-detail .detail{
+	font-size: 12px;
+	display: block;
+	line-height: 12px;
+}
+
+
+#game-end-modal{
+	position: absolute;
+	top: calc(50% - 80px);
+	left: calc(50% - 140px);
+	width: 280px;
+	height: 160px;
+	background: rgba(0, 0, 0, 0.8);
+	border: 1px solid #000;
+}
+
+#game-end-modal::after{
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 277px;
+	height: 157px;
+	border-bottom: 1px solid #666;
+	border-right: 1px solid #666;
+}
+
+#gr-win, #gr-lose{
+	display: block;
+	width: 100%;
+	padding: 20px;
+	text-align: center;
+	font-size: 30px;
+	color: white;
+}
+
+#gr-finish{
+	position: absolute;
+	bottom: 16px;
+	left: calc(50% - 60px);
+	width: 120px;
+	height: 40px;
+	font-size: 20px;
+	z-index: 1;
+}

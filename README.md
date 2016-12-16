@@ -62,4 +62,4 @@ If you don't have git, download this repo, unzip and put into your directory of 
 
 ##Copyright notice
 
-Copyright Oliver Balfour (Tobsta) 2016
+Copyright Oliver Balfour (Tobsta, Lord of the 32bit Ring) 2016
