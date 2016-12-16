@@ -387,7 +387,7 @@
 				map: this.minifiedTailoredMapData(player, changed),
 				turn: this.turn,
 				money: player.money,
-				players: this.tailoredPlayerArray()
+				players: this.leaderboardStatsUpdate()
 			});
 			
 		}
@@ -493,6 +493,26 @@
 			
 		}
 		
+		//Get a version of this.gameRoom.players that only shows stats visible in the leaderboard
+		this.leaderboardStatsUpdate = function(){
+			
+			var stats = [];
+			
+			for(var i = 0, p; i < this.gameRoom.players.length; i++){
+				
+				p = this.gameRoom.players[i];
+				
+				//Damn you, floats
+				p.troops = parseInt(p.troops);
+				
+				stats.push(p.money + ' ' + p.land + ' ' + p.troops);
+				
+			}
+			
+			return stats;
+			
+		}
+		
 		//Triggered when a player wants to move their troops to another tile
 		//Given a player and an object d containing origin and endpoint properties, integers, indicating the tile indexes for the origin and endpoint of the movement
 		this.moveTroops = function(player, d){
@@ -558,7 +578,7 @@
 						//Set the attacker's troop count
 						player.troops -= origin.troops - 1 + def;
 					}else{
-						endpoint.troops -= (origin.troops - 1) * (1 - mult);
+						endpoint.troops -= Math.round((origin.troops - 1) * (1 - mult));
 						if(endpoint.owner) endpoint.owner.troops -= (origin.troops - 1) * (1 - mult);
 					}
 					
