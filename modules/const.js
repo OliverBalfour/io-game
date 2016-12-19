@@ -20,7 +20,9 @@
 		PLAYER_UPDATE: 10,		//Sent when the in game leaderboard needs to be updated
 		GAME_WON: 11,			//Sent to the winner of the game (I LOST THE GAME!!!)
 		TILE_UPGRADE: 12,		//A player wants to upgrade a tile, or build something on it
-		CHAT_MESSAGE: 13		//A player is sending or has sent a message, or the server is sending a message in game
+		CHAT_MESSAGE: 13,		//A player is sending or has sent a message, or the server is sending a message in game
+		START_TUTORIAL: 14,		//A player is starting the tutorial
+		CONCEDE_GAME: 15		//A player has decided that they don't want to continue playing
 	};
 	
 	//Tile type enumeration

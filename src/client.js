@@ -2,11 +2,13 @@
 var socket = io();
 
 var data = {
-	room: {},
-	players: [],
-	indexes: [],
-	moved: false,
-	queue: []
+	activeMap: null, //Map()
+	room: {}, //Waiting room data
+	players: [], //List of players
+	indexes: [], //Player indexes; game specific IDs to save bandwidth (ie '3' is shorter than 'HKJgkhgBhgjKJk')
+	moved: false, //Has the player moved this turn?
+	queue: [], //Array for queued move objects
+	tutorial: false //In a tutorial
 };
 
 //Tile type enumeration
@@ -35,7 +37,9 @@ var EVENT = {
 	PLAYER_UPDATE: 10,
 	GAME_WON: 11,
 	TILE_UPGRADE: 12,
-	CHAT_MESSAGE: 13
+	CHAT_MESSAGE: 13,
+	START_TUTORIAL: 14,
+	CONCEDE_GAME: 15
 };
 
 //Costs of various buildings
@@ -96,7 +100,7 @@ socket.on(EVENT.GAME_START, function(players){
 //Init map
 socket.on(EVENT.MAP_INITIALISATION, function(d){
 	
-	map = new Map(socket, d.w, d.h, 30, canvas, data.id, data);
+	data.activeMap = new Map(socket, d.w, d.h, 30, canvas, data.id, data);
 	
 	data.turn = d.turn;
 	
@@ -106,14 +110,14 @@ socket.on(EVENT.MAP_INITIALISATION, function(d){
 	fixMap(d.map);
 	
 	//Center the map on the only owned tile on the screen - the player's castle
-	for(var i = 0; i < map.data.length; i++){
-		if(map.data[i].owner){
-			map.centerTile(i);
+	for(var i = 0; i < data.activeMap.data.length; i++){
+		if(data.activeMap.data[i].owner){
+			data.activeMap.centerTile(i);
 		}
 	}
 	
 	//Initial map draw
-	map.prepareAndDrawMap();
+	data.activeMap.prepareAndDrawMap();
 	
 	//Change view
 	dom.changeScreen('waiting-room', 'game-room');
@@ -121,7 +125,7 @@ socket.on(EVENT.MAP_INITIALISATION, function(d){
 	//Reset force start status
 	dom.id('force-start').classList.remove('active');
 	
-	map.updateActionBar();
+	data.activeMap.updateActionBar();
 	
 });
 
@@ -145,16 +149,16 @@ socket.on(EVENT.MAP_UPDATE, function(d){
 	fixMap(d.map);
 	
 	//Reset the map entirely
-	map.prepareAndDrawMap();
+	data.activeMap.prepareAndDrawMap();
 	
 	//Highlight and dull the appropriate buttons on the action bar
-	map.updateActionBar();
+	data.activeMap.updateActionBar();
 	
 	//They haven't made their move for the turn
 	data.moved = false;
 	
 	//Or have they?
-	map.nextInQueue();
+	data.activeMap.nextInQueue();
 	
 });
 
@@ -190,7 +194,7 @@ function fixMap(d){
 				
 			}
 			
-			map.data[ij] = tile;
+			data.activeMap.data[ij] = tile;
 			
 			tiles.push(ij);
 			
@@ -220,18 +224,18 @@ function cleanupViewableTiles(){
 	var viewable = [];
 	
 	//Cycle through all tiles
-	for(var i = 0; i < map.data.length; i++){
+	for(var i = 0; i < data.activeMap.data.length; i++){
 		
 		//If the tile is the client's...
-		if(map.data[i].owner === data.id){
+		if(data.activeMap.data[i].owner === data.id){
 			
 			//Make it and surrounding tiles viewable
 			
 			viewable[i] = true;
 			
 			for(var j = 0; j < 6; j++){
-				if(map.getTileNeighbour(i, j))
-					viewable[map.getTileNeighbour(i, j)] = true;
+				if(data.activeMap.getTileNeighbour(i, j))
+					viewable[data.activeMap.getTileNeighbour(i, j)] = true;
 			}
 			
 		}
@@ -239,9 +243,9 @@ function cleanupViewableTiles(){
 	}
 	
 	//Cycle through again, if a tile isn't supposed to be visible reset it
-	for(var i = 0; i < map.data.length; i++){
+	for(var i = 0; i < data.activeMap.data.length; i++){
 		if(!viewable[i]){
-			map.data[i] = {
+			data.activeMap.data[i] = {
 				owner: null,
 				troops: 0,
 				type: TYPES.UNKNOWN
@@ -250,15 +254,15 @@ function cleanupViewableTiles(){
 	}
 	
 	//If the selected tile has been cleaned, reset it
-	if(map.selectedTile !== -1 && map.data[map.selectedTile].type === TYPES.UNKNOWN)
-		map.selectedTile = -1;
+	if(data.activeMap.selectedTile !== -1 && data.activeMap.data[data.activeMap.selectedTile].type === TYPES.UNKNOWN)
+		data.activeMap.selectedTile = -1;
 	
 }
 
 //Client prediction; everything that isn't overridden by the server is predictable with constant change
 function updateTiles(){
-	for(var i = 0, tile; i < map.data.length; i++){
-		tile = map.data[i];
+	for(var i = 0, tile; i < data.activeMap.data.length; i++){
+		tile = data.activeMap.data[i];
 		
 		//For any owned tile, which needs to be updated
 		if(tile.owner !== null){
@@ -293,25 +297,25 @@ function updateTiles(){
 //xD
 //But the code is copy/pasted so whatever
 function upgradeTile(upgrade){
-	if(map.selectedTile !== -1){
+	if(data.activeMap.selectedTile !== -1){
 		
 		function sendData(){
 			socket.emit(EVENT.TILE_UPGRADE, {
-				i: map.selectedTile,
+				i: data.activeMap.selectedTile,
 				u: upgrade
 			});
 		}
 		
-		var i = map.selectedTile;
+		var i = data.activeMap.selectedTile;
 		
 		//Ensure the player owns the tile
-		if(!map.data[i].owner || map.data[i].owner !== data.id) return false;
+		if(!data.activeMap.data[i].owner || data.activeMap.data[i].owner !== data.id) return false;
 		
 		//Cycle through the possibilities and only send data if it matches one to save bandwidth
 		//Of course, the server still checks everything
 		
 		//Building stuff on empty ground
-		if(map.data[i].type === TYPES.EMPTY){
+		if(data.activeMap.data[i].type === TYPES.EMPTY){
 			
 			//Build a farm, barracks or fort
 			if(upgrade === TYPES.FARM && data.money >= COST.FARM || upgrade === TYPES.BARRACKS && data.money >= COST.BARRACKS || upgrade === TYPES.FORT && data.money >= COST.FORT)
@@ -320,11 +324,11 @@ function upgradeTile(upgrade){
 		}
 		
 		//Upgrade fort to castle
-		if(map.data[i].type === TYPES.FORT && upgrade === TYPES.CASTLE && data.money >= COST.CASTLE)
+		if(data.activeMap.data[i].type === TYPES.FORT && upgrade === TYPES.CASTLE && data.money >= COST.CASTLE)
 			sendData();
 		
 		//They want to demolish something
-		if(upgrade === TYPES.EMPTY && map.data[i].type !== TYPES.EMPTY && map.data[i].type !== TYPES.UNKNOWN)
+		if(upgrade === TYPES.EMPTY && data.activeMap.data[i].type !== TYPES.EMPTY && data.activeMap.data[i].type !== TYPES.UNKNOWN)
 			sendData();
 		
 	}
@@ -376,15 +380,14 @@ socket.on(EVENT.GAME_WON, function(nothin){
 function gameEnd(){
 	
 	//Deselect whatever tile they had selected
-	map.selectedTile = -1;
+	data.activeMap.selectedTile = -1;
 	
 	//Clear queue
 	data.queue = [];
 	
 }
 
-var canvas = document.getElementById('map'),
-	map; //Empty until game start (becomes Map() )
+var canvas = document.getElementById('map');
 
 //Namespace for abstracting the Document Object Model into a somewhat useful pile of crap
 var dom = {};
@@ -473,8 +476,8 @@ function updatePlayers(){
 function exitGame(){
 	
 	//Destroy map
-	map.destroy();
-	//map = null;
+	data.activeMap.destroy();
+	data.activeMap = null;
 	
 	//Change view
 	dom.changeScreen('game-room', 'start-screen');
@@ -484,6 +487,10 @@ function exitGame(){
 	
 	//Clear the last game's messages
 	dom.id('messages').innerHTML = '';
+	
+	//If in a tutorial, stuff that tutorial
+	if(data.tutorial)
+		endTutorial();
 	
 }
 

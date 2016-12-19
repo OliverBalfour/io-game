@@ -477,7 +477,7 @@ function Map(socket, w, h, side, canvas, playerID, playerData){
 				hexes.push({
 					hex: hex,
 					i: i,
-					dist: Math.hypot(hex.x + map.tileWidth / 2 - p.x - this.x, hex.y + map.tileHeight / 2 - p.y - this.y)
+					dist: Math.hypot(hex.x + this.tileWidth / 2 - p.x - this.x, hex.y + this.tileHeight / 2 - p.y - this.y)
 				});
 			}
 		}
@@ -614,7 +614,7 @@ function Map(socket, w, h, side, canvas, playerID, playerData){
 	
 	this.loadIcon = function(name, file){
 		this.icons[name] = new Image();
-		this.icons[name].src = 'icons/' + file;
+		this.icons[name].src = '/icons/' + file;
 	}
 	
 	var icons = ['barn.png', 'castle.png', 'medieval-pavilion.png', 'peaks.png', 'stone-tower.png', 'peaks.png'],

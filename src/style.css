@@ -74,6 +74,15 @@ button:hover{
 	font-size: 30px;
 }
 
+#tutorial-button{
+	position: absolute;
+	top: calc(50% + 80px);
+	left: calc(50% - 60px);
+	height: 32px;
+	width: 120px;
+	font-size: 18px;
+}
+
 
 
 #waiting-room{
@@ -363,3 +372,38 @@ button:hover{
 	font-size: 20px;
 	z-index: 1;
 }
+
+
+#tutorial-banner{
+	position: absolute;
+	bottom: 30px;
+	left: 40px;
+	height: 50px;
+	width: calc(100% - 80px);
+	background: antiquewhite;
+	padding: 12px;
+	font-size: 16px;
+	text-align: center;
+	border-radius: 5px;
+}
+
+#tut-prev, #tut-next{
+	position: absolute;
+	bottom: 37px;
+	height: 36px;
+	font-size: 16px;
+	background: #97d6bb;
+	padding-left: 14px;
+	padding-right: 14px;
+}
+#tut-prev:hover, #tut-next:hover{
+	background: #6bcca2;
+}
+
+#tut-prev{
+	left: 48px;
+}
+#tut-next{
+	right: 48px;
+}
+

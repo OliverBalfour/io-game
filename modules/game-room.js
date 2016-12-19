@@ -16,7 +16,7 @@
 	
 	var sanitizer = require('sanitizer');
 	
-	module.exports = function(io, id, players, end){
+	module.exports = function(io, id, players, w, h, end){
 		
 		this.id = id;
 		
@@ -112,9 +112,6 @@
 		//Check to see if this game has been won
 		//Triggered whenever a player loses or disconnects
 		this.checkForWin = function(){
-			if(this.players.length === 1){
-				this.io.to(this.players[0]).emit(EVENT.GAME_WON, null);
-			}
 			
 			//If there is only one player left, let them know they've won
 			if(this.players.length === 1){
@@ -131,6 +128,7 @@
 				//Finish the game
 				this.endGame(this.players[0]);
 			}
+			
 		}
 		
 		//The game has been won
@@ -148,7 +146,7 @@
 		}
 		
 		//Make a map
-		this.map = new Map(16, 16, this, function(){
+		this.map = new Map(w, h, this, function(){
 			this.data = [];
 			
 			for(var i = 0, tile; i < this.mapWidth * this.mapHeight; i++){

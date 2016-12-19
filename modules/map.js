@@ -633,7 +633,7 @@
 		//Remember the order!
 		this.playerCaptured = function(capturer, captured){
 			
-			//Grab their socket
+			//Grab their socket, if they have one
 			var capturedSocket = this.gameRoom.io.sockets.connected[captured.id];
 			
 			//Hand over all of the the captured player's tiles to the capturer
@@ -650,7 +650,7 @@
 			//Update the land leaderboard stat
 			capturer.land += captured.land;
 			
-			//Assuming the player is actually online, we send data
+			//Assuming the player is actually online (or isn't an AI), we send data
 			if(capturedSocket){
 				
 				this.gameRoom.sendServerMessage(captured.name + ' was captured by ' + capturer.name);
@@ -662,23 +662,26 @@
 				//Alert the captured player of their loss
 				this.gameRoom.io.to(captured.id).emit(EVENT.PLAYER_CAPTURED, this.tailoredPlayerData(capturer));
 				
-				//Remove player from the game room
-				this.gameRoom.removePlayer(captured);
-				
-				//Alert all other players of captured's demise
-				//MWAH HA HAAAAA
-				capturedSocket.to(this.gameRoom.id).emit(EVENT.PLAYER_UPDATE, this.tailoredPlayerArray());
-				
-				//Check if the game has been won
-				this.gameRoom.checkForWin(capturer);
-				
 				//Leave game room, stop receiving updates
 				capturedSocket.leave(this.gameRoom.id);
 				
-				//Change their game ID and status
-				captured.factoryReset();
 			}
 			
+			//Remove player from the game room
+			this.gameRoom.removePlayer(captured);
+			
+			//Alert all other players of captured's demise
+			//MWAH HA HAAAAA
+			if(capturedSocket)
+				capturedSocket.to(this.gameRoom.id).emit(EVENT.PLAYER_UPDATE, this.tailoredPlayerArray());
+			else
+				this.gameRoom.io.to(this.gameRoom.id).emit(EVENT.PLAYER_UPDATE, this.tailoredPlayerArray());
+			
+			//Check if the game has been won
+			this.gameRoom.checkForWin(capturer);
+			
+			//Change their game ID and status
+			captured.factoryReset();
 			
 		}
 		

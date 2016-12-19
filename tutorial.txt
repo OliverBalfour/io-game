@@ -1,0 +1,37 @@
+[Tutorial]
+
+Welcome to [name].io
+
+This game is played on a large grid with other players
+
+You move troops around and battle to conquer other players
+
+To move troops, first click on one of your tiles
+
+Now, you may move troops in any direction with the following keys
+
+Q, W, E, A, S, D (show which directions they go in)
+
+When you move troops onto an adjacent empty tile, you capture it
+
+Then, you can see all of the surrounding tiles
+
+There is another player on the map
+
+See if you can find them and conquer their castle
+
+When a player has no castles left, they lose and the player who beat them gets all of their land
+
+There are different kinds of tiles
+
+You can't pass mountains
+
+Castles, forts and barracks generate troops at different rates, and give you money
+
+Farms give you money, with which you buy buildings
+
+Let's build a farm on one of our tiles
+
+Perfect! You're ready to go!
+
+[Finish]

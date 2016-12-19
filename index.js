@@ -31,15 +31,23 @@
 		res.sendFile(path.join(__dirname, 'index.html'));
 	});
 	
-	//The files in the root that the public aren't allowed to see
-	var blacklistedFiles = ['index.js', 'package.json', '.gitignore', 'TODO.txt', 'README.md'];
+	//The files in the root that the public are allowed to see
+	var whitelistedFiles = ['client.js', 'index.html', 'style.css'];
+	
+	//Whitelisted directories
+	//WARNING: FOR DISTRIBUTION DO NOT WHITELIST THE SRC DIRECTIVE
+	var whitelistedDirs = ['/icons', '/src'];
 	
 	//Get individual files on the server
 	app.get('/*', function(req, res, next){
 		var file = req.params[0];
 		
-		//If the file is blacklisted from public viewing or in any directory other than the root or whitelisted directories, pretend it's a 404 error
-		if(blacklistedFiles.indexOf(file) !== -1 || (file.indexOf('/') !== -1 && file.startsWith('/icons'))){
+		//If the file isn't whitelisted for public viewing or in any directory other than the root or whitelisted directories, pretend it's a 404 error
+		if(
+			whitelistedFiles.indexOf(file) === -1 &&
+			whitelistedDirs.indexOf('/' + file.split('/')[0]) === -1
+		){
+			console.log(file)
 			res.sendStatus(404);
 		}
 		
@@ -63,7 +71,7 @@
 	game.waitingRoom = new WaitingRoom(io, function(id, players){
 		
 		//Create new room when the waiting room has done its job
-		game.gameRooms.push(new GameRoom(io, id, players, function(room){
+		game.gameRooms.push(new GameRoom(io, id, players, 16, 16, function(room){
 			
 			//When the game ends, remove it from the array
 			game.gameRooms.splice(game.gameRooms.indexOf(room), 1);
@@ -160,6 +168,66 @@
 			//Also, it needs to not be a function or it looks weird as hell
 			if(typeof m === 'string' && game.getGame(socket.player.gameID))
 				game.getGame(socket.player.gameID).sendMessage(socket.player, m);
+			
+		});
+		
+		//The server handles the tutorial match because it means that the client doesn't need any sensitive code
+		socket.on(EVENT.START_TUTORIAL, function(nothin, fn){
+			
+			//Stuff you hackers
+			if(typeof fn !== 'function')
+				return false;
+			
+			//Join tutorial room
+			var gameRoomID = UUID();
+			socket.join(gameRoomID);
+			socket.player.inGame = true;
+			
+			socket.player.name = 'You';
+			
+			//Create a dummy player for the player to beat
+			//Don't add it to the socket.io room or else strange occurances will, well, occur
+			var dummyPlayer = new Player('dummy-' + Math.random(), gameRoomID);
+			dummyPlayer.inGame = true;
+			dummyPlayer.name = 'Tutorial AI';
+			
+			//Create new room when the waiting room has done its job
+			game.gameRooms.push(new GameRoom(io, gameRoomID, [socket.player, dummyPlayer], 6, 6, function(room){
+				
+				//When the game ends, remove it from the array
+				game.gameRooms.splice(game.gameRooms.indexOf(room), 1);
+				
+			}));
+			
+			console.log('Tutorial started: ' + gameRoomID);
+			
+			
+			var map = game.gameRooms[game.gameRooms.length - 1].map;
+			
+			//Send back data like a MAP_INITIALISATION event combined with a GAME_START event
+			fn({
+				map: map.minifiedTailoredMapData(socket.player, false),
+				w: map.mapWidth,
+				h: map.mapHeight,
+				turn: map.turn,
+				indexes: map.indexes,
+				players: map.tailoredPlayerArray()
+			});
+			
+		});
+		
+		socket.on(EVENT.CONCEDE_GAME, function(){
+			
+			console.log(socket.player.name + ' conceded');
+			
+			var socketGame = game.getGame(socket.player.gameID);
+			
+			socketGame.sendServerMessage(socket.player.name + ' conceded');
+			
+			socketGame.removePlayer(socket.player);
+			socket.to(socketGame.id).emit(EVENT.PLAYER_UPDATE, socketGame.map.tailoredPlayerArray());
+			
+			socketGame.checkForWin();
 			
 		});
 		
