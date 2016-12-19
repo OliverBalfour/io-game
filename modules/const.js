@@ -48,9 +48,9 @@
 	//eg. for 0.4, defending troops simulate being 1 + 0.4 times larger in force
 	module.exports.MULTIPLIERS = [
 		0,						//Empty
-		0.3,					//Castle
-		0.2,					//Fort
-		0.5,					//Farm
+		0.2,					//Castle
+		0.15,					//Fort
+		0.05,					//Farm
 		0.1,					//Barracks
 		1						//Mountain, WTF?
 	];
