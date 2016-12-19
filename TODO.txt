@@ -2,8 +2,9 @@ TODO
 
 Bugs
 
- - A tile owned by a player with no surrounding tiles owned by the same player, on capture, won't update properly
+Empty!
 
+FIXED - A tile owned by a player with no surrounding tiles owned by the same player, on capture, won't update properly
 FIXED - Tile 0 not viewable or attackable
 
 Development
@@ -15,6 +16,7 @@ Development
  - Write a page of documentation on exact numbers for high level players
  - Inactivity handling
  - Conceding games
+ - Ensure maps are fair; no players cut off by mountains from the rest of the map
 
 DONE - Properly sanitize and type check all data sent in to prevent trolls crashing the server for lols
 DONE - Make fog of war not hacky and fix the fog of war immediately after capturing another player
@@ -33,6 +35,7 @@ Publishing
  - Replace [name].io with [name].io wherever relevant; ie tutorial and header
  - Make an icon
  - Put in credits, crediting the creators of the icons
+ - Add music
  - Blacklist /src for distribution
  - Set up DigitalOcean droplet hosting and apply $50 GitHub Student Pack offer to it (10 MONTHS of free hosting)
  - Add to search engines

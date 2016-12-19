@@ -1,0 +1,43 @@
+
+When you type a name into the box that says 'Anonymous' and press play, you join the waiting room.
+
+In the waiting room, you, well, wait, for a game to start. There are three ways a game can start.
+ - The player limit being reached
+ - The timer expiring (the timer is only active whilst two or more players are waiting)
+ - All (>1) players choose to forcefully start the game early
+
+The game is played on a simple hexagonal grid. Hexagons are flat topped, and the grid is square with rough top and bottom edges.
+
+The aim is to capture the territories of all other players and be the last player left.
+
+To do this, you move troops, which are numbered on each owned tile, between tiles.
+
+Clicking a tile selects it, and pressing one of the keys QWEASD will move troops in one of the six available directions from that selected tile.
+
+W is up, S is down, Q is left-up, D right-down etc. Think of the keys QWEASD and their positions on the keyboard as being a hexagon, with a key for each side.
+
+You can only see tiles within one tile of one of your tiles. All others are greyed out and invisible.
+
+The game is measured in turns, which are displayed in the top left. A turn is simply a period of time, typically 1 second.
+
+Each turn you may make one move, and should you try to make more than one move, extra moves will be queued, and automatically made for you on each consecutive turn.
+
+Each turn, castles (the tiles you start with) generate 1 troop.
+
+Every 25 turns, empty tiles generate 1 troop.
+
+Around the map are randomly occuring mountains and natural forts. Forts generate a troop a turn as well. Mountains cannot be passed.
+
+When you find another player, you aim to capture all of their castles. Once you have done so, you gain all of their territory and they lose.
+
+Every turn, owned tiles generate varied amounts of money depending on type (eg $10/turn for castles, farms and forts)
+
+Money can be spent on building buildings. The available buildings are farms, barracks, forts and castles. Costs are displayed in game.
+
+Farms generate money ($10/turn)
+
+Barracks generate troops, 1 per 2 turns
+
+Forts and castles generate 1 troop per second, but castles are essential to your kingdom
+
+When attacking enemy territory, defence multipliers are put into play, also depending on tile type. The exact figures are subject to change and will not be revealed, but can be accurately guessed. Defence multipliers make it harder to attack and easier to defend.
