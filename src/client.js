@@ -234,7 +234,7 @@ function cleanupViewableTiles(){
 			viewable[i] = true;
 			
 			for(var j = 0; j < 6; j++){
-				if(data.activeMap.getTileNeighbour(i, j))
+				if(data.activeMap.getTileNeighbour(i, j) !== false)
 					viewable[data.activeMap.getTileNeighbour(i, j)] = true;
 			}
 			

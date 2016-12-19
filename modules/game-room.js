@@ -155,7 +155,8 @@
 					troops: 0,
 					type: Math.random() > 0.1 ? TYPES.EMPTY :
 						Math.random() > 0.3 ? TYPES.MOUNTAIN : TYPES.FORT,
-					changed: false
+					changed: false,
+					changedOwnershipFrom: null
 				}
 				
 				//If the tile is a naturally generated fort, add troops to it (randomised between 50 and 75)

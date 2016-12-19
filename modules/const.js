@@ -53,6 +53,15 @@
 		0.5,					//Farm
 		0.1,					//Barracks
 		1						//Mountain, WTF?
-	]
+	];
+	
+	//Sent to the client when they need to stop seeing a tile
+	module.exports.UNKNOWN_TILE = {
+		type: -1,
+		troops: 0,
+		owner: null,
+		changed: false,
+		changedOwnershipFrom: null
+	};
 	
 })();

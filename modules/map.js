@@ -37,7 +37,8 @@
 					owner: null,
 					troops: 0,
 					type: TYPES.EMPTY,
-					changed: false
+					changed: false,
+					changedOwnershipFrom: null
 				});
 			}
 		}
@@ -215,18 +216,18 @@
 			
 		}
 		
-		//Neighbour not neighbor American scumbags
+		//Neighbour not neighbor American noobs
 		//But yes, I use color consistently instead of colour
 		//This is because I'm used to it
 		//Neighbor I dislike though
 		//Takes a tile id and returns the tile's neighbour's id at rotation rotation
 		//Rotation starts at 0 being directly above and then increments as it goes clockwise:
 		
-		//    0
-		// 5     1
+		//     0
+		// 5       1
 		//
-		// 4     2
-		//    3
+		// 4       2
+		//     3
 		
 		//If either tile doesn't exist it returns false
 		
@@ -350,6 +351,11 @@
 				this.gameRoom.players[i].moved = false;
 			}
 			
+			//Go through all of the tiles and reset their changedOwnershipFrom variable
+			for(var i = 0; i < this.data.length; i++){
+				this.data[i].changedOwnershipFrom = null;
+			}
+			
 		}
 		
 		//Networking
@@ -440,29 +446,58 @@
 			
 			//Loop through it and only keep actual data
 			//Keep track of positions by adding an i (index) property
-			//Tiles are stored as strings following a specific format to save memory
 			//Also, only add tiles if they have been changed in an unpredictable manner should changed === true
-			for(var i = 0, tile; i < arr.length; i++){
+			for(var i = 0; i < arr.length; i++){
 				
 				if(arr[i] && (changed && arr[i].changed || !changed)){
 					
-					tile = arr[i].troops + ' ' + arr[i].type;
-					
-					//Add the index property
-					tile += ' ' + i;
-					
-					//Replace owner with their index ID
-					if(arr[i].owner)
-						tile += ' ' + this.indexes.indexOf(arr[i].owner.id);
-					
 					//Add it
-					data.push(tile);
+					data.push(this.minifiedTileData(arr[i], i));
 					
 				}
 				
 			}
 			
+			//If a tile shares no border with any other tile of the same owner, upon capture, it will not update properly
+			//As such, whenever a tile changes hands, its original owner is alerted here, by being given an unknown tile
+			//They are only served an unknown tile if none of the bordering tiles are owned by the captured tile's original owner
+			for(var i = 0, valid; i < this.data.length; i++){
+				if(this.data[i].changedOwnershipFrom === player){
+					
+					valid = true;
+					
+					for(var j = 0; j < 6; j++){
+						
+						if(this.getTileNeighbour(i, j) !== false && this.data[this.getTileNeighbour(i, j)].owner === player){
+							valid = false;
+						}
+						
+					}
+					
+					if(valid)
+						data.push(this.minifiedTileData(CONSTANTS.UNKNOWN_TILE, i));
+					
+				}
+			}
+			
 			return data;
+			
+		}
+		
+		//Get a minified version of a tile object
+		//Tiles are sent as strings following a specific format to save bandwidth
+		this.minifiedTileData = function(tile, i){
+			
+			var ntile = tile.troops + ' ' + tile.type;
+			
+			//Add the index property
+			ntile += ' ' + i;
+			
+			//Replace owner with their index ID
+			if(tile.owner)
+				ntile += ' ' + this.indexes.indexOf(tile.owner.id);
+			
+			return ntile;
 			
 		}
 		
@@ -604,6 +639,8 @@
 							}
 						}
 						
+						//Actually transfer it
+						endpoint.changedOwnershipFrom = endpoint.owner;
 						endpoint.owner = player;
 					}
 				}
