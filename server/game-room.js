@@ -9,12 +9,14 @@
 //When the game ends, the end callback function (sent as parameter) is executed with the game as a parameter
 
 (function(){
+	
 	var Map = require('./map');
 	
 	var EVENT = require('./const').EVENT;
 	var TYPES = require('./const').TYPES;
 	
 	var sanitizer = require('sanitizer');
+	var chalk = require('chalk');
 	
 	module.exports = function(io, id, players, w, h, end){
 		
@@ -133,7 +135,7 @@
 		
 		//The game has been won
 		this.endGame = function(winner){
-			console.log('A game has been won by ' + winner.name);
+			console.log(chalk.blue('A game has been won by ' + winner.name));
 			this.sendServerMessage('The game has been won by ' + winner.name);
 			
 			for(var i = 0; i < this.players.length; i++){

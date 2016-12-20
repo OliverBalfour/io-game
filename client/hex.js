@@ -614,7 +614,7 @@ function Map(socket, w, h, side, canvas, playerID, playerData){
 	
 	this.loadIcon = function(name, file){
 		this.icons[name] = new Image();
-		this.icons[name].src = '/icons/' + file;
+		this.icons[name].src = '../icons/' + file;
 	}
 	
 	var icons = ['barn.png', 'castle.png', 'medieval-pavilion.png', 'peaks.png', 'stone-tower.png', 'peaks.png'],

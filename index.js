@@ -1,23 +1,29 @@
 
-//Strategy game server server side code
-//Built with Node, Express and Socket.io
+//io style realtime multiplayer strategy game server
+//Built with Node, Express and Socket.io (and a few other bits and bobs)
 
-//Copyright Oliver Balfour (aka Tobsta, Lord of the 32bit Ring) 2016
+//Copyright Oliver Balfour (aka Tobsta, Lord of the 32bit Ring) 2016-2017
 
 (function(){
 	
+	//Dependencies
 	var app = require('express')();
 	var http = require('http').Server(app);
 	var io = require('socket.io')(http);
+	
 	var path = require('path');
+	var fs = require('fs');
+	
+	var chalk = require('chalk');
+	
 	var UUID = require('uuid');
 	var sanitizer = require('sanitizer');
 	
 	//Other modules
 	
-	//Quick function for getting a module in the modules directory
+	//Quick function for getting a module in the server directory
 	function getModule(name){
-		return require(path.join(__dirname, 'modules', name));
+		return require(path.join(__dirname, 'server', name));
 	}
 	
 	var WaitingRoom = getModule('waiting-room');
@@ -26,32 +32,60 @@
 	var utils = getModule('utils');
 	var EVENT = getModule('const').EVENT;
 	
-	//At the root of the server, the game is served
+	//NODE_ENV is dev/debug mode?
+	var debug = process.env.NODE_ENV === 'development';
+	
+	//At the root of the server, the game's index.html file is served
 	app.get('/', function(req, res){
-		res.sendFile(path.join(__dirname, 'index.html'));
+		res.sendFile(path.join(__dirname, path.join('dist', 'index.html')));
 	});
 	
-	//The files in the root that the public are allowed to see
-	var whitelistedFiles = ['client.js', 'index.html', 'style.css'];
+	//Load in file names for files in /dist
+	//Note that if files are added to subdirectories within dist/ , they won't be in the array
 	
-	//Whitelisted directories
-	//WARNING: FOR DISTRIBUTION DO NOT WHITELIST THE SRC DIRECTIVE
-	var whitelistedDirs = ['/icons', '/src'];
+	var distFiles = [];
+	
+	fs.readdir('dist/', function(err, files){
+		
+		if(!err)
+			distFiles = files;
+		else
+			console.log(chalk.red(err));
+		
+	});
 	
 	//Get individual files on the server
+	//Unless they are dist/ files being requested from the root, it only sends back files in debug
 	app.get('/*', function(req, res, next){
+		
 		var file = req.params[0];
 		
-		//If the file isn't whitelisted for public viewing or in any directory other than the root or whitelisted directories, pretend it's a 404 error
-		if(
-			whitelistedFiles.indexOf(file) === -1 &&
-			whitelistedDirs.indexOf('/' + file.split('/')[0]) === -1
-		){
-			console.log(file)
+		if(distFiles.indexOf(file) !== -1){
+			
+			res.sendFile(path.join(__dirname, 'dist', file));
+			
+		}else if(debug){
+			
+			//Assuming the file actually exists that is wanted, send it
+			//Otherwise, 404 error is sent
+			fs.access(file, fs.F_OK, function(err){
+				
+				if(!err){
+					res.sendFile(path.join(__dirname, file));
+				}else{
+					res.sendStatus(404);
+					console.log(chalk.yellow('Client tried to access ' + file));
+				}
+				
+			});
+			
+		}else{
+			
 			res.sendStatus(404);
+			console.log(chalk.yellow('Client tried to access ' + file));
+			
 		}
 		
-		res.sendFile(path.join(__dirname, '/' + file));
 	});
 	
 	
@@ -88,7 +122,7 @@
 	game.gameRooms = [];
 	
 	io.on('connection', function(socket){
-		console.log('A user connected');
+		console.log(chalk.green('A user connected'));
 		
 		//Tell the user they're connected, and give them their ID
 		socket.emit(EVENT.SERVER_CONNECT, socket.id);
@@ -113,7 +147,7 @@
 			//Stupid anons
 			socket.player.name = name !== '' ? name : 'Anonymous';
 			
-			console.log(socket.player.name + ' joined the waiting room.');
+			console.log(chalk.green(socket.player.name + ' joined the waiting room.'));
 			
 			//Add them to the waiting room
 			socket.join(game.waitingRoom.id);
@@ -141,7 +175,7 @@
 				
 				socket.player.isWaiting = false;
 				
-				console.log(socket.player.name + ' got impatient and returned to the homepage');
+				console.log(chalk.green(socket.player.name + ' got impatient and returned to the homepage'));
 			}
 		});
 		
@@ -199,7 +233,7 @@
 				
 			}));
 			
-			console.log('Tutorial started: ' + gameRoomID);
+			console.log(chalk.blue('Tutorial started: ' + gameRoomID));
 			
 			
 			var map = game.gameRooms[game.gameRooms.length - 1].map;
@@ -218,7 +252,7 @@
 		
 		socket.on(EVENT.CONCEDE_GAME, function(){
 			
-			console.log(socket.player.name + ' conceded');
+			console.log(chalk.cyan(socket.player.name + ' conceded'));
 			
 			var socketGame = game.getGame(socket.player.gameID);
 			
@@ -240,7 +274,7 @@
 			
 			if(socket.player.inGame){			
 				
-				console.log(socket.player.name + ' ragequit');
+				console.log(chalk.cyan(socket.player.name + ' ragequit'));
 				
 				var socketGame = game.getGame(socket.player.gameID);
 				
@@ -256,20 +290,25 @@
 				game.waitingRoom.removePlayer(socket.player);
 				game.waitingRoom.updateClient();
 				
-				console.log(socket.player.name + ' stopped waiting');
+				console.log(chalk.cyan(socket.player.name + ' stopped waiting'));
 				
 			}else{
 				
-				console.log('A user disconnected');
+				console.log(chalk.cyan('A user disconnected'));
 				
 			}
 		});
 	});
 	
-	var port = 3000;
+	//If a (valid) port was supplied as a command line parameter (node index PORT_NO) then use it
+	//Otherwise, fall back to port 3000
+	var port = process.argv[2] ?
+				process.argv[2].match(/[^0-9]+/g) ?
+					3000 : parseInt(process.argv[2])
+			   : 3000;
 	
 	http.listen(port, function(){
-		console.log('Loaded to http://localhost:' + port + '\n');
+		console.log(chalk.cyan('Loaded to ') + chalk.blue('http://localhost:') + chalk.green.underline(port) + chalk.cyan(' with debug ' + (debug ? 'on' : 'off') + '\n'));
 	});
 	
 })();

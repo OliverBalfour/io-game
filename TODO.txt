@@ -1,22 +1,23 @@
 TODO
 
-Bugs
+-= Bugs =-
 
 Empty!
 
 FIXED - A tile owned by a player with no surrounding tiles owned by the same player, on capture, won't update properly
 FIXED - Tile 0 not viewable or attackable
 
-Development
+-= Development =-
 
+ - set NODE_ENV=development or export NODE_ENV=development
  - Refactor
  - Write tests
  - Make mobile friendly
- - Add a tutorial explaining the whole damned game
  - Write a page of documentation on exact numbers for high level players
  - Inactivity handling
  - Conceding games
  - Ensure maps are fair; no players cut off by mountains from the rest of the map
+ - Finish tutorial
 
 DONE - Properly sanitize and type check all data sent in to prevent trolls crashing the server for lols
 DONE - Make fog of war not hacky and fix the fog of war immediately after capturing another player
@@ -27,16 +28,18 @@ DONE - Make buildings more affordable
 DONE - Add defensive multipliers; castles have +30%, forts +20%, barracks +10%, farms +5%, and normal tiles +0%
 DONE - Make leaderboards display money, land and total troops
 DONE - Set up Grunt for uglification of files
+DONE - Add a tutorial explaining the whole damned game
 
-Publishing
+-= Publishing =-
 
+ - set NODE_ENV=production or export NODE_ENV=production
  - Name the game
  - Buy [name].io
  - Replace [name].io with [name].io wherever relevant; ie tutorial and header
  - Make an icon
  - Put in credits, crediting the creators of the icons
- - Add music
- - Blacklist /src for distribution
+ - Add HTML metadata
+ - Add 404 page
  - Set up DigitalOcean droplet hosting and apply $50 GitHub Student Pack offer to it (10 MONTHS of free hosting)
  - Add to search engines
  - Put in ads, and make unobtrusive
@@ -48,13 +51,16 @@ Publishing
  - Roll in money and players
  - Brag about having made an io game
 
-Suggestions
+-= Suggestions =-
 
+ - 'The gods are angry' - When a game goes for too long, make tiles turn into 'the void' around the outside
+    - Maybe also make all mountains 'volcanos' which randomly erupt every ~50 turns killing surrounding troops
  - Generate mountain ranges, allowing for strategy to be a lot better
  - Add right click + drag to quickly and easily make movement chains
  - Supply lines/battle fronts by setting up automatic queuing
  - Heatmap view to show troop concentration
  - Add rivers/streams
+ - Add music
  - Make mountain placement better, and either:
     - Ensure maps are fair; no players cut off by mountains from the rest of the map, or
     - Make some way of crossing mountains

@@ -2,9 +2,11 @@
 <html>
 	<head>
 		<title>Strategy Game</title>
-		<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
-		<link href="style.css" rel="stylesheet">
 		<meta charset='UTF-8' />
+		<link type="text/css" href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+		<!-- build:style dist -->
+		<link type="text/css" href="style.css" rel="stylesheet">
+        <!-- /build -->
 	</head>
 	<body>
 		<div id='start-screen' class='screen'>
@@ -25,7 +27,9 @@
 			<button id='wr-cancel' onclick='leaveWaitingRoom()'>Cancel</button>
 		</div>
 		<div id='game-room' class='screen hidden'>
-			<canvas id='map'>Sorry, your browser is too old. Please update it, or download the latest version of Google Chrome or Firefox.</canvas>
+			<canvas id='map'>
+				Sorry, your browser is too old. Please update it, or download the latest version of Google Chrome or Firefox.
+			</canvas>
 			<table id='gr-players'>
 				<colgroup>
 					<col class='col-name' />
@@ -52,11 +56,11 @@
 			<div id='action-bar'>
 				<div id='action-toggle-detail' onclick='toggleActionBarDetail()'>&lt;</div>
 				<div id='action-icons'>
-					<img onclick='upgradeTile(0)' class='action-icon' src='/icons/cross.png' id='bd-demolisher' title='Demolisher' />
-					<img onclick='upgradeTile(3)' class='action-icon' src='/icons/barn.png' id='bd-barn' title='Farm - $200' />
-					<img onclick='upgradeTile(4)' class='action-icon' src='/icons/medieval-pavilion.png' id='bd-barracks' title='Barracks - $500' />
-					<img onclick='upgradeTile(2)' class='action-icon' src='/icons/stone-tower.png' id='bd-fort' title='Fort - $2000' />
-					<img onclick='upgradeTile(1)' class='action-icon' src='/icons/castle.png' id='bd-castle' title='Castle - $5000 + Fort' />
+					<img onclick='upgradeTile(0)' class='action-icon' src='../icons/cross.png' id='bd-demolisher' title='Demolisher' />
+					<img onclick='upgradeTile(3)' class='action-icon' src='../icons/barn.png' id='bd-barn' title='Farm - $200' />
+					<img onclick='upgradeTile(4)' class='action-icon' src='../icons/medieval-pavilion.png' id='bd-barracks' title='Barracks - $500' />
+					<img onclick='upgradeTile(2)' class='action-icon' src='../icons/stone-tower.png' id='bd-fort' title='Fort - $2000' />
+					<img onclick='upgradeTile(1)' class='action-icon' src='../icons/castle.png' id='bd-castle' title='Castle - $5000 + Fort' />
 				</div>
 				<div id='action-details'>
 					<div class='action-detail'>
@@ -83,7 +87,7 @@
 			</div>
 			<div id='chat'>
 				<div id='messages'>
-					
+					<!-- Messages are put here -->
 				</div>
 				<input id='chatbox' placeholder='Chat' />
 			</div>
@@ -100,8 +104,10 @@
 		</div>
 		
 		<script src='/socket.io/socket.io.js'></script>
+		<!-- build:script client -->
 		<script src='client.js'></script>
 		<script src='tutorial.js'></script>
 		<script src='hex.js'></script>
+		<!-- /build -->
 	</body>
 </html>

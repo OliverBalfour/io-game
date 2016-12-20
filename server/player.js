@@ -8,6 +8,7 @@
 //The gameID is to find the room they are in (if any)
 
 (function(){
+	
 	var utils = require('./utils');
 
 	module.exports = function(id, gameID){

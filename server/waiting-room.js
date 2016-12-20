@@ -19,7 +19,9 @@
 //	useTimer - Boolean, should the timer be active, default true
 
 (function(){
+	
 	var UUID = require('uuid');
+	var chalk = require('chalk');
 	
 	var EVENT = require('./const').EVENT;
 	
@@ -173,7 +175,7 @@
 			//Generate an ID for the game room
 			var gameRoomID = UUID();
 			
-			console.log('New game started: ' + gameRoomID);
+			console.log(chalk.blue('New game started: ' + gameRoomID));
 			
 			//Cycle through all of the players in the waiting room
 			for(var i = 0, socket; i < this.players.length; i++){
