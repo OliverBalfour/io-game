@@ -6,17 +6,17 @@ var fs = require('fs');
 var files = [
 	'index.js',
 	'linecount.js',
-	'modules/const.js',
-	'modules/game-room.js',
-	'modules/map.js',
-	'modules/player.js',
-	'modules/utils.js',
-	'modules/waiting-room.js',
-	'src/client.js',
-	'src/hex.js',
-	'src/index.html',
-	'src/style.css',
-	'src/tutorial.js'
+	'server/const.js',
+	'server/game-room.js',
+	'server/map.js',
+	'server/player.js',
+	'server/utils.js',
+	'server/waiting-room.js',
+	'client/client.js',
+	'client/hex.js',
+	'client/index.html',
+	'client/style.css',
+	'client/tutorial.js'
 ];
 
 console.log('\n');
