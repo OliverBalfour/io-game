@@ -6,7 +6,8 @@
 
 (function(){
 	
-	//Dependencies
+	/* Dependencies */
+	
 	var app = require('express')();
 	var http = require('http').Server(app);
 	var io = require('socket.io')(http);
@@ -19,9 +20,10 @@
 	var UUID = require('uuid');
 	var sanitizer = require('sanitizer');
 	
+	
 	//Other modules
 	
-	//Quick function for getting a module in the server directory
+	//Quick function for getting a module in the /server directory
 	function getModule(name){
 		return require(path.join(__dirname, 'server', name));
 	}
@@ -29,11 +31,16 @@
 	var WaitingRoom = getModule('waiting-room');
 	var GameRoom = getModule('game-room');
 	var Player = getModule('player');
+	var DataTree = getModule('tree');
 	var utils = getModule('utils');
 	var EVENT = getModule('const').EVENT;
 	
 	//NODE_ENV is dev/debug mode?
 	var debug = process.env.NODE_ENV === 'development';
+	
+	
+	
+	/* Routing */
 	
 	//At the root of the server, the game's index.html file is served
 	app.get('/', function(req, res){
@@ -45,6 +52,7 @@
 	
 	var distFiles = [];
 	
+	//Note that until this request has finished (a fraction of a second) any requests to /dist resources will result in a 404 error
 	fs.readdir('dist/', function(err, files){
 		
 		if(!err)
@@ -89,37 +97,14 @@
 	});
 	
 	
-	//Game namespace
-	var game = {};
 	
-	//Get a game by it's ID
-	game.getGame = function(id){
-		for(var i = 0; i < this.gameRooms.length; i++){
-			if(this.gameRooms[i].id === id) return this.gameRooms[i];
-		}
-		return false;
-	}
+	/* Data tree */
 	
-	//Everyone goes through the waiting room
-	//Once full, or everyone has agreed to start playing, or the timer has expired, all players inside get transferred to a new game room
-	game.waitingRoom = new WaitingRoom(io, function(id, players){
-		
-		//Create new room when the waiting room has done its job
-		game.gameRooms.push(new GameRoom(io, id, players, 16, 16, function(room){
-			
-			//When the game ends, remove it from the array
-			game.gameRooms.splice(game.gameRooms.indexOf(room), 1);
-			
-		}));
-		
-		game.getGame(id).sendServerMessage('Game started.');
-		
-	});
+	var game = new DataTree(io);
 	
-	//An array of game rooms
-	//Every individual game is an instance of GameRoom, and has at least two players
-	//These are where the actual game is played
-	game.gameRooms = [];
+	
+	
+	/* WebSockets (socket.io) */
 	
 	io.on('connection', function(socket){
 		console.log(chalk.green('A user connected'));
@@ -299,6 +284,10 @@
 			}
 		});
 	});
+	
+	
+	
+	/* Initialisation */
 	
 	//If a (valid) port was supplied as a command line parameter (node index PORT_NO) then use it
 	//Otherwise, fall back to port 3000

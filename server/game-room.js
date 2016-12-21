@@ -5,7 +5,7 @@
 //Not yet implemented, really
 
 //Takes the io socket.io instance for broadcasting purposes
-//Takes parameter id so that WaitingRoom can specify the ID and return it without having to create an instance of GameRoom itself
+//Takes DataTree to remove itself from it when done
 //When the game ends, the end callback function (sent as parameter) is executed with the game as a parameter
 
 (function(){
@@ -16,17 +16,17 @@
 	var TYPES = require('./const').TYPES;
 	
 	var sanitizer = require('sanitizer');
+	var UUID = require('uuid');
 	var chalk = require('chalk');
 	
-	module.exports = function(io, id, players, w, h, end){
+	module.exports = function(io, tree, players, w, h){
 		
-		this.id = id;
+		this.id = UUID();
 		
 		this.io = io;
+		this.tree = tree;
 		
 		this.players = players;
-		
-		this.end = end;
 		
 		//Removes a player and updates variables
 		//Returns boolean, indicating success
@@ -144,7 +144,8 @@
 			
 			this.players = [];
 			
-			this.end();
+			//When the game ends, remove it from the array
+			this.tree.gameRooms.splice(this.tree.gameRooms.indexOf(this), 1);
 		}
 		
 		//Make a map
@@ -172,6 +173,21 @@
 		//Alter the players game IDs
 		for(var i = 0; i < this.players.length; i++){
 			this.players[i].gameID = this.id;
+		}
+		
+		console.log(chalk.blue('New game started: ' + this.id));
+		
+		//Cycle through all of the players in the room
+		for(var i = 0, socket; i < this.players.length; i++){
+			
+			this.players[i].isWaiting = false;
+			this.players[i].inGame = true;
+			
+			socket = this.io.sockets.connected[this.players[i].id];
+			
+			//Add player to this game room
+			socket.join(this.id);
+			
 		}
 		
 		//Alert players that they have joined a game

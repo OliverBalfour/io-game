@@ -3,6 +3,8 @@
 
 //Filled with miscellaneous utility functions
 
+//This is going to be removed shortly
+
 (function(){
 	
 	//Random colour generator
@@ -13,6 +15,5 @@
 		}
 		return '#' + color;
 	}
-	
 	
 })();

@@ -18,6 +18,7 @@ FIXED - Tile 0 not viewable or attackable
  - Conceding games
  - Ensure maps are fair; no players cut off by mountains from the rest of the map
  - Finish tutorial
+ - Merge GAME_START and MAP_INITIALISATION
 
 DONE - Properly sanitize and type check all data sent in to prevent trolls crashing the server for lols
 DONE - Make fog of war not hacky and fix the fog of war immediately after capturing another player
@@ -34,6 +35,7 @@ DONE - Add a tutorial explaining the whole damned game
 
  - set NODE_ENV=production or export NODE_ENV=production
  - Name the game
+ - If the repo is renamed, `git remote set-url origin https://github.com/tobsta/whateves` and update in package.json
  - Buy [name].io
  - Replace [name].io with [name].io wherever relevant; ie tutorial and header
  - Make an icon

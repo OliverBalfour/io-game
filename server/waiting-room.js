@@ -10,7 +10,7 @@
 
 //Parameters
 //io - The socket.io server instance
-//callback - A callback triggered whenever a game is started, giving the ID and players array to initialise the game with
+//tree - The DataTree to add newly started games to
 //options - object:
 //	timerLength - The time in seconds that the timer lasts, default 120
 //	playerLimit - The maximum amount of players, when reached the game starts, default 8
@@ -23,9 +23,11 @@
 	var UUID = require('uuid');
 	var chalk = require('chalk');
 	
+	var GameRoom = require('./game-room');
+	
 	var EVENT = require('./const').EVENT;
 	
-	module.exports = function(io, callback, options){
+	module.exports = function(io, tree, options){
 		//Save ourselves a lotta hassle
 		options = options || {};
 		
@@ -33,7 +35,7 @@
 		this.id = UUID();
 		
 		this.io = io;
-		this.callback = callback;
+		this.tree = tree;
 		
 		//Safe to send to the client; contains player count, timer and the count of people who want to force start the game
 		//When sent to the client though, it should be stringified and minified first to save bandwidth
@@ -172,30 +174,24 @@
 		//Start game
 		this.startGame = function(){
 			
-			//Generate an ID for the game room
-			var gameRoomID = UUID();
+			//Create new room when the waiting room has done its job
+			var gameRoom = new GameRoom(this.io, this.tree, this.players.slice(0), 16, 16);
 			
-			console.log(chalk.blue('New game started: ' + gameRoomID));
-			
-			//Cycle through all of the players in the waiting room
+			//Stop players receiving waiting room updates
 			for(var i = 0, socket; i < this.players.length; i++){
-				this.players[i].isWaiting = false;
-				this.players[i].inGame = true;
 				
 				socket = this.io.sockets.connected[this.players[i].id];
 				
-				//Remove player from waiting room
 				socket.leave(this.id);
 				
-				//Add player to game room
-				socket.join(gameRoomID);
 			}
 			
-			//Call the callback
-			this.callback(gameRoomID, this.players.slice(0));
-			
-			//Remove players from waiting room
+			//Remove players from this waiting room's player list
 			this.players = [];
+			
+			//Add game to list
+			this.tree.gameRooms.push(gameRoom);
+			
 		}
 	}
 })();
