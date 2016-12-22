@@ -36,6 +36,8 @@ Run the server
 
 Then navigate to [localhost:3000](http://localhost:3000) (assuming you're using port 3000, otherwise replace with PORT_NO)
 
+If you don't have git, download this repo, unzip and put into your directory of choice, then run all commands after the git clone command. Or just get git. It's awesome. If you don't have node.js, don't even bother.
+
 ##Useful commands
 
 `grunt` - Build /dist and run tests
@@ -44,7 +46,7 @@ Then navigate to [localhost:3000](http://localhost:3000) (assuming you're using 
 
 `grunt watch` - Automatically build /dist whenever a change is made to files in /client
 
-If you don't have git, download this repo, unzip and put into your directory of choice, then run all commands after the git clone command. Or just get git. It's awesome. If you don't have node.js, don't even bother.
+`node linecount` - Automatically counts length in lines of code of all files in /server and /client, and a few others
 
 ##License
 
