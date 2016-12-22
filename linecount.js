@@ -12,7 +12,7 @@ var files = [
 	'server/utils.js',
 	'server/waiting-room.js',
 	'server/tree.js',
-	'server/handler.js'
+	'server/handler.js',
 	'client/client.js',
 	'client/hex.js',
 	'client/index.html',
