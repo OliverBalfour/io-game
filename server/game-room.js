@@ -186,7 +186,7 @@
 			socket = this.io.sockets.connected[this.players[i].id];
 			
 			//Add player to this game room
-			socket.join(this.id);
+			if(socket) socket.join(this.id);
 			
 		}
 		

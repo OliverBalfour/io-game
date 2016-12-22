@@ -5,13 +5,14 @@ var fs = require('fs');
 
 var files = [
 	'index.js',
-	'linecount.js',
 	'server/const.js',
 	'server/game-room.js',
 	'server/map.js',
 	'server/player.js',
 	'server/utils.js',
 	'server/waiting-room.js',
+	'server/tree.js',
+	'server/handler.js'
 	'client/client.js',
 	'client/hex.js',
 	'client/index.html',
