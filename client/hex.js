@@ -153,7 +153,15 @@ function Map(socket, w, h, side, canvas, playerID, playerData){
 		//Draw hexagon
 		
 		//Tile color
-		ctx.fillStyle = tile.owner ? getPlayer(tile.owner).color : 'lightgrey';
+		//If the player exists and is still playing, make them their colour
+		//If the player doesn't exist or the tile has troops, make it grey
+		//Otherwise, white
+		ctx.fillStyle = 
+			tile.owner ?
+				getPlayer(tile.owner) ?
+					getPlayer(tile.owner).color :
+					'grey' :
+					tile.troops > 0 ? 'lightgrey' : 'white';
 		
 		if(tile.type === TYPES.UNKNOWN) ctx.fillStyle = '#777';
 		

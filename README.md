@@ -10,7 +10,7 @@ Refer to txt/documentation.txt
 
 ##Setup
 
-You will need git, node.js and npm
+You will need git, node.js, npm and grunt (well, you can get by without the grunt CLI, but you'll need to look up how to do so)
 
 Go to your parent directory of choice
 

@@ -184,9 +184,13 @@
 		//When they wish to concede
 		this.concedeGame = function(socket){
 			
-			console.log(chalk.cyan(socket.player.name + ' conceded'));
-			
 			var socketGame = this.tree.getGame(socket.player.gameID);
+			
+			//Assuming the game they want to concede actually exists (ie it's still active) then concede
+			if(!socketGame)
+				return;
+			
+			console.log(chalk.cyan(socket.player.name + ' conceded'));
 			
 			socketGame.sendServerMessage(socket.player.name + ' conceded');
 			

@@ -265,7 +265,7 @@ function updateTiles(){
 		tile = data.activeMap.data[i];
 		
 		//For any owned tile, which needs to be updated
-		if(tile.owner !== null){
+		if(tile.owner !== null && getPlayer(tile.owner)){
 			
 			if(tile.type === TYPES.CASTLE || tile.type === TYPES.FORT){
 				tile.troops++;
@@ -473,6 +473,12 @@ function updatePlayers(){
 	dom.id('gr-players-dump').innerHTML = playerNames.join('');
 }
 
+function concedeGame(){
+	socket.emit(EVENT.CONCEDE_GAME, null);
+	gameEnd();
+	exitGame();
+}
+
 function exitGame(){
 	
 	//Destroy map
@@ -524,36 +530,3 @@ function updateScroll(){
 	var el = dom.id('messages');
 	el.scrollTop = el.scrollHeight - 110;
 }
-
-/*
-//Populate the HTML with building costs
-function populateCosts(){
-	
-	//var names = dom.className('name'),
-	//	actionIcons = dom.className('action-icon');
-	
-	//for(var i = 0; i < names.length; i++){
-	//	names[i].innerHTML = names[i].innerHTML.replace(/%([A-Z]+)/g, /%([A-Z]+)/g.exec(names[i].innerHTML)[1]);
-	//}
-	
-	var regex = /%([A-Z]+)/g;
-	
-	var match = regex.exec(document.body.innerHTML);
-	
-	var res = document.body.innerHTML;
-	
-	while(match !== null){
-		
-		var val = window[match[0]]
-		
-		res = res.replace(/%([A-Z]+)/, val);
-		
-		match = regex.exec(document.body.innerHTML);
-		
-	}
-	
-	document.body.innerHTML = res;
-	
-}
-populateCosts();
-*/
