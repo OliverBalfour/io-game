@@ -64,4 +64,7 @@
 		changedOwnershipFrom: null
 	};
 	
+	//The amount of turns in which no activity is made by a user before they are counted as inactive and removed from the game
+	module.exports.INACTIVITY_TURN_COUNT = 25;
+	
 })();

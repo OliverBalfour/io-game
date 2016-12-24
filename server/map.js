@@ -356,6 +356,12 @@
 				this.data[i].changedOwnershipFrom = null;
 			}
 			
+			//Update all of the players last activity checks
+			this.gameRoom.updateInactivity();
+			
+			//Check all players to see if they are inactive
+			this.gameRoom.checkInactivity();
+			
 		}
 		
 		//Networking
@@ -577,6 +583,7 @@
 			
 			//The player has made their move, yes?
 			player.moved = true;
+			player.lastActivity = 0;
 			
 			//For the sake of fog of war, all of the tiles around the endpoint get flagged changed too, because if they aren't, the player won't see them
 			//Veeeery hacky but it works xD
@@ -735,6 +742,9 @@
 			
 			//Indicate that the tile has been changed and needs to be transmitted
 			this.data[d.i].changed = true;
+			
+			//Indicate that the player has moved
+			this.data[d.i].lastActivity = 0;
 			
 			//Building stuff on empty ground
 			if(this.data[d.i].type === TYPES.EMPTY){

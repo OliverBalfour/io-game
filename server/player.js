@@ -42,6 +42,9 @@
 		//Indicates whether, in the current turn, the player has moved
 		this.moved = false;
 		
+		//Number of turns since this player's last activity in game
+		this.lastActivity = 0;
+		
 		//Reset a player for a new game
 		this.factoryReset = function(){
 			this.forceStart = null;
@@ -54,6 +57,7 @@
 			this.land = 1;
 			this.troops = 0;
 			this.moved = false;
+			this.lastActivity = 0;
 		}
 	}
 })();

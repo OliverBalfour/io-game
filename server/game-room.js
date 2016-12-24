@@ -12,8 +12,9 @@
 	
 	var Map = require('./map');
 	
-	var EVENT = require('./const').EVENT;
-	var TYPES = require('./const').TYPES;
+	var CONSTANTS = require('./const');
+	var EVENT = CONSTANTS.EVENT;
+	var TYPES = CONSTANTS.TYPES;
 	
 	var sanitizer = require('sanitizer');
 	var UUID = require('uuid');
@@ -99,6 +100,10 @@
 				m: m
 			});
 			
+			//Chatting isn't possible with an AFK player
+			//If people exploit this to make bots AFK then feel free to remove
+			player.lastActivity = 0;
+			
 		}
 		
 		//Server sends a message
@@ -129,6 +134,47 @@
 				
 				//Finish the game
 				this.endGame(this.players[0]);
+			}
+			
+		}
+		
+		this.updateInactivity = function(){
+			
+			for(var i = 0; i < this.players.length; i++){
+				
+				this.players[i].lastActivity ++;
+				
+			}
+			
+		}
+		
+		//Check all players for inactivity, and remove them if so
+		this.checkInactivity = function(){
+			
+			for(var i = 0, socket; i < this.players.length; i++){
+				
+				//If they went AFK, purge them
+				//And save ourselves some effort
+				//And server time
+				//And bandwidth
+				//And ... whatever
+				
+				//We add one because every turn one is added to the lastActivity parameter *after* it is cleared, if it is cleared
+				//Meaning on a turn a player moves a troop from tile A to B, they are counted as having had one turn pass since their last move even though the move occupied the entire turn
+				if(this.players[i].lastActivity >= CONSTANTS.INACTIVITY_TURN_COUNT + 1){
+					
+					socket = this.io.sockets.connected[this.players[i].id];
+					
+					console.log(chalk.cyan(socket.player.name + ' went AFK'));
+					
+					this.sendServerMessage(socket.player.name + ' went AFK');
+					
+					this.removePlayer(socket.player);
+					socket.to(this.id).emit(EVENT.PLAYER_UPDATE, this.map.tailoredPlayerArray());
+					
+					this.checkForWin();
+				}
+				
 			}
 			
 		}
