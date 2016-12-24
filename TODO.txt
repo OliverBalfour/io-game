@@ -14,7 +14,6 @@ FIXED - Tile 0 not viewable or attackable
  - Make mobile friendly
  - Write a page of documentation on exact numbers for high level players
  - Inactivity handling
- - Conceding games
  - Ensure maps are fair; no players cut off by mountains from the rest of the map
  - Finish tutorial
  - Merge GAME_START and MAP_INITIALISATION
@@ -32,6 +31,7 @@ DONE - Make leaderboards display money, land and total troops
 DONE - Set up Grunt for uglification of files
 DONE - Add a tutorial explaining the whole damned game
 DONE - Refactor server
+DONE - Conceding games
 
 -= Publishing =-
 

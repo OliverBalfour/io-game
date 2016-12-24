@@ -492,6 +492,7 @@ function exitGame(){
 	dom.hide('game-end-modal');
 	
 	//Clear the last game's messages
+	console.log('lol')
 	dom.id('messages').innerHTML = '';
 	
 	//If in a tutorial, stuff that tutorial
@@ -511,6 +512,9 @@ dom.id('chatbox').addEventListener('keydown', function(e){
 });
 
 socket.on(EVENT.CHAT_MESSAGE, function(msg){
+	
+	if(!data.activeMap)
+		return;
 	
 	var html = '';
 	
