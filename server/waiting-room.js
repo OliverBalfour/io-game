@@ -20,12 +20,12 @@
 
 (function(){
 	
-	var UUID = require('uuid');
-	var chalk = require('chalk');
+	const UUID = require('uuid');
+	const chalk = require('chalk');
 	
-	var GameRoom = require('./game-room');
+	const GameRoom = require('./game-room');
 	
-	var EVENT = require('./const').EVENT;
+	const EVENT = require('./const').EVENT;
 	
 	module.exports = function(io, tree, options){
 		//Save ourselves a lotta hassle
@@ -144,9 +144,9 @@
 		//Same as addPlayer, but removes instead
 		//Returns boolean like addPlayer
 		this.removePlayer = function(player){
-			var removed = false;
+			let removed = false;
 			
-			for(var i = 0; i < this.players.length; i++){
+			for(let i = 0; i < this.players.length; i++){
 				
 				//If this is the player that is to be removed, remove it
 				if(this.players[i] === player){
@@ -175,10 +175,10 @@
 		this.startGame = function(){
 			
 			//Create new room when the waiting room has done its job
-			var gameRoom = new GameRoom(this.io, this.tree, this.players.slice(0), 16, 16);
+			let gameRoom = new GameRoom(this.io, this.tree, this.players.slice(0), 16, 16);
 			
 			//Stop players receiving waiting room updates
-			for(var i = 0, socket; i < this.players.length; i++){
+			for(let i = 0, socket; i < this.players.length; i++){
 				
 				socket = this.io.sockets.connected[this.players[i].id];
 				

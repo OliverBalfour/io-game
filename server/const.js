@@ -22,7 +22,8 @@
 		TILE_UPGRADE: 12,		//A player wants to upgrade a tile, or build something on it
 		CHAT_MESSAGE: 13,		//A player is sending or has sent a message, or the server is sending a message in game
 		START_TUTORIAL: 14,		//A player is starting the tutorial
-		CONCEDE_GAME: 15		//A player has decided that they don't want to continue playing
+		CONCEDE_GAME: 15,		//A player has decided that they don't want to continue playing
+		GONE_INACTIVE: 16
 	};
 	
 	//Tile type enumeration
@@ -48,10 +49,10 @@
 	//eg. for 0.4, defending troops simulate being 1 + 0.4 times larger in force
 	module.exports.MULTIPLIERS = [
 		0,						//Empty
-		0.2,					//Castle
-		0.15,					//Fort
-		0.05,					//Farm
-		0.1,					//Barracks
+		0.1,					//Castle
+		0.05,					//Fort
+		0.025,					//Farm
+		0.04,					//Barracks
 		1						//Mountain, WTF?
 	];
 	
@@ -65,6 +66,6 @@
 	};
 	
 	//The amount of turns in which no activity is made by a user before they are counted as inactive and removed from the game
-	module.exports.INACTIVITY_TURN_COUNT = 25;
+	module.exports.INACTIVITY_TURN_COUNT = 50;
 	
 })();

@@ -5,13 +5,13 @@
 
 (function(){
 	
-	var chalk = require('chalk');
-	var sanitizer = require('sanitizer');
-	var UUID = require('UUID');
+	const chalk = require('chalk');
+	const sanitizer = require('sanitizer');
+	const UUID = require('UUID');
 	
-	var GameRoom = require('./game-room');
-	var Player = require('./player');
-	var EVENT = require('./const').EVENT;
+	const GameRoom = require('./game-room');
+	const Player = require('./player');
+	const EVENT = require('./const').EVENT;
 	
 	module.exports = function(tree, io){
 		
@@ -112,7 +112,7 @@
 		//When the player wishes to move their troops between two tiles
 		this.moveTroops = function(socket, d){
 			
-			var game = this.tree.getGame(socket.player.gameID);
+			let game = this.tree.getGame(socket.player.gameID);
 			
 			//Assuming the game they want to move troops in actually exists (ie it's still active) then move the troops
 			if(game)
@@ -123,7 +123,7 @@
 		//When the player wants to build (or demolish) something on a tile
 		this.tileUpgrade = function(socket, d){
 			
-			var game = this.tree.getGame(socket.player.gameID);
+			let game = this.tree.getGame(socket.player.gameID);
 			
 			//Assuming the game they want to upgrade a tile in actually exists (ie it's still active) then upgrade the tile
 			if(game)
@@ -149,7 +149,7 @@
 				return false;
 			
 			//Join tutorial room
-			var gameRoomID = UUID();
+			let gameRoomID = UUID();
 			socket.join(gameRoomID);
 			socket.player.inGame = true;
 			
@@ -157,7 +157,7 @@
 			
 			//Create a dummy player for the player to beat
 			//Don't add it to the socket.io room or else strange occurances will, well, occur
-			var dummyPlayer = new Player('dummy-' + Math.random(), gameRoomID);
+			let dummyPlayer = new Player('dummy-' + Math.random(), gameRoomID);
 			dummyPlayer.inGame = true;
 			dummyPlayer.name = 'Tutorial AI';
 			
@@ -167,7 +167,7 @@
 			console.log(chalk.blue('Tutorial started: ' + gameRoomID));
 			
 			
-			var map = this.tree.gameRooms[this.tree.gameRooms.length - 1].map;
+			let map = this.tree.gameRooms[this.tree.gameRooms.length - 1].map;
 			
 			//Send back data like a MAP_INITIALISATION event combined with a GAME_START event
 			fn({
@@ -184,7 +184,7 @@
 		//When they wish to concede
 		this.concedeGame = function(socket){
 			
-			var socketGame = this.tree.getGame(socket.player.gameID);
+			let socketGame = this.tree.getGame(socket.player.gameID);
 			
 			//Assuming the game they want to concede actually exists (ie it's still active) then concede
 			if(!socketGame)

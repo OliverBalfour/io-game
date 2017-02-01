@@ -3,20 +3,20 @@ var tutorialPosition = 0,
 	banner = dom.id('tutorial-banner');
 
 var tutorialMessages = [
-	"Welcome to [name].io",
+	"Welcome to legions.io",
 	"The aim of the game is to conquer other player's territories",
 	"To move troops, first click on one of your tiles",
 	"You can move troops in any direction from that tile with the keys Q, W, E, A, S and D",
 	"Have a go at moving troops around and capturing empty tiles",
-	"There is another player on the map",
-	"When you capture a player's last castle, they lose",
-	"See if you can find them and conquer their castle",
 	"There are different kinds of tiles",
 	"You can't pass mountains",
 	"Castles, forts and barracks generate troops and give you money",
 	"Farms give you money, with which you buy buildings",
 	"Build a farm on one of your empty tiles by selecting a tile and clicking the barn icon on the right",
 	"You will need $500 to buy a farm. Money is displayed in the top left",
+	"There is another player on the map",
+	"When you capture a player's last castle, they lose",
+	"See if you can find them and conquer their castle",
 	"Perfect! You're ready to go!"
 ];
 

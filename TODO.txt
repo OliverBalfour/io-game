@@ -9,12 +9,14 @@ FIXED - Tile 0 not viewable or attackable
 
 -= Development =-
 
+ - Finish tutorial
+DONE - AFK handling
+
  - set NODE_ENV=development or export NODE_ENV=development
  - Write tests
  - Make mobile friendly
  - Write a page of documentation on exact numbers for high level players
  - Ensure maps are fair; no players cut off by mountains from the rest of the map
- - Finish tutorial
  - Merge GAME_START and MAP_INITIALISATION
  - Test waiting room options
  - Refactor client
@@ -36,10 +38,9 @@ DONE - Inactivity handling
 -= Publishing =-
 
  - set NODE_ENV=production or export NODE_ENV=production
- - Name the game
- - If the repo is renamed, `git remote set-url origin https://github.com/tobsta/whateves` and update in package.json and README.md
- - Buy [name].io
- - Replace [name].io with [name].io wherever relevant; ie tutorial and header
+ - Name the game - legions.io
+ - Buy legions.io
+ - Replace [name].io with legions.io wherever relevant; ie tutorial and header
  - Make an icon
  - Put in credits, crediting the creators of the icons
  - Add HTML metadata
@@ -48,12 +49,14 @@ DONE - Inactivity handling
  - Add to search engines
  - Put in ads, and make unobtrusive
  - Build a plea with adblockers saying something along the lines of "Your Majesty! The peasants are starving! Please disable your AdBlocker!"
- - Publish the game to the droplet
+ - Publish the game to the DigitalOcean droplet
  - Send iogames.space an email about the game and mention the button
  - Put in the button (Link back to iogames.space)
  - Add a donate button (maybe accept paypal and bitcoin or something)
  - Roll in money and players
  - Brag about having made an io game
+
+DONE - If the repo is renamed, `git remote set-url origin https://github.com/tobsta/whateves` and update in package.json and README.md
 
 -= Suggestions =-
 

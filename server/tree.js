@@ -7,7 +7,7 @@
 
 (function(){
 	
-	var WaitingRoom = require('./waiting-room');
+	const WaitingRoom = require('./waiting-room');
 	
 	module.exports = function(io){
 		
@@ -15,7 +15,7 @@
 		
 		//Get a game by its ID
 		this.getGame = function(id){
-			for(var i = 0; i < this.gameRooms.length; i++){
+			for(let i = 0; i < this.gameRooms.length; i++){
 				if(this.gameRooms[i].id === id) return this.gameRooms[i];
 			}
 			return false;

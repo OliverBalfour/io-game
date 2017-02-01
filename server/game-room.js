@@ -10,15 +10,15 @@
 
 (function(){
 	
-	var Map = require('./map');
+	const Map = require('./map');
 	
-	var CONSTANTS = require('./const');
-	var EVENT = CONSTANTS.EVENT;
-	var TYPES = CONSTANTS.TYPES;
+	const CONSTANTS = require('./const');
+	const EVENT = CONSTANTS.EVENT;
+	const TYPES = CONSTANTS.TYPES;
 	
-	var sanitizer = require('sanitizer');
-	var UUID = require('uuid');
-	var chalk = require('chalk');
+	const sanitizer = require('sanitizer');
+	const UUID = require('uuid');
+	const chalk = require('chalk');
 	
 	module.exports = function(io, tree, players, w, h){
 		
@@ -32,9 +32,9 @@
 		//Removes a player and updates variables
 		//Returns boolean, indicating success
 		this.removePlayer = function(player){
-			var removed = false;
+			let removed = false;
 			
-			for(var i = 0; i < this.players.length; i++){
+			for(let i = 0; i < this.players.length; i++){
 				
 				//If this is the player that is to be removed, remove it
 				if(this.players[i] === player){
@@ -57,7 +57,7 @@
 		
 		//Checks if a player is present in the room
 		this.hasPlayer = function(player){
-			var ret = false;
+			let ret = false;
 			
 			for(var i = 0; i < this.players.length; i++){
 				
@@ -78,7 +78,7 @@
 		//Returns an array of player IDs that are in the same order as this.players; useful for indentifying players without their full ID (less bytes to transmit)
 		this.getPlayerIndexes = function(){
 			
-			var players = [];
+			let players = [];
 			
 			for(var i = 0; i < this.players.length; i++){
 				players.push(this.players[i].id);
@@ -140,7 +140,7 @@
 		
 		this.updateInactivity = function(){
 			
-			for(var i = 0; i < this.players.length; i++){
+			for(let i = 0; i < this.players.length; i++){
 				
 				this.players[i].lastActivity ++;
 				
@@ -151,7 +151,7 @@
 		//Check all players for inactivity, and remove them if so
 		this.checkInactivity = function(){
 			
-			for(var i = 0, socket; i < this.players.length; i++){
+			for(let i = 0, socket; i < this.players.length; i++){
 				
 				//If they went AFK, purge them
 				//And save ourselves some effort
@@ -165,14 +165,19 @@
 					
 					socket = this.io.sockets.connected[this.players[i].id];
 					
-					console.log(chalk.cyan(socket.player.name + ' went AFK'));
+					//You have to be an actual player to go inactive
+					if(socket){
+						console.log(chalk.cyan(socket.player.name + ' went AFK'));
 					
-					this.sendServerMessage(socket.player.name + ' went AFK');
-					
-					this.removePlayer(socket.player);
-					socket.to(this.id).emit(EVENT.PLAYER_UPDATE, this.map.tailoredPlayerArray());
-					
-					this.checkForWin();
+						this.sendServerMessage(socket.player.name + ' went AFK');
+						
+						this.removePlayer(socket.player);
+						socket.to(this.id).emit(EVENT.PLAYER_UPDATE, this.map.tailoredPlayerArray());
+						
+						socket.emit(EVENT.GONE_INACTIVE);
+
+						this.checkForWin();
+					}
 				}
 				
 			}
@@ -184,7 +189,7 @@
 			console.log(chalk.blue('A game has been won by ' + winner.name));
 			this.sendServerMessage('The game has been won by ' + winner.name);
 			
-			for(var i = 0; i < this.players.length; i++){
+			for(let i = 0; i < this.players.length; i++){
 				this.players[i].factoryReset();
 			}
 			
@@ -198,7 +203,7 @@
 		this.map = new Map(w, h, this, function(){
 			this.data = [];
 			
-			for(var i = 0, tile; i < this.mapWidth * this.mapHeight; i++){
+			for(let i = 0, tile; i < this.mapWidth * this.mapHeight; i++){
 				tile = {
 					owner: null,
 					troops: 0,
@@ -217,14 +222,14 @@
 		});
 		
 		//Alter the players game IDs
-		for(var i = 0; i < this.players.length; i++){
+		for(let i = 0; i < this.players.length; i++){
 			this.players[i].gameID = this.id;
 		}
 		
 		console.log(chalk.blue('New game started: ' + this.id));
 		
 		//Cycle through all of the players in the room
-		for(var i = 0, socket; i < this.players.length; i++){
+		for(let i = 0, socket; i < this.players.length; i++){
 			
 			this.players[i].isWaiting = false;
 			this.players[i].inGame = true;

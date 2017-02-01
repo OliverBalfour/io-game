@@ -39,7 +39,8 @@ var EVENT = {
 	TILE_UPGRADE: 12,
 	CHAT_MESSAGE: 13,
 	START_TUTORIAL: 14,
-	CONCEDE_GAME: 15
+	CONCEDE_GAME: 15,
+	GONE_INACTIVE: 16
 };
 
 //Costs of various buildings
@@ -58,6 +59,10 @@ socket.on(EVENT.SERVER_CONNECT, function(id){
 //Waiting room update
 socket.on(EVENT.WAITING_ROOM_UPDATE, function(room){
 	waitingRoomUpdate(room);
+});
+
+socket.on(EVENT.GONE_INACTIVE, function(){
+	alert('You have gone inactive')
 });
 
 function waitingRoomUpdate(room){

@@ -10,10 +10,10 @@
 
 (function(){
 	
-	var CONSTANTS = require('./const');
-	var EVENT = CONSTANTS.EVENT;
-	var TYPES = CONSTANTS.TYPES;
-	var COST = CONSTANTS.COST;
+	const CONSTANTS = require('./const');
+	const EVENT = CONSTANTS.EVENT;
+	const TYPES = CONSTANTS.TYPES;
+	const COST = CONSTANTS.COST;
 	
 	module.exports = function(w, h, gameRoom, generationFunction){
 		
@@ -32,7 +32,7 @@
 			//Populating that array with empty tile objects
 			this.data = [];
 			
-			for(var i = 0; i < this.mapWidth * this.mapHeight; i++){
+			for(let i = 0; i < this.mapWidth * this.mapHeight; i++){
 				this.data.push({
 					owner: null,
 					troops: 0,
@@ -47,11 +47,11 @@
 		//If the amount of players isn't enough for the map, this'll go into an infinite loop
 		//Players spawn at least 5 tiles away from each other
 		this.addPlayersToMap = function(){
-			for(var i = 0, player, j; i < this.gameRoom.players.length; i++){
+			for(let i = 0, player, j; i < this.gameRoom.players.length; i++){
 				player = this.gameRoom.players[i];
 				
 				//Get a random empty tile with no players within five hexagons
-				var that = this,
+				let that = this,
 					tile = this.getEmptyTile(5, function(i){ return !that.data[i].owner; });
 				
 				this.data[tile].owner = player;
@@ -70,28 +70,23 @@
 		this.getEmptyTile = function(r, isEmpty){
 			
 			//Array for all tiles which are empty and have r || 0 hexagonal rings, when passed into a secondary parameter, a function, for every tile, is true
-			var empty = [];
+			let empty = [];
 			
-			//If we need to check for
-			if(r && isEmpty){
-				
-				//Array for all tiles which the second parameter function, isEmpty, fails
-				var notEmpty = [];
-				
-				//Populate notEmpty
-				for(var i = 0; i < this.data.length; i++){
-					if(!isEmpty(i)) notEmpty.push(i);
-				}
-				
+			//Array for all tiles which the second parameter function, isEmpty, fails
+			let notEmpty = [];
+			
+			//Populate notEmpty
+			for(let i = 0; i < this.data.length; i++){
+				if(!isEmpty(i)) notEmpty.push(i);
 			}
 			
-			for(var i = 0; i < this.data.length; i++){
+			for(let i = 0; i < this.data.length; i++){
 				
 				if(this.data[i].type === TYPES.EMPTY && !this.data[i].owner){
 					
 					if(r){
 						
-						var invalid = false;
+						let invalid = false;
 						
 						//Loop through not empty tiles and check each one to see if it is in the radius
 						for(var j = 0, ta = this.getTilePosition(i), tb; j < notEmpty.length; j++){
@@ -237,7 +232,7 @@
 			
 			if(i < 0 || i >= this.data.length) return false;
 			
-			var j = 0,
+			let j = 0,
 				even = i % 2 === 0;
 			
 			switch(rotation){
@@ -307,7 +302,7 @@
 		
 		//Update tiles based on user input
 		this.updateTiles = function(){
-			for(var i = 0, tile; i < this.data.length; i++){
+			for(let i = 0, tile; i < this.data.length; i++){
 				tile = this.data[i];
 				
 				//For any owned tile, which needs to be updated
@@ -347,12 +342,12 @@
 			this.transmitMap(true);
 			
 			//Go through all of the players and reset their moved variable
-			for(var i = 0; i < this.gameRoom.players.length; i++){
+			for(let i = 0; i < this.gameRoom.players.length; i++){
 				this.gameRoom.players[i].moved = false;
 			}
 			
 			//Go through all of the tiles and reset their changedOwnershipFrom variable
-			for(var i = 0; i < this.data.length; i++){
+			for(let i = 0; i < this.data.length; i++){
 				this.data[i].changedOwnershipFrom = null;
 			}
 			
@@ -372,7 +367,7 @@
 			//Less crappy networking
 			//Secure
 			//But not bandwidth efficient yet
-			for(var i = 0, player; i < this.gameRoom.players.length; i++){
+			for(let i = 0, player; i < this.gameRoom.players.length; i++){
 				
 				//Grab the player
 				player = this.gameRoom.players[i];
@@ -383,7 +378,7 @@
 			}
 			
 			//Reset all of the 'changed' attributes of tiles
-			for(var i = 0; i < this.data.length; i++){
+			for(let i = 0; i < this.data.length; i++){
 				this.data[i].changed = false;
 			}
 			
@@ -414,9 +409,9 @@
 			
 			//Empty array, a blank this.data
 			//Every tile that should be seen will be overriden
-			var data = new Array(this.data.length);
+			let data = new Array(this.data.length);
 			
-			for(var i = 0, tile, j, petal; i < this.data.length; i++){
+			for(let i = 0, tile, j, petal; i < this.data.length; i++){
 				
 				tile = this.data[i];
 				
@@ -447,13 +442,13 @@
 		this.minifiedTailoredMapData = function(player, changed){
 			
 			//Grab tailored map data
-			var arr = this.tailoredMapData(player),
+			let arr = this.tailoredMapData(player),
 				data = [];
 			
 			//Loop through it and only keep actual data
 			//Keep track of positions by adding an i (index) property
 			//Also, only add tiles if they have been changed in an unpredictable manner should changed === true
-			for(var i = 0; i < arr.length; i++){
+			for(let i = 0; i < arr.length; i++){
 				
 				if(arr[i] && (changed && arr[i].changed || !changed)){
 					
@@ -467,12 +462,12 @@
 			//If a tile shares no border with any other tile of the same owner, upon capture, it will not update properly
 			//As such, whenever a tile changes hands, its original owner is alerted here, by being given an unknown tile
 			//They are only served an unknown tile if none of the bordering tiles are owned by the captured tile's original owner
-			for(var i = 0, valid; i < this.data.length; i++){
+			for(let i = 0, valid; i < this.data.length; i++){
 				if(this.data[i].changedOwnershipFrom === player){
 					
 					valid = true;
 					
-					for(var j = 0; j < 6; j++){
+					for(let j = 0; j < 6; j++){
 						
 						if(this.getTileNeighbour(i, j) !== false && this.data[this.getTileNeighbour(i, j)].owner === player){
 							valid = false;
@@ -494,7 +489,7 @@
 		//Tiles are sent as strings following a specific format to save bandwidth
 		this.minifiedTileData = function(tile, i){
 			
-			var ntile = tile.troops + ' ' + tile.type;
+			let ntile = tile.troops + ' ' + tile.type;
 			
 			//Add the index property
 			ntile += ' ' + i;
@@ -523,10 +518,10 @@
 		this.tailoredPlayerArray = function(){
 			
 			//Empty array
-			var players = [];
+			let players = [];
 			
 			//Populate it with tailored player data
-			for(var i = 0; i < this.gameRoom.players.length; i++){
+			for(let i = 0; i < this.gameRoom.players.length; i++){
 				players.push(this.tailoredPlayerData(this.gameRoom.players[i]));
 			}
 			
@@ -537,9 +532,9 @@
 		//Get a version of this.gameRoom.players that only shows stats visible in the leaderboard
 		this.leaderboardStatsUpdate = function(){
 			
-			var stats = [];
+			let stats = [];
 			
-			for(var i = 0, p; i < this.gameRoom.players.length; i++){
+			for(let i = 0, p; i < this.gameRoom.players.length; i++){
 				
 				p = this.gameRoom.players[i];
 				
@@ -571,7 +566,7 @@
 				return false;
 			}
 			
-			var origin = this.data[d.origin],
+			let origin = this.data[d.origin],
 				endpoint = this.data[d.endpoint];
 			
 			//Make sure the tile isn't a mountain
@@ -587,7 +582,7 @@
 			
 			//For the sake of fog of war, all of the tiles around the endpoint get flagged changed too, because if they aren't, the player won't see them
 			//Veeeery hacky but it works xD
-			for(var r = 0, t; r < 6; r++){
+			for(let r = 0, t; r < 6; r++){
 				
 				t = this.getTileNeighbour(d.endpoint, r);
 				
@@ -611,9 +606,9 @@
 				}else{
 					
 					//Ensure defence multipliers are used
-					var mult = CONSTANTS.MULTIPLIERS[endpoint.type];
+					let mult = CONSTANTS.MULTIPLIERS[endpoint.type];
 					
-					var def = Math.round( endpoint.troops * (1 + mult) ) - (origin.troops - 1);
+					let def = Math.round( endpoint.troops * (1 + mult) ) - (origin.troops - 1);
 					if(def < 0){
 						if(endpoint.owner) endpoint.owner.troops -= endpoint.troops;
 						endpoint.troops = def;
@@ -663,7 +658,7 @@
 		this.tilesAreNeighbours = function(a, b){
 			
 			//6 rotations
-			for(var i = 0; i < 6; i++){
+			for(let i = 0; i < 6; i++){
 				if(this.getTileNeighbour(a, i) === b)
 					return true;
 			}
@@ -678,10 +673,10 @@
 		this.playerCaptured = function(capturer, captured){
 			
 			//Grab their socket, if they have one
-			var capturedSocket = this.gameRoom.io.sockets.connected[captured.id];
+			let capturedSocket = this.gameRoom.io.sockets.connected[captured.id];
 			
 			//Hand over all of the the captured player's tiles to the capturer
-			for(var i = 0, tile; i < this.data.length; i++){
+			for(let i = 0, tile; i < this.data.length; i++){
 				tile = this.data[i];
 				
 				if(tile.owner === captured)
@@ -805,7 +800,7 @@
 		//Init map dump
 		this.initMapDump = function(){
 			
-			for(var i = 0, player; i < this.gameRoom.players.length; i++){
+			for(let i = 0, player; i < this.gameRoom.players.length; i++){
 				
 				//Grab the player
 				player = this.gameRoom.players[i];

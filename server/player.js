@@ -9,7 +9,7 @@
 
 (function(){
 	
-	var utils = require('./utils');
+	const utils = require('./utils');
 
 	module.exports = function(id, gameID){
 		this.id = id;
