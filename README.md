@@ -4,11 +4,11 @@ An .io style HTML5 multiplayer strategy hexagon grid based game.
 
 Built on node.js, socket.io and express with a few other odds and ends.
 
-##Logistics
+## Logistics
 
 Refer to txt/documentation.txt
 
-##Setup
+## Setup
 
 You will need git, node.js, npm and grunt (well, you can get by without the grunt CLI, but you'll need to look up how to do so)
 
@@ -38,7 +38,7 @@ Then navigate to [localhost:3000](http://localhost:3000) (assuming you're using 
 
 If you don't have git, download this repo, unzip and put into your directory of choice, then run all commands after the git clone command. Or just get git. It's awesome. If you don't have node.js, don't even bother.
 
-##Useful commands
+## Useful commands
 
 `grunt` - Build /dist and run tests
 
@@ -48,7 +48,7 @@ If you don't have git, download this repo, unzip and put into your directory of 
 
 `node linecount` - Automatically counts length in lines of code of all files in /server and /client, and a few others
 
-##License
+## License
 
 My precious... Without my explicit permission, you may not use, have a copy of, distribute, modify or in any other way make use of the source code.
 
