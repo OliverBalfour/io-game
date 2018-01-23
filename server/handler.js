@@ -7,7 +7,7 @@
 	
 	const chalk = require('chalk');
 	const sanitizer = require('sanitizer');
-	const UUID = require('UUID');
+	const UUID = require('uuid');
 	
 	const GameRoom = require('./game-room');
 	const Player = require('./player');
