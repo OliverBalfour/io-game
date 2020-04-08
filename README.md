@@ -10,7 +10,7 @@ Refer to txt/documentation.txt
 
 ## Setup
 
-You will need git, node.js, npm and grunt (well, you can get by without the grunt CLI, but you'll need to look up how to do so)
+You will need git, node.js, npm and grunt.
 
 Go to your parent directory of choice
 
@@ -18,7 +18,7 @@ Go to your parent directory of choice
 
 Clone the repo into your directory; it'll add a folder Strategy-Game
 
-`git clone https://github.com/Tobsta/Strategy-Game.git`
+`git clone https://github.com/OliverBalfour/Strategy-Game.git`
 
 Go into the new dir
 
@@ -52,4 +52,4 @@ If you don't have git, download this repo, unzip and put into your directory of 
 
 My precious... Without my explicit permission, you may not use, have a copy of, distribute, modify or in any other way make use of the source code.
 
-Copyright Oliver Balfour (aka Tobsta, Lord of the 32bit Ring) 2016
+Copyright Oliver Balfour 2016
