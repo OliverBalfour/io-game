@@ -54,6 +54,6 @@ If you don't have git, download this repo, unzip and put into your directory of 
 
 ## License
 
-My precious... Without my explicit permission, you may not use, have a copy of, distribute, modify or in any other way make use of the source code.
+Creative Commons [BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/au/).
 
-Copyright Oliver Balfour 2016
+Copyright Oliver Balfour 2016-2020
