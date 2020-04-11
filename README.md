@@ -4,6 +4,10 @@ An .io style HTML5 multiplayer strategy hexagon grid based game.
 
 Built on node.js, socket.io and express with a few other odds and ends.
 
+Demo:
+
+![Recording of gameplay](recording.gif)
+
 ## Logistics
 
 Refer to txt/documentation.txt
